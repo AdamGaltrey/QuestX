@@ -98,8 +98,13 @@ public class SimpleNPC {
 	}
 
 	public HumanNPC getHumanNPC() {
-
 		return this.npc;
+	}
+	
+	public String interact(Player p){
+		//send message, random message
+		//support loading of messages and dialogue sets
+		return "Hello, the interact functionality has not been completed yet!";
 	}
 
 	public boolean doesNPCIDMatch(String id) {

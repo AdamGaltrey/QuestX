@@ -8,6 +8,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import couk.adamki11s.commands.QuestXCommands;
 import couk.adamki11s.data.Updater;
 import couk.adamki11s.events.NPCDamageEvent;
+import couk.adamki11s.events.NPCInteractEvent;
 import couk.adamki11s.npcs.NPCHandler;
 import couk.adamki11s.threads.ThreadController;
 
@@ -19,6 +20,7 @@ public class QuestX extends JavaPlugin {
 	ThreadController tControl;
 	
 	NPCDamageEvent npcDamageEvent;
+	NPCInteractEvent npcInteractEvent;
 	
 	public static Plugin p;
 
@@ -37,6 +39,7 @@ public class QuestX extends JavaPlugin {
 		//register events
 		
 		npcDamageEvent = new NPCDamageEvent(this, handle);
+		npcInteractEvent = new NPCInteractEvent(this, handle);
 		
 		//register events
 		

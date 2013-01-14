@@ -2,6 +2,7 @@ package couk.adamki11s.npcs;
 
 import java.util.HashSet;
 
+import org.bukkit.entity.Entity;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.topcat.npclib.NPCManager;
@@ -36,6 +37,12 @@ public class NPCHandler {
 	
 	public HumanNPC getNPCByName(String name){
 		return (HumanNPC) this.npc.getHumanNPCByName(name);
+	}
+	
+	public SimpleNPC getSimpleNPCByEntity(Entity e){
+		String npcID = this.getNPCManager().getNPCIdFromEntity(e);
+		SimpleNPC snpc = this.getSimpleNPCByID(npcID);
+		return snpc;
 	}
 	
 	public SimpleNPC getSimpleNPCByID(String id){
