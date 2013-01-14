@@ -7,7 +7,11 @@ public class Reputation implements Serializable {
 
 	private static final long serialVersionUID = -554972234451350229L;
 	
-	public static HashMap<String, Reputation> playerRep = new HashMap<String, Reputation>();
+	static HashMap<String, Reputation> playerRep = new HashMap<String, Reputation>();
+	
+	public static Reputation getPlayerReputation(String playerName){
+		return playerRep.get(playerName);
+	}
 	
 	final String playerName;
 	

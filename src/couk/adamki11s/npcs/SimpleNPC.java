@@ -29,7 +29,9 @@ public class SimpleNPC {
 	final ChatColor nameColour;
 	final Location rootLocation;
 	final boolean moveable, attackable, aggressive;
-	final int minPauseTicks, maxPauseTicks, maxVariation, respawnTicks;
+	final int minPauseTicks, maxPauseTicks, maxVariation, respawnTicks, maxHealth;
+
+	int waitedSpawnTicks = 0;
 
 	RandomMovement randMovement;
 
@@ -52,7 +54,7 @@ public class SimpleNPC {
 		this.minPauseTicks = minPauseTicks;
 		this.maxPauseTicks = maxPauseTicks;
 		this.maxVariation = maxVariation;
-		this.health = health;
+		this.maxHealth = health;
 		this.respawnTicks = respawnTicks;
 		this.handle = handle;
 
@@ -86,8 +88,8 @@ public class SimpleNPC {
 		// fighting
 		health -= damage;
 		if (health <= 0) {
-			p.sendMessage("You killed NPC '" + this.getName() + "'.");
-			this.destroyNPCObject();
+			p.sendMessage("You killed NPC '" + this.getName() + "'. NPC will respawn in " + this.respawnTicks / 20 + " seconds.");
+			this.despawnNPC();
 		}
 	}
 
@@ -100,10 +102,19 @@ public class SimpleNPC {
 	public HumanNPC getHumanNPC() {
 		return this.npc;
 	}
-	
-	public void interact(Player p){
-		//send message, random message
-		//support loading of messages and dialogue sets
+
+	public void updateWaitedSpawnTicks(int ticks) {
+		if (!this.isNPCSpawned()) {
+			this.waitedSpawnTicks += ticks;
+			if (this.waitedSpawnTicks >= this.respawnTicks) {
+				this.spawnNPC();
+			}
+		}
+	}
+
+	public void interact(Player p) {
+		// send message, random message
+		// support loading of messages and dialogue sets
 		p.sendMessage("Hello, the interact functionality has not been completed yet!");
 	}
 
@@ -113,6 +124,8 @@ public class SimpleNPC {
 
 	public void spawnNPC() {
 		if (!isSpawned) {
+			this.health = this.maxHealth;
+			System.out.println("Spawning NPC " + this.getName());
 			this.npc = (HumanNPC) this.handle.getNPCManager().spawnHumanNPC(this.name, this.rootLocation);
 			isSpawned = true;
 			if (moveable) {
@@ -131,6 +144,7 @@ public class SimpleNPC {
 
 	public void despawnNPC() {
 		if (isSpawned) {
+			this.isSpawned = false;
 			this.handle.getNPCManager().despawnHumanByName(this.name);
 			this.randMovement = null;
 		}
@@ -143,7 +157,9 @@ public class SimpleNPC {
 	}
 
 	public void moveTick() {
-		this.randMovement.move();
+		if (this.isNPCSpawned()) {
+			this.randMovement.move();
+		}
 	}
 
 	public void moveTo(Location l) {

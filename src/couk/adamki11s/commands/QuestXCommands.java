@@ -41,7 +41,7 @@ public class QuestXCommands implements CommandExecutor {
 				if (args.length == 2 && args[0].equalsIgnoreCase("stressspawn")) {
 					int max = Integer.parseInt(args[1]);
 					for (int i = 0; i < max; i++) {
-						SimpleNPC snpc = new SimpleNPC(this.handle, ("a" + i), ChatColor.BLUE, p.getLocation(), true, true, false, 60, 200, 50, 100, 3600);
+						SimpleNPC snpc = new SimpleNPC(this.handle, ("a" + i), ChatColor.BLUE, p.getLocation(), true, true, false, 60, 200, 50, 100, 200);
 						snpc.spawnNPC();
 						// p.sendMessage("NPC Spawned!");
 					}
@@ -54,7 +54,7 @@ public class QuestXCommands implements CommandExecutor {
 						p.sendMessage(ChatColor.RED + "Name is not unique!");
 						return true;
 					} else {
-						SimpleNPC snpc = new SimpleNPC(this.handle, npcName, ChatColor.BLUE, p.getLocation(), true, true, false, 60, 200, 8, 100, 3600);
+						SimpleNPC snpc = new SimpleNPC(this.handle, npcName, ChatColor.BLUE, p.getLocation(), true, true, false, 60, 200, 8, 100, 200);
 						snpc.spawnNPC();
 						p.sendMessage("NPC Spawned!");
 						return true;
