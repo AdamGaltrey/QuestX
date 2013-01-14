@@ -11,6 +11,8 @@ public class Reputation implements Serializable {
 	
 	final String playerName;
 	
+	protected RepLevel repLevel = RepLevel.NEUTRAL;
+	
 	protected int rep = 0;
 	
 	protected final int repSpread = 1000;
@@ -19,14 +21,22 @@ public class Reputation implements Serializable {
 		this.playerName = playerName;
 	}
 	
+	public Reputation(String playerName, int currentRep){
+		this.playerName = playerName;
+		this.rep = currentRep;
+		this.repLevel = RepLevel.getRepLevel(this.rep);
+	}
+	
 	public void addRep(int rep){
 		this.rep += rep;
 		this.sanityCheck();
+		this.repLevel = RepLevel.getRepLevel(this.rep);
 	}
 	
 	public void subtractRep(int rep){
 		this.rep -= rep;
 		this.sanityCheck();
+		this.repLevel = RepLevel.getRepLevel(this.rep);
 	}
 	
 	void sanityCheck(){

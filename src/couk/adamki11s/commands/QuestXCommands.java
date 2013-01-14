@@ -10,6 +10,7 @@ import org.bukkit.inventory.ItemStack;
 
 import com.topcat.npclib.entity.HumanNPC;
 import couk.adamki11s.ai.RandomMovement;
+import couk.adamki11s.npcs.BanditNPC;
 import couk.adamki11s.npcs.NPCHandler;
 import couk.adamki11s.npcs.SimpleNPC;
 import couk.adamki11s.npcs.UniqueNameRegister;
