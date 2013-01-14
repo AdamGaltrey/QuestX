@@ -22,6 +22,7 @@ import com.topcat.npclib.entity.NPC;
 //import net.minecraft.server.EntityLiving;
 
 import couk.adamki11s.ai.RandomMovement;
+import couk.adamki11s.data.ItemStackDrop;
 
 public class SimpleNPC {
 
@@ -30,6 +31,7 @@ public class SimpleNPC {
 	final Location rootLocation;
 	final boolean moveable, attackable, aggressive;
 	final int minPauseTicks, maxPauseTicks, maxVariation, respawnTicks, maxHealth;
+	final ItemStackDrop inventory;
 
 	int waitedSpawnTicks = 0;
 
@@ -43,7 +45,7 @@ public class SimpleNPC {
 	int health;
 
 	public SimpleNPC(NPCHandler handle, String name, ChatColor nameColour, Location rootLocation, boolean moveable, boolean attackable, boolean aggressive, int minPauseTicks,
-			int maxPauseTicks, int maxVariation, int health, int respawnTicks) {
+			int maxPauseTicks, int maxVariation, int health, int respawnTicks, ItemStackDrop inventory) {
 		UniqueNameRegister.addNPCName(name);
 		this.name = name;
 		this.nameColour = nameColour;
@@ -57,6 +59,7 @@ public class SimpleNPC {
 		this.maxHealth = health;
 		this.respawnTicks = respawnTicks;
 		this.handle = handle;
+		this.inventory = inventory;
 
 		handle.registerNPC(this);
 	}
@@ -89,6 +92,9 @@ public class SimpleNPC {
 		health -= damage;
 		if (health <= 0) {
 			p.sendMessage("You killed NPC '" + this.getName() + "'. NPC will respawn in " + this.respawnTicks / 20 + " seconds.");
+			for(ItemStack i : this.inventory.getDrops()){
+				p.getWorld().dropItemNaturally(this.npc.getBukkitEntity().getLocation(), i);
+			}
 			this.despawnNPC();
 		}
 	}
@@ -125,6 +131,7 @@ public class SimpleNPC {
 	public void spawnNPC() {
 		if (!isSpawned) {
 			this.health = this.maxHealth;
+			this.waitedSpawnTicks = 0;
 			System.out.println("Spawning NPC " + this.getName());
 			this.npc = (HumanNPC) this.handle.getNPCManager().spawnHumanNPC(this.name, this.rootLocation);
 			isSpawned = true;
