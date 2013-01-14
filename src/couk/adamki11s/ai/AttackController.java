@@ -34,7 +34,7 @@ public class AttackController {
 		// if(p is inside npc area) then attack
 
 		Location loc = p.getLocation();
-		int var = npc.getMaxVariation();
+		int var = npc.getMaxVariation() + ((int)npc.getMaxVariation() / 4); //Adds 1/4th to the attack radius
 		Location root = npc.getRootLocation();
 		Location bl = new Location(loc.getWorld(), root.getBlockX() - var, root.getBlockY() - var, root.getBlockZ() - var), tr = new Location(loc.getWorld(), root.getBlockX()
 				+ var, root.getBlockY() + var, root.getBlockZ() + var);
