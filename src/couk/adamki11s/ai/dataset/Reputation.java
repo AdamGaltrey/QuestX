@@ -13,7 +13,7 @@ public class Reputation implements Serializable {
 	
 	protected int rep = 0;
 	
-	protected final int repSpread;
+	protected final int repSpread = 1000;
 	
 	public Reputation(String playerName){
 		this.playerName = playerName;
