@@ -37,5 +37,14 @@ public class NPCHandler {
 	public HumanNPC getNPCByName(String name){
 		return (HumanNPC) this.npc.getHumanNPCByName(name);
 	}
+	
+	public SimpleNPC getSimpleNPCByID(String id){
+		for(SimpleNPC snpc : this.npcList){
+			if(snpc.doesNPCIDMatch(id)){
+				return snpc;
+			}
+		}
+		return null;
+	}
 
 }
