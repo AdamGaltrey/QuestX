@@ -63,18 +63,6 @@ public class QuestXCommands implements CommandExecutor {
 						return true;
 					}
 
-					/*
-					 * test = (HumanNPC)
-					 * handle.getNPCManager().spawnHumanNPC(args[1],
-					 * p.getLocation()); rm = new RandomMovement(test,
-					 * test.getBukkitEntity().getLocation(), 200,500, 10);//min
-					 * wait between moving = 10secs, max = 25 secs, moves max of
-					 * 10 blocks from root
-					 * Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask
-					 * (QuestX.p, new Runnable(){ public void run(){ rm.move();
-					 * } }, 0, 20);
-					 */
-
 				}
 			}
 		}
