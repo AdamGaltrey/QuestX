@@ -89,6 +89,11 @@ public class SimpleNPC {
 	public Player getAggressor(){
 		return this.aggressor;
 	}
+	
+	public void unAggro(){
+		this.aggressor = null;
+		this.underAttack = false;
+	}
 
 	public void damageNPC(Player p, int damage) {
 		// set under attack and change AI
