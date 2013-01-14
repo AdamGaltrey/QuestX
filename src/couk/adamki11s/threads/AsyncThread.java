@@ -1,6 +1,6 @@
 package couk.adamki11s.threads;
 
-import couk.adamki11s.npcs.MovementController;
+import couk.adamki11s.ai.MovementController;
 import couk.adamki11s.npcs.NPCHandler;
 
 public class AsyncThread implements Runnable {

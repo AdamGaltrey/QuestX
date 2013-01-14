@@ -1,0 +1,34 @@
+package couk.adamki11s.ai;
+
+import java.util.HashMap;
+
+import org.bukkit.entity.Player;
+
+import com.topcat.npclib.entity.HumanNPC;
+
+import couk.adamki11s.npcs.NPCHandler;
+import couk.adamki11s.npcs.SimpleNPC;
+
+public class AttackController {
+
+	HashMap<HumanNPC, Player> target = new HashMap<HumanNPC, Player>();
+
+	final NPCHandler handle;
+
+	public AttackController(NPCHandler handle) {
+		this.handle = handle;
+	}
+
+	public synchronized void run() {
+		for(SimpleNPC npc : handle.getNPCs()){
+			if(npc.isUnderAttack()){
+				
+			}
+		}
+	}
+	
+	synchronized void decideNPCResponse(Player p, SimpleNPC npc){
+		
+	}
+
+}

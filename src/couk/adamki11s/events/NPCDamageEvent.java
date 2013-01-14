@@ -28,10 +28,13 @@ public class NPCDamageEvent implements Listener{
 			Player damager = (Player) evt.getDamager();
 			String npcID = handle.getNPCManager().getNPCIdFromEntity(evt.getEntity());
 			SimpleNPC attacked = handle.getSimpleNPCByID(npcID);
-			if(attacked != null){
+			if(attacked != null && attacked.isAttackable()){
 				damager.sendMessage("You did " + evt.getDamage() + " damage to NPC " + attacked.getName());
 				attacked.getHumanNPC().actAsHurt();
 				attacked.damageNPC(damager, evt.getDamage());
+			} else {
+				damager.sendMessage(attacked.getName() + " can not be harmed.");
+				evt.setCancelled(true);
 			}
 		}
 	}

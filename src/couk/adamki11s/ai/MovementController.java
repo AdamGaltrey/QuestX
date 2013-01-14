@@ -1,4 +1,7 @@
-package couk.adamki11s.npcs;
+package couk.adamki11s.ai;
+
+import couk.adamki11s.npcs.NPCHandler;
+import couk.adamki11s.npcs.SimpleNPC;
 
 public class MovementController {
 	
@@ -10,7 +13,7 @@ public class MovementController {
 	
 	public synchronized void run(){
 		for(SimpleNPC npc : handle.getNPCs()){
-			if(npc.isMoveable() && npc.isSpawned){
+			if(npc.isMoveable() && npc.isNPCSpawned() && !npc.isUnderAttack()){
 				npc.moveTick();
 			}
 		}

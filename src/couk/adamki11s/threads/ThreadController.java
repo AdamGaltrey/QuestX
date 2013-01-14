@@ -3,7 +3,7 @@ package couk.adamki11s.threads;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
 
-import couk.adamki11s.npcs.MovementController;
+import couk.adamki11s.ai.MovementController;
 import couk.adamki11s.npcs.NPCHandler;
 import couk.adamki11s.questx.QuestX;
 

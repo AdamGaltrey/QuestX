@@ -36,7 +36,7 @@ public class SimpleNPC {
 	final NPCHandler handle;
 
 	HumanNPC npc;
-	boolean isSpawned = false;
+	boolean isSpawned = false, underAttack = false;
 
 	int health;
 
@@ -82,6 +82,7 @@ public class SimpleNPC {
 	public void damageNPC(Player p, int damage){
 		//set under attack and change AI
 		//+ drop loot on death
+		//AI state = run/fight depending on character and on player he is fighting
 		health -= damage;
 		if(health <= 0){
 			p.sendMessage("You killed NPC '" + this.getName() + "'.");
@@ -116,6 +117,10 @@ public class SimpleNPC {
 
 	public boolean isNPCSpawned() {
 		return this.isSpawned;
+	}
+	
+	public boolean isUnderAttack(){
+		return this.underAttack;
 	}
 
 	public void despawnNPC() {
