@@ -43,6 +43,10 @@ public class Reputation implements Serializable {
 		this.repLevel = RepLevel.getRepLevel(this.rep);
 	}
 	
+	public int getRep(){
+		return this.rep;
+	}
+	
 	void sanityCheck(){
 		if(this.rep < -repSpread){
 			this.rep = -repSpread;

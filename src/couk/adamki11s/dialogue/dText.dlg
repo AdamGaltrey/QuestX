@@ -1,0 +1,13 @@
+//Global Variables %pname%, %npcname%
+
+
+0:SAY:{"Hello There"[a],"Who are you?"[end],"Bye!"[end]}
+
+0:REPLY_FRIENDLY:{"Oh, hello %pname%. What can I do for you?","I'm %npcname%, and i'm a farmer.","Good bye!"}
+0:REPLY_BANDIT:{"Oh, hello %pname%. What can I do for you?","I'm %npcname%, and i'm a farmer.","Good bye!"}
+
+01:SAY:{"Where is the nearest town?"[end], "Is this area safe?"[end]}
+
+011:REPLY:{"Just about 100m north"}
+012:REPLY:
+
