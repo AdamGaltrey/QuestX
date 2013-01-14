@@ -14,30 +14,40 @@ import org.kitteh.tag.PlayerReceiveNameTagEvent;
 
 public class NameTagEvent implements Listener {
 
+	boolean tagAPI = false;
+
+	static HashMap<String, ChatColor> nameColour = new HashMap<String, ChatColor>();
+
 	public NameTagEvent(Plugin main) {
-		Bukkit.getServer().getPluginManager().registerEvents(this, main);
+		if (Bukkit.getServer().getPluginManager().isPluginEnabled("TagAPI")) {
+			Bukkit.getServer().getPluginManager().registerEvents(this, main);
+			tagAPI = true;
+		} else
+			tagAPI = false;
 	}
-	
-	public static void setBandit(String name){
+
+	public boolean canUseTagAPI() {
+		return this.tagAPI;
+	}
+
+	public static void setBandit(String name) {
 		nameColour.put(name, ChatColor.RED);
 	}
-	
-	public static void setNeutral(String name){
-		if(nameColour.containsKey(name)){
+
+	public static void setNeutral(String name) {
+		if (nameColour.containsKey(name)) {
 			nameColour.remove(name);
 		}
 	}
-	
-	public void setLawman(String name){
+
+	public void setLawman(String name) {
 		nameColour.put(name, ChatColor.GREEN);
 	}
-	
-	static HashMap<String, ChatColor> nameColour = new HashMap<String, ChatColor>();
 
 	@EventHandler
 	public void onNameTag(PlayerReceiveNameTagEvent evt) {
-		for(Map.Entry<String, ChatColor> entry : nameColour.entrySet()){
-			if(evt.getPlayer().getName().equalsIgnoreCase(entry.getKey())){
+		for (Map.Entry<String, ChatColor> entry : nameColour.entrySet()) {
+			if (evt.getPlayer().getName().equalsIgnoreCase(entry.getKey())) {
 				evt.setTag(entry.getValue() + entry.getKey());
 			}
 		}
