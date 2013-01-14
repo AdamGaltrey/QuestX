@@ -101,10 +101,10 @@ public class SimpleNPC {
 		return this.npc;
 	}
 	
-	public String interact(Player p){
+	public void interact(Player p){
 		//send message, random message
 		//support loading of messages and dialogue sets
-		return "Hello, the interact functionality has not been completed yet!";
+		p.sendMessage("Hello, the interact functionality has not been completed yet!");
 	}
 
 	public boolean doesNPCIDMatch(String id) {
