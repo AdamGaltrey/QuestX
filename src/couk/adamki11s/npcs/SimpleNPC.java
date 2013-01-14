@@ -3,7 +3,7 @@ package couk.adamki11s.npcs;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 
-import com.topcat.npclib.entity.NPC;
+import com.topcat.npclib.entity.HumanNPC;
 
 public class SimpleNPC {
 
@@ -15,7 +15,7 @@ public class SimpleNPC {
 
 	final NPCHandler handle;
 
-	NPC npc;
+	HumanNPC npc;
 	boolean isSpawned = false;
 
 	int health;
@@ -39,7 +39,7 @@ public class SimpleNPC {
 
 	public void spawnNPC() {
 		if (!isSpawned) {
-			this.npc = this.handle.getNPCManager().spawnHumanNPC(this.name, this.rootLocation);
+			this.npc = (HumanNPC) this.handle.getNPCManager().spawnHumanNPC(this.name, this.rootLocation);
 			isSpawned = true;
 		}
 	}
@@ -52,6 +52,14 @@ public class SimpleNPC {
 
 	public void destroyNPCObject() {
 		UniqueNameRegister.removeName(name);
+	}
+	
+	public void moveTo(Location l){
+		this.npc.walkTo(l);
+	}
+	
+	public void lookAt(Location l){
+		this.npc.lookAtPoint(l);
 	}
 
 	public int getRespawnTicks() {

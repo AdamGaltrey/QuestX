@@ -3,6 +3,8 @@ package couk.adamki11s.npcs;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.topcat.npclib.NPCManager;
+import com.topcat.npclib.entity.HumanNPC;
+import com.topcat.npclib.entity.NPC;
 
 public class NPCHandler {
 	
@@ -14,6 +16,10 @@ public class NPCHandler {
 	
 	public NPCManager getNPCManager(){
 		return this.npc;
+	}
+	
+	public HumanNPC getNPCByName(String name){
+		return (HumanNPC) this.npc.getHumanNPCByName(name);
 	}
 
 }
