@@ -1,5 +1,7 @@
 package couk.adamki11s.npcs;
 
+import java.util.HashSet;
+
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.topcat.npclib.NPCManager;
@@ -9,6 +11,20 @@ import com.topcat.npclib.entity.NPC;
 public class NPCHandler {
 	
 	final NPCManager npc;
+	
+	HashSet<SimpleNPC> npcList = new HashSet<SimpleNPC>();
+	
+	public void registerNPC(SimpleNPC npc){
+		this.npcList.add(npc);
+	}
+	
+	public void removeNPC(SimpleNPC npc){
+		this.npcList.remove(npc);
+	}
+	
+	public HashSet<SimpleNPC> getNPCs(){
+		return this.npcList;
+	}
 	
 	public NPCHandler(JavaPlugin main){
 		npc = new NPCManager(main);

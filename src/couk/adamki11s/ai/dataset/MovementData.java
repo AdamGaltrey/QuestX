@@ -32,9 +32,9 @@ public class MovementData {
 		World w = this.rootPoint.getWorld();
 
 		do {
-			dx = r.nextInt(20) - 10;
-			dy = r.nextInt(20) - 10;
-			dz = r.nextInt(20) - 10;
+			dx = r.nextInt(maxVariation * 2) - maxVariation;
+			dy = r.nextInt(maxVariation * 2) - maxVariation;
+			dz = r.nextInt(maxVariation * 2) - maxVariation;
 		} while (!canMoveHere(w, dx, dy, dz, rx, ry, rz));
 		
 		this.endPoint = new Location(w, (rx + dx), (ry + dy) - 1, (rz + dz));

@@ -5,6 +5,8 @@ import org.bukkit.Location;
 
 import com.topcat.npclib.entity.HumanNPC;
 
+import couk.adamki11s.ai.RandomMovement;
+
 public class SimpleNPC {
 
 	final String name;
@@ -12,6 +14,8 @@ public class SimpleNPC {
 	final Location rootLocation;
 	final boolean moveable, attackable, aggressive;
 	final int minPauseTicks, maxPauseTicks, maxVariation, respawnTicks;
+	
+	RandomMovement randMovement;
 
 	final NPCHandler handle;
 
@@ -26,7 +30,7 @@ public class SimpleNPC {
 		this.name = name;
 		this.nameColour = nameColour;
 		this.rootLocation = rootLocation;
-		this.moveable = moveable;
+		this.moveable = moveable;	
 		this.attackable = attackable;
 		this.aggressive = aggressive;
 		this.minPauseTicks = minPauseTicks;
@@ -35,23 +39,39 @@ public class SimpleNPC {
 		this.health = health;
 		this.respawnTicks = respawnTicks;
 		this.handle = handle;
+		
+		
+		handle.registerNPC(this);
 	}
 
 	public void spawnNPC() {
 		if (!isSpawned) {
 			this.npc = (HumanNPC) this.handle.getNPCManager().spawnHumanNPC(this.name, this.rootLocation);
 			isSpawned = true;
+			if(moveable){
+				this.randMovement = new RandomMovement(this.npc, this.rootLocation, this.minPauseTicks, this.maxPauseTicks, this.maxVariation);
+			}
 		}
+	}
+	
+	public boolean isNPCSpawned(){
+		return this.isSpawned;
 	}
 
 	public void despawnNPC() {
 		if (isSpawned) {
 			this.handle.getNPCManager().despawnHumanByName(this.name);
+			this.randMovement = null;
 		}
 	}
 
 	public void destroyNPCObject() {
 		UniqueNameRegister.removeName(name);
+		this.handle.removeNPC(this);
+	}
+	
+	public void moveTick(){
+		this.randMovement.move();
 	}
 	
 	public void moveTo(Location l){
