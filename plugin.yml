@@ -1,0 +1,8 @@
+name: QuestX
+main: couk.adamki11s.questx.QuestX
+version: 1.0.0
+author: Adamki11s
+commands:
+  questx:
+    description: QuestX
+    usage: /QuestX [args]
