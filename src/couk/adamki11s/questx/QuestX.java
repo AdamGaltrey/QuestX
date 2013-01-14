@@ -26,8 +26,7 @@ public class QuestX extends JavaPlugin {
 		handle = new NPCHandler(this);
 		p = this;
 		this.getCommand("QuestX").setExecutor(new QuestXCommands(this));
-		//Toggleable
-		Updater updater = new Updater(this, "bukkitdev_slug", this.getFile(), Updater.UpdateType.DEFAULT, false);//Final boolean = show dl progress
+		//Updater updater = new Updater(this, "bukkitdev_slug", this.getFile(), Updater.UpdateType.DEFAULT, false);//Final boolean = show dl progress
 	}
 
 	@Override

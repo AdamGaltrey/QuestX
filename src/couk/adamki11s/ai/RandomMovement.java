@@ -3,8 +3,6 @@ package couk.adamki11s.ai;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import com.topcat.npclib.entity.HumanNPC;
-import com.topcat.npclib.pathing.PathReturn;
-
 import couk.adamki11s.ai.dataset.MovementData;
 import couk.adamki11s.questx.QuestX;
 
@@ -25,20 +23,12 @@ public class RandomMovement {
 		this.maxPauseTicks = maxPauseTicks;
 		this.minPauseTicks = minPauseTicks;
 		this.maxVariation = maxVariation;
-		
-		//this.generateNewMovement();
-		md.generate();
-		this.targetPoint = md.getEndPoint();
-		this.pauseTicks = md.getPauseTicks();
-		npc.walkTo(this.targetPoint);
-		//----
+		this.generateNewMovement();
 	}
 	
 	public synchronized void move(){
 		this.currentPoint = this.npc.getBukkitEntity().getLocation();
-		System.out.println("Distance " + this.currentPoint.distance(this.targetPoint));
 		if(this.currentPoint.distance(this.targetPoint) == 0){
-			//run delay task for get next move
 			Bukkit.getServer().getScheduler().runTaskLater(QuestX.p, new Runnable(){
 				public void run(){
 					generateNewMovement();
