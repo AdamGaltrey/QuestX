@@ -63,28 +63,29 @@ public class SimpleNPC {
 		this.npc.getInventory().setBoots(item);
 		this.updateArmor(1, item);
 	}
-	
+
 	public void setLegs(ItemStack item) {
 		this.npc.getInventory().setLeggings(item);
 		this.updateArmor(2, item);
 	}
-	
+
 	public void setChestplate(ItemStack item) {
 		this.npc.getInventory().setChestplate(item);
 		this.updateArmor(3, item);
 	}
-	
+
 	public void setHelmet(ItemStack item) {
 		this.npc.getInventory().setHelmet(item);
 		this.updateArmor(4, item);
 	}
-	
-	public void damageNPC(Player p, int damage){
-		//set under attack and change AI
-		//+ drop loot on death
-		//AI state = run/fight depending on character and on player he is fighting
+
+	public void damageNPC(Player p, int damage) {
+		// set under attack and change AI
+		// + drop loot on death
+		// AI state = run/fight depending on character and on player he is
+		// fighting
 		health -= damage;
-		if(health <= 0){
+		if (health <= 0) {
 			p.sendMessage("You killed NPC '" + this.getName() + "'.");
 			this.destroyNPCObject();
 		}
@@ -118,8 +119,8 @@ public class SimpleNPC {
 	public boolean isNPCSpawned() {
 		return this.isSpawned;
 	}
-	
-	public boolean isUnderAttack(){
+
+	public boolean isUnderAttack() {
 		return this.underAttack;
 	}
 
