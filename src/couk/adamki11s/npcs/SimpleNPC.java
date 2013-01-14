@@ -83,6 +83,12 @@ public class SimpleNPC {
 		this.npc.getInventory().setHelmet(item);
 		this.updateArmor(4, item);
 	}
+	
+	Player aggressor;
+	
+	public Player getAggressor(){
+		return this.aggressor;
+	}
 
 	public void damageNPC(Player p, int damage) {
 		// set under attack and change AI
@@ -90,6 +96,8 @@ public class SimpleNPC {
 		// AI state = run/fight depending on character and on player he is
 		// fighting
 		health -= damage;
+		this.aggressor = p;
+		this.underAttack = true;
 		if (health <= 0) {
 			p.sendMessage("You killed NPC '" + this.getName() + "'. NPC will respawn in " + this.respawnTicks / 20 + " seconds.");
 			for(ItemStack i : this.inventory.getDrops()){

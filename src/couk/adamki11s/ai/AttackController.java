@@ -24,12 +24,24 @@ public class AttackController {
 	public synchronized void run() {
 		for(SimpleNPC npc : handle.getNPCs()){
 			if(npc.isUnderAttack()){
+				this.retalliate(npc.getAggressor(), npc);
 			}
 		}
 	}
 	
-	synchronized void decideNPCResponse(Player p, BanditNPC npc){
-		Reputation r = Reputation.getPlayerReputation(p.getName());
+	synchronized void retalliate(Player p, SimpleNPC npc){
+		//if(p is inside npc area) then attack
+		
+		npc.moveTo(p.getLocation());
+		npc.lookAt(p.getLocation());
+		if(npc.getHumanNPC().getBukkitEntity().getLocation().distance(p.getLocation()) < 2){
+			p.sendMessage("NPC HIT YOU");
+			npc.getHumanNPC().animateArmSwing();
+			p.damage(1);
+			System.out.println(p.getHealth());
+		}
+		
+		//else if aggressor has left area stop attacking
 	}
 
 }

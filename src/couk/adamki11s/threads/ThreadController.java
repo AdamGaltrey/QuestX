@@ -26,7 +26,7 @@ public class ThreadController {
 	
 	public void initiateSyncronousThread(long tickRate){
 		syncToggle = true;
-		syncID = Bukkit.getServer().getScheduler().runTaskTimer(QuestX.p, new SyncThread(this.handle), 0L, tickRate);
+		syncID = Bukkit.getServer().getScheduler().runTaskTimer(QuestX.p, new SyncThread(this.handle, (int) tickRate), 0L, tickRate);
 	}
 	
 	public void terminateAsyncThread(){

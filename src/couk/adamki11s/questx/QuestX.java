@@ -34,7 +34,7 @@ public class QuestX extends JavaPlugin {
 		p = this;
 		this.getCommand("QuestX").setExecutor(new QuestXCommands(this));
 		this.tControl = new ThreadController(handle);
-		this.tControl.initiateAsyncThread(20L);
+		this.tControl.initiateAsyncThread(10L);
 		
 		//register events
 		
