@@ -1,12 +1,14 @@
 package couk.adamki11s.dialogue;
 
-public class DialogueSet {
+public class DialogueSet{
 	
 	final DialogueItem[] items;
 	final String dialogueID;
+	final DialogueResponse response;
 	
-	public DialogueSet(DialogueItem[] items, String dialogueID){
+	public DialogueSet(DialogueItem[] items, DialogueResponse response, String dialogueID){
 		this.items = items;
+		this.response = response;
 		this.dialogueID = dialogueID;
 	}
 	

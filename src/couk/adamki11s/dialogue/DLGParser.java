@@ -4,25 +4,36 @@ import java.io.File;
 import java.util.ArrayList;
 
 import couk.adamki11s.ai.dataset.GenericRepLevel;
+import couk.adamki11s.dialogue.triggers.EndTrigger;
+import couk.adamki11s.dialogue.triggers.NoTrigger;
+import couk.adamki11s.dialogue.triggers.QuestTrigger;
+import couk.adamki11s.dialogue.triggers.TaskTrigger;
 import couk.adamki11s.dialogue.triggers.Trigger;
 import couk.adamki11s.dialogue.triggers.TriggerType;
+import couk.adamki11s.io.FileLocator;
 import couk.adamki11s.io.SyncWriter;
 
 public class DLGParser {
 
-	final File f;
+	final File dlgFile;
 	final SyncWriter io;
 
-	public DLGParser(File f) {
-		this.f = f;
-		this.io = new SyncWriter(f);
+	Conversation c;
+
+	public DLGParser(Conversation c, File dlgFile) {
+		this.c = c;
+		this.dlgFile = dlgFile;
+		this.io = new SyncWriter(dlgFile);
 	}
 
-	public Conversation parse() {
+	public synchronized DialogueSet[] parse() {
 		io.read();
 		ArrayList<String> lines = io.getReadableContents();
+		ArrayList<DialogueSet> ds = new ArrayList<DialogueSet>();
 		// Load all single dialogue items first then we can add replys
+		int nodes = 0;
 		for (String line : lines) {
+			nodes++;
 			int firstHashIndex = line.indexOf("#");
 			int secondHashIndex = line.indexOf("#", firstHashIndex);
 			String responseType = (line.substring(firstHashIndex, secondHashIndex));
@@ -44,30 +55,83 @@ public class DLGParser {
 				
 				GenericRepLevel[] gRepLevels = new GenericRepLevel[options];
 				TriggerType[] triggerTypes = new TriggerType[options];
-				SingleDialogueItem[] dialogues = new SingleDialogueItem[options];
+				Trigger[] realTriggers = new Trigger[options];
 				
 				for(int i = 1; i <= options; i++){
 					gRepLevels[i - 1] = GenericRepLevel.parseRepLevel(gTagIds[i - 1]);
 					triggerTypes[i - 1] = TriggerType.parseTriggerType(trigIds[i - 1]);
-					dialogues[i - 1] = new SingleDialogueItem(speechOptions[i - 1], gRepLevels[i - 1], triggerTypes[i - 1]);
+					//dialogues[i - 1] = new SingleDialogueItem(speechOptions[i - 1], gRepLevels[i - 1], triggerTypes[i - 1]);
+				}
+				
+				for(int i = 1; i <= options; i++){
+					TriggerType tt = triggerTypes[i - 1];
+					if(tt == TriggerType.NONE){
+						realTriggers[i - 1] = new NoTrigger(tt);
+					} else if(tt == TriggerType.END){
+						realTriggers[i - 1] = new EndTrigger(tt);
+					} else if(tt == TriggerType.TASK){
+						realTriggers[i - 1] = new TaskTrigger(tt, FileLocator.getNPCTriggerFile(c.getConvoData().getNpc().getName()));
+					} else {
+						realTriggers[i - 1] = new QuestTrigger(tt, FileLocator.getNPCTriggerFile(c.getConvoData().getNpc().getName()));
+					}
 				}
 				
 				
+				
+				//SingleDialogueItem[] dialogues = new SingleDialogueItem[options];
+				
+				/*
+				 * Load in DialogueResponse for this dialogue
+				 */
+				
+				
+				
+				DialogueResponse dlgResponse = null;
+				
+				for(String dResp : lines){
+					//public DialogueResponse(String[] responses, GenericRepLevel[] repRequired, Trigger[] triggers) {
+					if(dResp.startsWith(nodeID + "#reply")){
+						//01#reply#1#"The World of Minecraft"#a#n
+						String[] resp_parts = dResp.split("#");
+						int resp_options = Integer.parseInt(resp_parts[2]);
+						String[] resp_speechOptions = new String[resp_options];
+						
+						for(int i = 1; i <= resp_options; i++){
+							resp_speechOptions[i - 1] = resp_parts[2 + i];
+						}
+						
+						dlgResponse = new DialogueResponse(resp_speechOptions);
+						
+						break;
+						
+					} else {
+						continue;
+					}
+				}
+				
+				DialogueItem[] dialogueItems = new DialogueItem[options];
+				
+				for(int i = 1; i <= options; i++){
+					dialogueItems[i - 1] = new DialogueItem(speechOptions[i - 1],gRepLevels[i - 1], realTriggers[i - 1]);
+				}
+				
+				DialogueSet dSet = new DialogueSet(dialogueItems, dlgResponse, nodeID);
+				ds.add(dSet);
+				
 			}
 		}
-		return null;
+		DialogueSet[] dSetArray = new DialogueSet[nodes];
+		return ds.toArray(dSetArray);
 	}
-
 	/*
 	 * 
 	 * FORMAT ------
 	 * DialogueSet_ID#DialogueAction#OptionsNumber#"speech1"#"speech2"
 	 * #"speech3"#GTAG1#GTAG2#GTAG3#TRIG1#TRIG2#TRIG3
 	 * 
-	 * DialogueAction : say,
-	 * reply Speech : String of text Generic Tag : e[evil], b[bad], o[ordinary],
-	 * g[good], h[hero], a[any] Trigger Tag : n[none], q[quest], t[task],
-	 * e[end_convo] ------
+	 * DialogueAction : say, reply Speech : String of text Generic Tag :
+	 * e[evil], b[bad], o[ordinary], g[good], h[hero], a[any] Trigger Tag :
+	 * n[none], q[quest], t[task], e[end_convo] ------
 	 */
 
 	/*
@@ -75,8 +139,8 @@ public class DLGParser {
 	 * 
 	 * 0#say#2#"Hello There."#"Bye!"#a,a#n,e
 	 * 
-	 * 0#reply#2#"Hi there %pname%, what can i do for you?","Clear out criminal"
-	 * #a,b#n,e
+	 * 0#reply#2#"Hi there %pname%, what can i do for you?","See you around"
+	 * 
 	 * 
 	 * 01#say#1#"Where am I?"#a#n
 	 * 

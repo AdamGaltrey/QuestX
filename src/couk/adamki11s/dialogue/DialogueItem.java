@@ -10,15 +10,13 @@ import couk.adamki11s.dialogue.triggers.Trigger;
 public class DialogueItem {
 
 	final String say;
-	final DialogueResponse response;
 	final GenericRepLevel requriedRep;
 	final Trigger trigger;
 	
 	//Implement triggers!
 
-	public DialogueItem(String say, DialogueResponse response, GenericRepLevel rep, Trigger trigger) {
+	public DialogueItem(String say, GenericRepLevel rep, Trigger trigger) {
 		this.say = say;
-		this.response = response;
 		this.requriedRep = rep;
 		this.trigger = trigger;
 	}
