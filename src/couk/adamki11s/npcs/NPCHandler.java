@@ -53,5 +53,14 @@ public class NPCHandler {
 		}
 		return null;
 	}
+	
+	public SimpleNPC getSimpleNPCByName(String name){
+		for(SimpleNPC simpNPC : this.npcList){
+			if(name.equalsIgnoreCase(simpNPC.getName())){
+				return simpNPC;
+			}
+		}
+		return null;
+	}
 
 }

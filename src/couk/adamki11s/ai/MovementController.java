@@ -13,7 +13,8 @@ public class MovementController {
 	
 	public synchronized void run(){
 		for(SimpleNPC npc : handle.getNPCs()){
-			if(npc.isMoveable() && npc.isNPCSpawned() && !npc.isUnderAttack()){
+			//System.out.println("Name : " + npc.getName() + " convState = " + npc.isConversing());
+			if(npc.isMoveable() && npc.isNPCSpawned() && !npc.isUnderAttack() && !npc.isConversing()){
 				npc.moveTick();
 			}
 		}

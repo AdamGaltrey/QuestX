@@ -23,6 +23,9 @@ import com.topcat.npclib.entity.NPC;
 
 import couk.adamki11s.ai.RandomMovement;
 import couk.adamki11s.data.ItemStackDrop;
+import couk.adamki11s.dialogue.Conversation;
+import couk.adamki11s.events.ConversationRegister;
+import couk.adamki11s.io.FileLocator;
 
 public class SimpleNPC {
 
@@ -36,6 +39,8 @@ public class SimpleNPC {
 	int waitedSpawnTicks = 0;
 
 	RandomMovement randMovement;
+
+	Conversation c;
 
 	final NPCHandler handle;
 
@@ -64,6 +69,42 @@ public class SimpleNPC {
 		handle.registerNPC(this);
 	}
 
+	public int getMaxHealth() {
+		return maxHealth;
+	}
+
+	public ItemStackDrop getInventory() {
+		return inventory;
+	}
+
+	public int getWaitedSpawnTicks() {
+		return waitedSpawnTicks;
+	}
+
+	public RandomMovement getRandMovement() {
+		return randMovement;
+	}
+
+	public NPCHandler getHandle() {
+		return handle;
+	}
+
+	public HumanNPC getNpc() {
+		return npc;
+	}
+
+	public boolean isSpawned() {
+		return isSpawned;
+	}
+
+	public boolean isConversing() {
+		if (this.c == null) {
+			return false;
+		} else {
+			return this.c.isConversing();
+		}
+	}
+
 	public void setBoots(ItemStack item) {
 		this.npc.getInventory().setBoots(item);
 		this.updateArmor(1, item);
@@ -83,14 +124,14 @@ public class SimpleNPC {
 		this.npc.getInventory().setHelmet(item);
 		this.updateArmor(4, item);
 	}
-	
+
 	Player aggressor;
-	
-	public Player getAggressor(){
+
+	public Player getAggressor() {
 		return this.aggressor;
 	}
-	
-	public void unAggro(){
+
+	public void unAggro() {
 		this.aggressor = null;
 		this.underAttack = false;
 	}
@@ -103,9 +144,12 @@ public class SimpleNPC {
 		health -= damage;
 		this.aggressor = p;
 		this.underAttack = true;
+		if(this.isConversing()){
+			ConversationRegister.endPlayerNPCConversation(c.getConvoData().getPlayer());
+		}
 		if (health <= 0) {
 			p.sendMessage("You killed NPC '" + this.getName() + "'. NPC will respawn in " + this.respawnTicks / 20 + " seconds.");
-			for(ItemStack i : this.inventory.getDrops()){
+			for (ItemStack i : this.inventory.getDrops()) {
 				p.getWorld().dropItemNaturally(this.npc.getBukkitEntity().getLocation(), i);
 			}
 			this.despawnNPC();
@@ -132,9 +176,16 @@ public class SimpleNPC {
 	}
 
 	public void interact(Player p) {
-		// send message, random message
-		// support loading of messages and dialogue sets
-		p.sendMessage("Hello, the interact functionality has not been completed yet!");
+		if (!this.isConversing() && !this.isUnderAttack()) {
+			if (!FileLocator.doesNPCDlgFileExist(this.getName())) {
+				p.sendMessage(ChatColor.AQUA + "[QuestX] " + ChatColor.RED + "No dialogue.dlg file found or it is empty!");
+			} else {
+				c = new Conversation(p, this);
+				c.loadConversation();
+				c.startConversation();
+				System.out.println("Conversing = " + this.isConversing());
+			}
+		}
 	}
 
 	public boolean doesNPCIDMatch(String id) {
@@ -143,7 +194,7 @@ public class SimpleNPC {
 
 	public void spawnNPC() {
 		if (!isSpawned) {
-			
+
 			this.health = this.maxHealth;
 			this.waitedSpawnTicks = 0;
 			System.out.println("Spawning NPC " + this.getName());
@@ -152,7 +203,7 @@ public class SimpleNPC {
 			this.setChestplate(new ItemStack(Material.DIAMOND_CHESTPLATE));
 			this.setLegs(new ItemStack(Material.DIAMOND_LEGGINGS));
 			if (moveable) {
-				this.randMovement = new RandomMovement(this.npc, this.rootLocation, this.minPauseTicks, this.maxPauseTicks, this.maxVariation);
+				this.randMovement = new RandomMovement(this, this.rootLocation, this.minPauseTicks, this.maxPauseTicks, this.maxVariation);
 			}
 		}
 	}
@@ -180,9 +231,7 @@ public class SimpleNPC {
 	}
 
 	public void moveTick() {
-		if (this.isNPCSpawned()) {
-			this.randMovement.move();
-		}
+		this.randMovement.move();
 	}
 
 	public void moveTo(Location l) {

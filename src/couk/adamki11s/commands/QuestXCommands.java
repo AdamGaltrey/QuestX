@@ -63,9 +63,7 @@ public class QuestXCommands implements CommandExecutor {
 					} else {
 						SimpleNPC snpc = new SimpleNPC(this.handle, npcName, ChatColor.BLUE, p.getLocation(), true, true, false, 60, 200, 10, 100, 200, new ItemStackDrop(new ItemStackProbability[]{new ItemStackProbability(new ItemStack(Material.GOLD_AXE, 1), 6000)}));
 						snpc.spawnNPC();
-						Conversation convo = new Conversation(p, snpc.getHumanNPC());
-						convo.loadConversation();
-						convo.startConversation();
+					
 						p.sendMessage("NPC Spawned!");
 						return true;
 					}
