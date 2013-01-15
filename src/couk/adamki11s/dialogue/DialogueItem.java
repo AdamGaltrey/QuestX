@@ -9,9 +9,9 @@ import couk.adamki11s.dialogue.triggers.Trigger;
 
 public class DialogueItem {
 
-	final String say;
-	final GenericRepLevel requriedRep;
-	final Trigger trigger;
+	private final String say;
+	private final GenericRepLevel requriedRep;
+	private final Trigger trigger;
 	
 	//Implement triggers!
 
@@ -21,8 +21,16 @@ public class DialogueItem {
 		this.trigger = trigger;
 	}
 
-	public String getString() {
-		return this.say;
+	public String getSay() {
+		return say;
+	}
+
+	public GenericRepLevel getRequriedRep() {
+		return requriedRep;
+	}
+
+	public Trigger getTrigger() {
+		return trigger;
 	}
 
 	public boolean doesPlayerHaveRequiredRepLevel(String pName) {
@@ -52,30 +60,5 @@ public class DialogueItem {
 		}
 		return false;
 	}
-
-	/*
-	 * 
-	 * FORMAT ------
-	 * DialogueSet_ID#DialogueAction#OptionsNumber#"speech1"#"speech2"
-	 * #"speech3"#GTAG1,GTAG2,GTAG3#TRIG1,TRIG2,TRIG3 DialogueAction : say,
-	 * reply Speech : String of text Generic Tag : e[evil], b[bad], o[ordinary],
-	 * g[good], h[hero], a[any] Trigger Tag : n[none], q[quest], t[task],
-	 * e[end_convo] ------
-	 */
-	
-	/*
-	 * 
-	 * 
-	 * 0#say#2#"Hello There."#"Bye!"#a,a#n,e
-	 * 
-	 * 0#reply#2#"Hi there %pname%, what can i do for you?","Clear out criminal"
-	 * #a,b#n,e
-	 * 
-	 * 01#say#1#"Where am I?"#a#n
-	 * 
-	 * 01#reply#1#"The World of Minecraft"#a#n
-	 * 
-	 * 011#say#2#"Ok, thanks"#"Goodbye friend"#a,a#e,e
-	 */
 
 }

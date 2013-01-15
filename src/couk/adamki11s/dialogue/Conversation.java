@@ -50,12 +50,12 @@ public class Conversation {
 
 	public void displaySpeechOptions() {
 		DialogueSet d = this.getDialogeSetFromNode(currentNode);
-		DialogueItem[] items = d.items;
+		DialogueItem[] items = d.getItems();
 		Player p = this.convoData.getPlayer();
 		int count = 1;
 		for (DialogueItem di : items) {
 			if (di.doesPlayerHaveRequiredRepLevel(p.getName())) {
-				p.sendMessage("[#" + count + "] " + di.getString());
+				p.sendMessage("[#" + count + "] " + di.getSay());
 			} else {
 				p.sendMessage("[#" + count + "] Unavailable");
 			}
@@ -65,13 +65,13 @@ public class Conversation {
 
 	public void selectSpeechOption(int index) {
 		DialogueSet d = this.getDialogeSetFromNode(currentNode);
-		DialogueItem[] items = d.items;
+		DialogueItem[] items = d.getItems();
 		DialogueItem selected = items[index - 1];
 		Player p = this.convoData.getPlayer();
 		if (selected.doesPlayerHaveRequiredRepLevel(p.getName())) {
-			Trigger selTrigger = selected.trigger;
+			Trigger selTrigger = selected.getTrigger();
 
-			DialogueResponse dr = d.response;
+			DialogueResponse dr = d.getResponse();
 			String response = dr.responses[index - 1];
 			p.sendMessage("[" + this.convoData.getNpc().getName() + "] " + response);
 			System.out.println("Current node = " + this.currentNode);
@@ -84,13 +84,13 @@ public class Conversation {
 				this.displaySpeechOptions();
 			}
 		} else {
-			p.sendMessage("You must have at least " + items[index - 1].requriedRep.getMinRep() + " reputation.");
+			p.sendMessage("You must have at least " + items[index - 1].getRequriedRep().getMinRep() + " reputation.");
 		}
 	}
 
 	DialogueSet getDialogeSetFromNode(String node) {
 		for (DialogueSet dSet : dialogue) {
-			if (dSet.dialogueID.equalsIgnoreCase(node)) {
+			if (dSet.getDialogueID().equalsIgnoreCase(node)) {
 				return dSet;
 			}
 		}
