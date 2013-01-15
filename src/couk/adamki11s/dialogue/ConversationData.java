@@ -4,12 +4,14 @@ import org.bukkit.entity.Player;
 
 import com.topcat.npclib.entity.HumanNPC;
 
+import couk.adamki11s.npcs.SimpleNPC;
+
 public class ConversationData {
 
 	Player p;
-	HumanNPC npc;
+	SimpleNPC npc;
 
-	public ConversationData(Player p, HumanNPC npc) {
+	public ConversationData(Player p, SimpleNPC npc) {
 		this.p = p;
 		this.npc = npc;
 	}
@@ -18,7 +20,7 @@ public class ConversationData {
 		return p;
 	}
 
-	public HumanNPC getNpc() {
+	public SimpleNPC getSimpleNpc() {
 		return npc;
 	}
 

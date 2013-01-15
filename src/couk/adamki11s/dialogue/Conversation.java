@@ -1,6 +1,10 @@
 package couk.adamki11s.dialogue;
 
+import java.io.File;
+
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import com.topcat.npclib.entity.HumanNPC;
 
@@ -8,6 +12,9 @@ import couk.adamki11s.dialogue.triggers.Trigger;
 import couk.adamki11s.dialogue.triggers.TriggerType;
 import couk.adamki11s.events.ConversationRegister;
 import couk.adamki11s.io.FileLocator;
+import couk.adamki11s.npcs.NPCHandler;
+import couk.adamki11s.npcs.SimpleNPC;
+import couk.adamki11s.questx.QuestX;
 
 public class Conversation {
 
@@ -15,6 +22,8 @@ public class Conversation {
 	DialogueSet[] dialogue;
 	String currentNode = "1";
 	boolean conversing = false, indexSelected = false;
+	
+	final NPCHandler handle = new NPCHandler((JavaPlugin) QuestX.p);
 
 	public void respond(String s) {
 		int i = 1;
@@ -26,14 +35,14 @@ public class Conversation {
 		}
 	}
 
-	public Conversation(Player p, HumanNPC npc) {
+	public Conversation(Player p, SimpleNPC npc) {
 		this.convoData = new ConversationData(p, npc);
 	}
 
 	public void loadConversation() {
 		// Find file
 		// Invoke DLG Parser
-		DLGParser parse = new DLGParser(this, FileLocator.getNPCDlgFile(this.convoData.getNpc().getName()));
+		DLGParser parse = new DLGParser(this, FileLocator.getNPCDlgFile(this.convoData.getSimpleNpc().getName()));
 		this.dialogue = parse.parse();
 	}
 
@@ -46,6 +55,10 @@ public class Conversation {
 	public void endConversation() {
 		this.conversing = false;
 		ConversationRegister.playersConversing.remove(this);
+	}
+	
+	public boolean isConversing(){
+		return this.conversing;
 	}
 
 	public void displaySpeechOptions() {
@@ -73,7 +86,7 @@ public class Conversation {
 
 			DialogueResponse dr = d.getResponse();
 			String response = dr.getResponses()[index - 1];
-			p.sendMessage("[" + this.convoData.getNpc().getName() + "] " + response);
+			p.sendMessage("[" + this.convoData.getSimpleNpc().getName() + "] " + response);
 			System.out.println("Current node = " + this.currentNode);
 			this.currentNode = this.currentNode + index;
 			System.out.println("Current node = " + this.currentNode);

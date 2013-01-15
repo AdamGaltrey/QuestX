@@ -19,6 +19,10 @@ public class FileLocator {
 		return new File(npc_data_root + File.separator + npcName + File.separator + dlgFile);
 	}
 	
+	public static boolean doesNPCDlgFileExist(String npcName){
+		return new File(npc_data_root + File.separator + npcName + File.separator + dlgFile).exists();
+	}
+	
 	public static File getNPCPropertiesFile(String npcName){
 		return new File(npc_data_root + File.separator + npcName + File.separator + propertyFile);
 	}
