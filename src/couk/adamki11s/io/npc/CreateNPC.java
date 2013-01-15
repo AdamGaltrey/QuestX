@@ -1,4 +1,4 @@
-package couk.adamki11s.io;
+package couk.adamki11s.io.npc;
 
 import java.io.File;
 import java.io.IOException;
@@ -7,6 +7,10 @@ import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
 
 import couk.adamki11s.data.ItemStackDrop;
+import couk.adamki11s.io.FileLocator;
+import couk.adamki11s.io.NPCTag;
+import couk.adamki11s.io.SyncConfiguration;
+import couk.adamki11s.io.SyncWriter;
 
 public class CreateNPC {
 
@@ -28,13 +32,13 @@ public class CreateNPC {
 	}
 	
 	
-	String inventDrops;
+	String inventDrops, gear;
 	boolean moveable, attackable, aggressive, load;
 	int minPauseTicks, maxPauseTicks, maxVariation, respawnTicks, maxHealth, damageMod;
 	double retalliationMultiplier;
 
 	public void setProperties(boolean moveable, boolean attackable, boolean aggressive, boolean load, int minPauseTicks, int maxPauseTicks, int maxVariation, int respawnTicks,
-			int maxHealth, int damageMod, double retalliationMultiplier, String inventDrops) {
+			int maxHealth, int damageMod, double retalliationMultiplier, String inventDrops, String gear) {
 		this.moveable = moveable;
 		this.attackable = attackable;
 		this.aggressive = aggressive;
@@ -47,6 +51,7 @@ public class CreateNPC {
 		this.damageMod = damageMod;
 		this.retalliationMultiplier = retalliationMultiplier;
 		this.inventDrops = inventDrops;
+		this.gear = gear;
 	}
 	
 	public void createNPCFiles(){
@@ -79,6 +84,7 @@ public class CreateNPC {
 		syncConfig.add(NPCTag.DAMAGE_MODIFIER.toString(), this.damageMod);
 		syncConfig.add(NPCTag.RETALLIATION_MULTIPLIER.toString(), this.retalliationMultiplier);
 		syncConfig.add(NPCTag.INVENTORY_DROPS.toString(), this.inventDrops);
+		syncConfig.add(NPCTag.GEAR.toString(), this.gear);
 		
 		syncConfig.write();
 		

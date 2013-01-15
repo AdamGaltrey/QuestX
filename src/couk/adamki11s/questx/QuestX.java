@@ -3,6 +3,7 @@ package couk.adamki11s.questx;
 import java.util.logging.Logger;
 
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -12,14 +13,14 @@ import couk.adamki11s.events.ConversationRegister;
 import couk.adamki11s.events.MovementMonitor;
 import couk.adamki11s.events.NPCDamageEvent;
 import couk.adamki11s.events.NPCInteractEvent;
-import couk.adamki11s.io.CreateNPC;
 import couk.adamki11s.io.InitialSetup;
+import couk.adamki11s.io.npc.CreateNPC;
 import couk.adamki11s.npcs.NPCHandler;
 import couk.adamki11s.threads.ThreadController;
 
 public class QuestX extends JavaPlugin {
 
-	Logger log = Logger.getLogger("QuestX");
+	static final Logger log = Logger.getLogger("QuestX");
 
 	NPCHandler handle;
 	ThreadController tControl;
@@ -30,6 +31,14 @@ public class QuestX extends JavaPlugin {
 	MovementMonitor playerMoveEvent;
 
 	public static Plugin p;
+		
+	public static final void logMSG(String msg){
+		log.info("[QuestX] " + msg);
+	}
+	
+	public static final void logChat(Player p, String message){
+		p.sendMessage(ChatColor.AQUA + "[QuestX] " + ChatColor.RESET + message);
+	}
 
 	public NPCHandler getNPCHandler() {
 		return this.handle;
@@ -64,8 +73,8 @@ public class QuestX extends JavaPlugin {
 			CreateNPC create = new CreateNPC(name, ChatColor.RED);
 
 			// Format id:data:quantity:chance(out of 10,000)/
-			String invDrops = "1:0:5:6000";
-			create.setProperties(true, true, false, true, (20 * 5), (20 * 20), 15, (20 * 30), 30, 2, 2, invDrops);
+			String invDrops = "1,0,5,6000#2,0,3,3000", gear = "0,0,0,0,0";
+			create.setProperties(true, true, false, true, (20 * 5), (20 * 20), 15, (20 * 30), 30, 2, 2, invDrops, gear);
 			create.createNPCFiles();
 
 		} else {
