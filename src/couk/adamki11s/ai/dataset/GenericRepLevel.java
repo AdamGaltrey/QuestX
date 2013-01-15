@@ -24,8 +24,27 @@ public enum GenericRepLevel {
 			return HERO;
 		}
 	}
-	
-	public boolean equals(GenericRepLevel grl){
+
+	public static GenericRepLevel parseRepLevel(String s){
+		if(s.equalsIgnoreCase("a")){
+			return ANY;
+		} else if(s.equalsIgnoreCase("e")){
+			return EVIL;
+		} else if(s.equalsIgnoreCase("b")){
+			return BAD;
+		} else if(s.equalsIgnoreCase("o")){
+			return ORDINARY;
+		} else if(s.equalsIgnoreCase("g")){
+			return GOOD;
+		} else {
+			return HERO;
+		}
+	}
+
+	public boolean equals(GenericRepLevel grl) {
+		if(this == ANY){
+			return true;
+		}
 		return (grl.toString().toLowerCase().equalsIgnoreCase(this.toString().toLowerCase()));
 	}
 

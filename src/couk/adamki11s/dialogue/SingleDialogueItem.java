@@ -1,24 +1,22 @@
 package couk.adamki11s.dialogue;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import couk.adamki11s.ai.dataset.GenericRepLevel;
 import couk.adamki11s.ai.dataset.Reputation;
 import couk.adamki11s.dialogue.triggers.Trigger;
+import couk.adamki11s.dialogue.triggers.TriggerType;
 
-public class DialogueItem {
-
+public class SingleDialogueItem {
+	
 	final String say;
-	final DialogueResponse response;
 	final GenericRepLevel requriedRep;
-	final Trigger trigger;
+	final TriggerType trigger;
 	
 	//Implement triggers!
 
-	public DialogueItem(String say, DialogueResponse response, GenericRepLevel rep, Trigger trigger) {
+	public SingleDialogueItem(String say, GenericRepLevel rep, TriggerType trigger) {
 		this.say = say;
-		this.response = response;
 		this.requriedRep = rep;
 		this.trigger = trigger;
 	}
@@ -60,21 +58,6 @@ public class DialogueItem {
 	 * reply Speech : String of text Generic Tag : e[evil], b[bad], o[ordinary],
 	 * g[good], h[hero], a[any] Trigger Tag : n[none], q[quest], t[task],
 	 * e[end_convo] ------
-	 */
-	
-	/*
-	 * 
-	 * 
-	 * 0#say#2#"Hello There."#"Bye!"#a,a#n,e
-	 * 
-	 * 0#reply#2#"Hi there %pname%, what can i do for you?","Clear out criminal"
-	 * #a,b#n,e
-	 * 
-	 * 01#say#1#"Where am I?"#a#n
-	 * 
-	 * 01#reply#1#"The World of Minecraft"#a#n
-	 * 
-	 * 011#say#2#"Ok, thanks"#"Goodbye friend"#a,a#e,e
 	 */
 
 }
