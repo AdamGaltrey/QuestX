@@ -24,7 +24,7 @@ public class AttackController {
 
 	public synchronized void run() {
 		for (SimpleNPC npc : handle.getNPCs()) {
-			if (npc.isUnderAttack()) {
+			if (npc.isUnderAttack() && npc.isNPCSpawned()) {
 				this.retalliate(npc.getAggressor(), npc);
 			}
 		}

@@ -6,10 +6,10 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import couk.adamki11s.commands.QuestXCommands;
-import couk.adamki11s.data.Updater;
 import couk.adamki11s.events.ConversationRegister;
 import couk.adamki11s.events.NPCDamageEvent;
 import couk.adamki11s.events.NPCInteractEvent;
+import couk.adamki11s.io.InitialSetup;
 import couk.adamki11s.npcs.NPCHandler;
 import couk.adamki11s.threads.ThreadController;
 
@@ -32,6 +32,9 @@ public class QuestX extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
+		
+		InitialSetup.run();
+		
 		handle = new NPCHandler(this);
 		p = this;
 		this.getCommand("QuestX").setExecutor(new QuestXCommands(this));

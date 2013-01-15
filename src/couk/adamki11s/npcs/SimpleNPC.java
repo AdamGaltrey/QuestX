@@ -143,11 +143,14 @@ public class SimpleNPC {
 
 	public void spawnNPC() {
 		if (!isSpawned) {
+			
 			this.health = this.maxHealth;
 			this.waitedSpawnTicks = 0;
 			System.out.println("Spawning NPC " + this.getName());
 			this.npc = (HumanNPC) this.handle.getNPCManager().spawnHumanNPC(this.name, this.rootLocation);
 			isSpawned = true;
+			this.setChestplate(new ItemStack(Material.DIAMOND_CHESTPLATE));
+			this.setLegs(new ItemStack(Material.DIAMOND_LEGGINGS));
 			if (moveable) {
 				this.randMovement = new RandomMovement(this.npc, this.rootLocation, this.minPauseTicks, this.maxPauseTicks, this.maxVariation);
 			}

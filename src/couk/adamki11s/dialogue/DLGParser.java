@@ -128,6 +128,7 @@ public class DLGParser {
 			}
 		}
 		DialogueSet[] dSetArray = new DialogueSet[nodes];
+		
 		return ds.toArray(dSetArray);
 	}
 	/*

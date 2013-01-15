@@ -70,18 +70,19 @@ public class Conversation {
 		Player p = this.convoData.getPlayer();
 		if (selected.doesPlayerHaveRequiredRepLevel(p.getName())) {
 			Trigger selTrigger = selected.trigger;
-			if (selTrigger.getTriggerType() == TriggerType.END) {
-				this.endConversation();
-				return;
-			}
+
 			DialogueResponse dr = d.response;
 			String response = dr.responses[index - 1];
 			p.sendMessage("[" + this.convoData.getNpc().getName() + "] " + response);
 			System.out.println("Current node = " + this.currentNode);
 			this.currentNode = this.currentNode + index;
 			System.out.println("Current node = " + this.currentNode);
-
-			this.displaySpeechOptions();
+			if (selTrigger.getTriggerType() == TriggerType.END) {
+				this.endConversation();
+				return;
+			} else {
+				this.displaySpeechOptions();
+			}
 		} else {
 			p.sendMessage("You must have at least " + items[index - 1].requriedRep.getMinRep() + " reputation.");
 		}

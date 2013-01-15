@@ -5,6 +5,7 @@ import java.io.File;
 public class FileLocator {
 	
 	static final String root = "plugins" + File.separator + "QuestX",
+	config_root = root + File.separator + "Configuration",
 	data_root = root + File.separator + "Data",
 	npc_data_root = data_root + File.separator + "NPCs",
 	
