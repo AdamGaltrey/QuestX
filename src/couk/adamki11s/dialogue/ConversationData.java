@@ -14,7 +14,7 @@ public class ConversationData {
 		this.npc = npc;
 	}
 
-	public Player getP() {
+	public Player getPlayer() {
 		return p;
 	}
 

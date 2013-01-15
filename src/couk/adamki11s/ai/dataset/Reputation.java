@@ -23,12 +23,14 @@ public class Reputation implements Serializable {
 	
 	public Reputation(String playerName){
 		this.playerName = playerName;
+		playerRep.put(playerName, this);
 	}
 	
 	public Reputation(String playerName, int currentRep){
 		this.playerName = playerName;
 		this.rep = currentRep;
 		this.repLevel = RepLevel.getRepLevel(this.rep);
+		playerRep.put(playerName, this);
 	}
 	
 	public void addRep(int rep){
@@ -45,6 +47,10 @@ public class Reputation implements Serializable {
 	
 	public int getRep(){
 		return this.rep;
+	}
+	
+	public void setRep(int rep){
+		this.rep = rep;
 	}
 	
 	void sanityCheck(){

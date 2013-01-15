@@ -33,11 +33,18 @@ public class DLGParser {
 		// Load all single dialogue items first then we can add replys
 		int nodes = 0;
 		for (String line : lines) {
+			if(line.length() < 4){
+				continue;
+			}
 			nodes++;
-			int firstHashIndex = line.indexOf("#");
-			int secondHashIndex = line.indexOf("#", firstHashIndex);
+			System.out.println("Reading line " + nodes + " content = " + line);
+			int firstHashIndex = line.indexOf("#") + 1;
+			int secondHashIndex = line.indexOf("#", firstHashIndex + 1);
 			String responseType = (line.substring(firstHashIndex, secondHashIndex));
+			System.out.println("RESPONSE TYPE = " + responseType);
 			if (responseType.equalsIgnoreCase("reply")) {
+				
+				System.out.println("Line " + nodes + " is a reply, skip");
 				continue;
 			} else {
 				// SingleDialogueItem Create
@@ -144,7 +151,7 @@ public class DLGParser {
 	 * 
 	 * 01#say#1#"Where am I?"#a#n
 	 * 
-	 * 01#reply#1#"The World of Minecraft"#a#n
+	 * 01#reply#1#"The World of Minecraft"
 	 * 
 	 * 011#say#2#"Ok, thanks"#"Goodbye friend"#a,a#e,e
 	 */

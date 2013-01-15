@@ -10,6 +10,14 @@ public enum GenericRepLevel {
 		this.minRep = minRep;
 		this.maxRep = maxRep;
 	}
+	
+	public int getMinRep(){
+		return this.minRep;
+	}
+	
+	public int getMaxRap(){
+		return this.minRep;
+	}
 
 	public static GenericRepLevel getGenericReputation(int rep) {
 		if (rep <= -600) {

@@ -26,6 +26,9 @@ public class DialogueItem {
 	}
 
 	public boolean doesPlayerHaveRequiredRepLevel(String pName) {
+		if(this.requriedRep == GenericRepLevel.ANY){
+			return true;
+		}
 		Reputation r = Reputation.getPlayerReputation(pName);
 		int repPoints = r.getRep();
 		boolean isNegRep = (repPoints < 0);

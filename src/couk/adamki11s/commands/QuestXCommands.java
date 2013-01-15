@@ -11,8 +11,10 @@ import org.bukkit.inventory.ItemStack;
 
 import com.topcat.npclib.entity.HumanNPC;
 import couk.adamki11s.ai.RandomMovement;
+import couk.adamki11s.ai.dataset.Reputation;
 import couk.adamki11s.data.ItemStackDrop;
 import couk.adamki11s.data.ItemStackProbability;
+import couk.adamki11s.dialogue.Conversation;
 import couk.adamki11s.npcs.BanditNPC;
 import couk.adamki11s.npcs.NPCHandler;
 import couk.adamki11s.npcs.SimpleNPC;
@@ -31,6 +33,8 @@ public class QuestXCommands implements CommandExecutor {
 
 	HumanNPC test;
 	RandomMovement rm;
+	
+	Reputation r = new Reputation("Adamki11s", 100);
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -59,6 +63,9 @@ public class QuestXCommands implements CommandExecutor {
 					} else {
 						SimpleNPC snpc = new SimpleNPC(this.handle, npcName, ChatColor.BLUE, p.getLocation(), true, true, false, 60, 200, 10, 100, 200, new ItemStackDrop(new ItemStackProbability[]{new ItemStackProbability(new ItemStack(Material.GOLD_AXE, 1), 6000)}));
 						snpc.spawnNPC();
+						Conversation convo = new Conversation(p, snpc.getHumanNPC());
+						convo.loadConversation();
+						convo.startConversation();
 						p.sendMessage("NPC Spawned!");
 						return true;
 					}
