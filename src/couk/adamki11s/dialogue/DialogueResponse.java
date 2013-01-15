@@ -4,9 +4,13 @@ import couk.adamki11s.ai.dataset.GenericRepLevel;
 import couk.adamki11s.dialogue.triggers.Trigger;
 
 public class DialogueResponse {
-	
-	final String[] responses;
-	
+
+	private final String[] responses;
+
+	public String[] getResponses() {
+		return responses;
+	}
+
 	public DialogueResponse(String[] responses) {
 		this.responses = responses;
 	}

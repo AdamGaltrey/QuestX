@@ -72,7 +72,7 @@ public class Conversation {
 			Trigger selTrigger = selected.getTrigger();
 
 			DialogueResponse dr = d.getResponse();
-			String response = dr.responses[index - 1];
+			String response = dr.getResponses()[index - 1];
 			p.sendMessage("[" + this.convoData.getNpc().getName() + "] " + response);
 			System.out.println("Current node = " + this.currentNode);
 			this.currentNode = this.currentNode + index;
