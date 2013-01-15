@@ -9,9 +9,15 @@ import couk.adamki11s.data.ItemStackDrop;
 
 public class FriendlyNPC extends SimpleNPC{
 
-	public FriendlyNPC(NPCHandler handle, String name, ChatColor nameColour, Location rootLocation, boolean moveable, boolean attackable, boolean aggressive, int minPauseTicks,
-			int maxPauseTicks, int maxVariation, int health, int respawnTicks, ItemStackDrop inventory) {
-		super(handle, name, nameColour, rootLocation, moveable, attackable, aggressive, minPauseTicks, maxPauseTicks, maxVariation, health, respawnTicks, inventory);
+	
+
+	
+
+	public FriendlyNPC(NPCHandler handle, String name, ChatColor nameColour, Location rootLocation, boolean moveable, boolean attackable, boolean aggressive,
+			int minPauseTicks, int maxPauseTicks, int maxVariation, int health, int respawnTicks, ItemStackDrop inventory, ItemStack[] gear, int damageMod,
+			double retalliationMultiplier) {
+		super(handle, name, nameColour, rootLocation, moveable, attackable, aggressive, minPauseTicks, maxPauseTicks, maxVariation, health, respawnTicks, inventory, gear, damageMod,
+				retalliationMultiplier);
 		// TODO Auto-generated constructor stub
 	}
 

@@ -34,7 +34,7 @@ public class AttackController {
 		// if(p is inside npc area) then attack
 
 		Location loc = p.getLocation();
-		int var = npc.getMaxVariation() + ((int)npc.getMaxVariation() / 4); //Adds 1/4th to the attack radius
+		double var = ((double)npc.getMaxVariation()) * (npc.getRetalliationMultiplier()); //Adds var * RetalMultiplier to the attack radius
 		Location root = npc.getRootLocation();
 		Location bl = new Location(loc.getWorld(), root.getBlockX() - var, root.getBlockY() - var, root.getBlockZ() - var), tr = new Location(loc.getWorld(), root.getBlockX()
 				+ var, root.getBlockY() + var, root.getBlockZ() + var);
@@ -42,7 +42,7 @@ public class AttackController {
 		if (loc.getBlockX() > bl.getBlockX() && loc.getBlockY() > bl.getBlockY() && loc.getBlockZ() > bl.getBlockZ() && loc.getBlockX() < tr.getBlockX()
 				&& loc.getBlockY() < tr.getBlockY() && loc.getBlockZ() < tr.getBlockZ()) {
 
-			p.sendMessage("In attack zone!");
+			p.sendMessage("In attack zone! Size = " + npc.getRetalliationMultiplier() + ", var = " + var);
 			
 			npc.moveTo(p.getLocation());
 			npc.lookAt(p.getLocation());
@@ -50,7 +50,7 @@ public class AttackController {
 			if (npc.getHumanNPC().getBukkitEntity().getLocation().distance(p.getLocation()) < 2) {
 				p.sendMessage("NPC HIT YOU");
 				npc.getHumanNPC().animateArmSwing();
-				p.damage(1);
+				p.damage(npc.getDamageMod());
 				System.out.println(p.getHealth());
 			}
 

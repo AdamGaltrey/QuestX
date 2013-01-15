@@ -33,7 +33,8 @@ public class SimpleNPC {
 	final ChatColor nameColour;
 	final Location rootLocation;
 	final boolean moveable, attackable, aggressive;
-	final int minPauseTicks, maxPauseTicks, maxVariation, respawnTicks, maxHealth;
+	final int minPauseTicks, maxPauseTicks, maxVariation, respawnTicks, maxHealth, damageMod;
+	final double retalliationMultiplier;
 	final ItemStackDrop inventory;
 
 	int waitedSpawnTicks = 0;
@@ -46,11 +47,13 @@ public class SimpleNPC {
 
 	HumanNPC npc;
 	boolean isSpawned = false, underAttack = false;
+	
+	final ItemStack[] gear;//boots 1, legs 2, chest 3, head 4, arm 5
 
 	int health;
 
 	public SimpleNPC(NPCHandler handle, String name, ChatColor nameColour, Location rootLocation, boolean moveable, boolean attackable, boolean aggressive, int minPauseTicks,
-			int maxPauseTicks, int maxVariation, int health, int respawnTicks, ItemStackDrop inventory) {
+			int maxPauseTicks, int maxVariation, int health, int respawnTicks, ItemStackDrop inventory, ItemStack[] gear, int damageMod, double retalliationMultiplier) {
 		UniqueNameRegister.addNPCName(name);
 		this.name = name;
 		this.nameColour = nameColour;
@@ -65,8 +68,27 @@ public class SimpleNPC {
 		this.respawnTicks = respawnTicks;
 		this.handle = handle;
 		this.inventory = inventory;
+		this.gear = gear;
+		this.damageMod = damageMod;
+		this.retalliationMultiplier = retalliationMultiplier;
 
 		handle.registerNPC(this);
+	}
+
+	public double getRetalliationMultiplier() {
+		return retalliationMultiplier;
+	}
+
+	public int getDamageMod() {
+		return damageMod;
+	}
+
+	public Conversation getC() {
+		return c;
+	}
+
+	public ItemStack[] getGear() {
+		return gear;
 	}
 
 	public int getMaxHealth() {
@@ -104,6 +126,11 @@ public class SimpleNPC {
 			return this.c.isConversing();
 		}
 	}
+	
+	public void setItemInHand(ItemStack item) {
+		this.npc.getInventory().setItemInHand(item);
+		this.updateArmor(0, item);
+	}
 
 	public void setBoots(ItemStack item) {
 		this.npc.getInventory().setBoots(item);
@@ -137,10 +164,6 @@ public class SimpleNPC {
 	}
 
 	public void damageNPC(Player p, int damage) {
-		// set under attack and change AI
-		// + drop loot on death
-		// AI state = run/fight depending on character and on player he is
-		// fighting
 		health -= damage;
 		this.aggressor = p;
 		this.underAttack = true;
@@ -200,8 +223,11 @@ public class SimpleNPC {
 			System.out.println("Spawning NPC " + this.getName());
 			this.npc = (HumanNPC) this.handle.getNPCManager().spawnHumanNPC(this.name, this.rootLocation);
 			isSpawned = true;
-			this.setChestplate(new ItemStack(Material.DIAMOND_CHESTPLATE));
-			this.setLegs(new ItemStack(Material.DIAMOND_LEGGINGS));
+			this.setBoots(this.gear[0]);
+			this.setLegs(this.gear[1]);
+			this.setChestplate(this.gear[2]);
+			this.setHelmet(this.gear[3]);
+			this.setItemInHand(this.gear[4]);
 			if (moveable) {
 				this.randMovement = new RandomMovement(this, this.rootLocation, this.minPauseTicks, this.maxPauseTicks, this.maxVariation);
 			}
