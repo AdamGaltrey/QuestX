@@ -206,6 +206,8 @@ public class SimpleNPC {
 				c = new Conversation(p, this);
 				c.loadConversation();
 				c.startConversation();
+				Location pl = p.getLocation();
+				this.getHumanNPC().lookAtPoint(new Location(pl.getWorld(), pl.getX(), pl.getY() + 1, pl.getZ()));
 				System.out.println("Conversing = " + this.isConversing());
 			}
 		}

@@ -15,7 +15,6 @@ import couk.adamki11s.ai.dataset.Reputation;
 import couk.adamki11s.data.ItemStackDrop;
 import couk.adamki11s.data.ItemStackProbability;
 import couk.adamki11s.dialogue.Conversation;
-import couk.adamki11s.npcs.BanditNPC;
 import couk.adamki11s.npcs.NPCHandler;
 import couk.adamki11s.npcs.SimpleNPC;
 import couk.adamki11s.npcs.UniqueNameRegister;

@@ -8,7 +8,6 @@ import org.bukkit.entity.Player;
 import com.topcat.npclib.entity.HumanNPC;
 
 import couk.adamki11s.ai.dataset.Reputation;
-import couk.adamki11s.npcs.BanditNPC;
 import couk.adamki11s.npcs.NPCHandler;
 import couk.adamki11s.npcs.SimpleNPC;
 
