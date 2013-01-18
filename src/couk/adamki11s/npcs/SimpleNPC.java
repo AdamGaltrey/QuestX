@@ -213,6 +213,7 @@ public class SimpleNPC {
 						return;
 					} else {
 						QuestX.logChat(p, tm.getCompleteTaskSpeech());
+						tm.awardPlayer(p);
 						return;
 					}
 				} else {

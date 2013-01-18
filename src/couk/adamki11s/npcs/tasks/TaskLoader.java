@@ -102,6 +102,10 @@ public class TaskLoader {
 	public ItemStack[] getRequiredItems(){
 		return this.retrieveItems;
 	}
+	
+	public ItemStack[] getRewardItems(){
+		return this.rewardItems;
+	}
 
 	public String getIncompleteTaskSpeech() {
 		return incompleteTaskSpeech;

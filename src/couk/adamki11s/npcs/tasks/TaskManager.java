@@ -1,10 +1,19 @@
 package couk.adamki11s.npcs.tasks;
 
+import java.util.Random;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
+import org.bukkit.FireworkEffect;
+import org.bukkit.FireworkEffect.Type;
+import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.ExperienceOrb;
+import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.FireworkMeta;
 
 import couk.adamki11s.questx.QuestX;
 
@@ -27,8 +36,8 @@ public class TaskManager {
 	public boolean isTrackingEntityKills() {
 		return this.getTaskLoader().isKillEntities();
 	}
-	
-	public boolean doesNeedToFetchItems(){
+
+	public boolean doesNeedToFetchItems() {
 		return this.getTaskLoader().isFetchItems();
 	}
 
@@ -46,7 +55,7 @@ public class TaskManager {
 		if (this.isTrackingEntityKills()) {
 			kills = this.areEntityKillsCompleted();
 		}
-		if(this.doesNeedToFetchItems()){
+		if (this.doesNeedToFetchItems()) {
 			items = this.areRequiredItemsGathered();
 		}
 		return (kills && items);
@@ -87,51 +96,99 @@ public class TaskManager {
 	public String getIncompleteTaskSpeech() {
 		return this.getTaskLoader().getIncompleteTaskSpeech();
 	}
-	
-	public void sendWhatIsLeftToDo(Player p){
+
+	public void sendWhatIsLeftToDo(Player p) {
 		boolean kills = true, items = true;
 		if (this.isTrackingEntityKills()) {
 			kills = this.areEntityKillsCompleted();
 		}
-		if(this.doesNeedToFetchItems()){
+		if (this.doesNeedToFetchItems()) {
 			items = this.areRequiredItemsGathered();
 		}
-		if(!kills){
+		if (!kills) {
 			p.sendMessage(this.getTaskLoader().getEKT().sendEntitiesToKill());
 		}
-		if(!items){
+		if (!items) {
 			p.sendMessage(this.sendItemsToGather());
 		}
 	}
-	
-	String sendItemsToGather(){
-			ItemStack[] req = this.getTaskLoader().getRequiredItems();
-			Player p = Bukkit.getServer().getPlayer(pName);
-			StringBuilder buff = new StringBuilder();
-			buff.append(ChatColor.RED).append("Collect : ").append(ChatColor.RESET);
-			if (p != null) {
-				ItemStack[] pContents = p.getInventory().getContents();
-				for (ItemStack is : req) {
-					int currentIsSum = 0;
-					for (ItemStack contained : pContents) {
-						if (contained != null) {
-							if (contained.getTypeId() == is.getTypeId() && contained.getData().getData() == is.getData().getData()) {
-								currentIsSum += contained.getAmount();
-							}
+
+	String sendItemsToGather() {
+		ItemStack[] req = this.getTaskLoader().getRequiredItems();
+		Player p = Bukkit.getServer().getPlayer(pName);
+		StringBuilder buff = new StringBuilder();
+		buff.append(ChatColor.RED).append("Collect : ").append(ChatColor.RESET);
+		if (p != null) {
+			ItemStack[] pContents = p.getInventory().getContents();
+			for (ItemStack is : req) {
+				int currentIsSum = 0;
+				for (ItemStack contained : pContents) {
+					if (contained != null) {
+						if (contained.getTypeId() == is.getTypeId() && contained.getData().getData() == is.getData().getData()) {
+							currentIsSum += contained.getAmount();
 						}
 					}
-					if (currentIsSum < is.getAmount()) {
-						buff.append(is.getAmount() - currentIsSum).append(" ").append(is.getType().toString()).append(", ");
-					}
 				}
-				return buff.toString();
-			} else {
-				return "";
+				if (currentIsSum < is.getAmount()) {
+					buff.append(is.getAmount() - currentIsSum).append(" ").append(is.getType().toString()).append(", ");
+				}
 			}
+			return buff.toString();
+		} else {
+			return "";
+		}
 	}
 
 	public String getCompleteTaskSpeech() {
 		return this.getTaskLoader().getCompleteTaskSpeech();
 	}
 
+	public void awardPlayer(Player p) {
+		if (this.getTaskLoader().isAwardItems()) {
+			ItemStack[] rewardItems = this.getTaskLoader().getRewardItems();
+			for (ItemStack i : rewardItems) {
+				if (i != null) {
+					int empty = -1;
+					if ((empty = p.getInventory().firstEmpty()) != -1) {
+						p.getInventory().addItem(i);
+					} else {
+						p.getWorld().dropItemNaturally(p.getLocation(), i);
+					}
+				}
+			}
+		}
+
+		int rewardExp;
+		if ((rewardExp = this.getTaskLoader().rewardExp) > 0) {
+			for (int exp = 1; exp <= rewardExp; exp++) {
+				ExperienceOrb orb = p.getWorld().spawn(p.getLocation().add(0.5, 10, 0.5), ExperienceOrb.class);
+				orb.setExperience(1);
+			}
+		}
+
+		int rewardRep;
+		if ((rewardRep = this.getTaskLoader().rewardRep) != 0) {
+			// adjust rep accordingly
+		}
+
+		final Location pL = p.getLocation();
+
+		for (int i = 0; i < 5; i++) {
+			Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(QuestX.p, new Runnable() {
+				@Override
+				public void run() {
+					Random r = new Random();
+					Firework fw = pL.getWorld().spawn(pL, Firework.class);
+					FireworkMeta fwm = fw.getFireworkMeta();
+					FireworkEffect effect = FireworkEffect.builder().withColor(Color.fromRGB(r.nextInt(255) + 1, r.nextInt(255) + 1, r.nextInt(255) + 1))
+							.with(Type.values()[r.nextInt(Type.values().length)]).build();
+					fwm.addEffects(effect);
+					fwm.setPower(2);
+					fw.setFireworkMeta(fwm);
+				}
+			}, i * 20L);
+
+		}
+
+	}
 }
