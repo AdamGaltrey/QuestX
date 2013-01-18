@@ -30,6 +30,15 @@ public class TaskRegister {
 		}
 		return false;
 	}
+	
+	public static boolean doesPlayerHaveTaskFromNPC(String player, String npcName){
+		for (TaskManager tm : managers) {
+			if (tm.getPlayerName().equalsIgnoreCase(player) && tm.getTaskLoader().getNpcName().equalsIgnoreCase(npcName)) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	public static boolean unloadManagerByName(String playerName) {
 		TaskManager task = null;

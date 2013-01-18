@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
+import org.bukkit.ChatColor;
 import org.bukkit.entity.EntityType;
 
 import couk.adamki11s.questx.QuestX;
@@ -47,6 +48,20 @@ public class EntityKillTracker {
 			}
 		}
 		return true;
+	}
+	
+	public String sendEntitiesToKill(){
+		StringBuilder buff = new StringBuilder();
+		buff.append(ChatColor.RED).append("Kill : ");
+		for (Map.Entry<EntityType, Integer> entry : this.required.entrySet()) {
+			EntityType e = entry.getKey();
+			int reqKills = entry.getValue();
+			int kc;
+			if ((kc = this.current.get(e)) < reqKills) {
+				buff.append(e.toString()).append(" : ").append(reqKills - kc).append(", ");
+			}
+		}
+		return buff.toString();
 	}
 
 }

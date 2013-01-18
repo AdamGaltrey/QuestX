@@ -60,14 +60,12 @@ public class CreateNPC {
 		folder.mkdirs();
 		progFolder.mkdirs();
 
-		File prop = FileLocator.getNPCPropertiesFile(this.name), task = FileLocator.getNPCTaskFile(this.name), dlg = FileLocator.getNPCDlgFile(this.name), progress = FileLocator
-				.getNPCTaskProgressionFile(this.name);
+		File prop = FileLocator.getNPCPropertiesFile(this.name), task = FileLocator.getNPCTaskFile(this.name), dlg = FileLocator.getNPCDlgFile(this.name);
 
 		try {
 			prop.createNewFile();
 			task.createNewFile();
 			dlg.createNewFile();
-			progress.createNewFile();
 		} catch (IOException iox) {
 			iox.printStackTrace();
 		}

@@ -50,8 +50,8 @@ public class SimpleNPC {
 
 	HumanNPC npc;
 	boolean isSpawned = false, underAttack = false;
-	
-	final ItemStack[] gear;//boots 1, legs 2, chest 3, head 4, arm 5
+
+	final ItemStack[] gear;// boots 1, legs 2, chest 3, head 4, arm 5
 
 	int health;
 
@@ -129,7 +129,7 @@ public class SimpleNPC {
 			return this.c.isConversing();
 		}
 	}
-	
+
 	public void setItemInHand(ItemStack item) {
 		this.npc.getInventory().setItemInHand(item);
 		this.updateArmor(0, item);
@@ -170,7 +170,7 @@ public class SimpleNPC {
 		health -= damage;
 		this.aggressor = p;
 		this.underAttack = true;
-		if(this.isConversing()){
+		if (this.isConversing()) {
 			ConversationRegister.endPlayerNPCConversation(c.getConvoData().getPlayer());
 		}
 		if (health <= 0) {
@@ -203,14 +203,20 @@ public class SimpleNPC {
 
 	public void interact(Player p) {
 		if (!this.isConversing() && !this.isUnderAttack()) {
-			if(TaskRegister.doesPlayerHaveTask(p.getName())){
-				TaskManager tm = TaskRegister.getTaskManager(p.getName());
-				boolean completed = tm.isTaskCompleted();
-				if(!completed){
-					QuestX.logChat(p, tm.getIncompleteTaskSpeech());
-					return;
+			if (TaskRegister.doesPlayerHaveTask(p.getName())) {
+				if (TaskRegister.doesPlayerHaveTaskFromNPC(p.getName(), this.getName())) {
+					TaskManager tm = TaskRegister.getTaskManager(p.getName());
+					boolean completed = tm.isTaskCompleted();
+					if (!completed) {
+						QuestX.logChat(p, tm.getIncompleteTaskSpeech());
+						tm.sendWhatIsLeftToDo(p);
+						return;
+					} else {
+						QuestX.logChat(p, tm.getCompleteTaskSpeech());
+						return;
+					}
 				} else {
-					QuestX.logChat(p, tm.getCompleteTaskSpeech());
+					QuestX.logChat(p, "You already have a task, finish or cancel your current task before starting a new one.");
 					return;
 				}
 			}

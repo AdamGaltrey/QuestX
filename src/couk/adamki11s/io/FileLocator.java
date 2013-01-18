@@ -9,7 +9,7 @@ public class FileLocator {
 	data_root = root + File.separator + "Data",
 	npc_data_root = data_root + File.separator + "NPCs",
 	
-	dlgFile = "dialogue.dlg", propertyFile = "properties.txt", taskScript = "task.qxs",questScript = "quest_link.qxs", taskProgression = "task_progression.txt";
+	dlgFile = "dialogue.dlg", propertyFile = "properties.txt", taskScript = "task.qxs",questScript = "quest_link.qxs";
 	
 	public static File getNPCRootDir(String npcName){
 		return new File(npc_data_root + File.separator + npcName);
@@ -29,10 +29,6 @@ public class FileLocator {
 	
 	public static File getNPCTaskFile(String npcName){
 		return new File(npc_data_root + File.separator + npcName + File.separator + taskScript);
-	}
-	
-	public static File getNPCTaskProgressionFile(String npcName){
-		return new File(npc_data_root + File.separator + npcName + File.separator + "Progression" + File.separator + taskProgression);
 	}
 	
 	public static File getNPCQuestLinkFile(String npcName){
