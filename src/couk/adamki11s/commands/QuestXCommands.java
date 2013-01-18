@@ -20,6 +20,7 @@ import couk.adamki11s.dialogue.Conversation;
 import couk.adamki11s.npcs.NPCHandler;
 import couk.adamki11s.npcs.SimpleNPC;
 import couk.adamki11s.npcs.UniqueNameRegister;
+import couk.adamki11s.npcs.loading.FixedLoadingTable;
 import couk.adamki11s.npcs.tasks.Fireworks;
 import couk.adamki11s.questx.QuestX;
 
@@ -50,6 +51,11 @@ public class QuestXCommands implements CommandExecutor {
 				
 				ItemStack[] gear = new ItemStack[]{null, null, null, null, new ItemStack(Material.WOOD_AXE)};
 
+				if(args.length == 2 && args[0].equalsIgnoreCase("setfixedspawn")){
+					String npcName = args[1];
+					FixedLoadingTable.addFixedNPCSpawn(p, npcName, p.getLocation());
+					return true;
+				}
 
 				if (args.length == 2 && args[0].equalsIgnoreCase("stressspawn")) {
 					int max = Integer.parseInt(args[1]);

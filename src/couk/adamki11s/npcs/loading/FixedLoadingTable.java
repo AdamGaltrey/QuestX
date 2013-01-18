@@ -19,8 +19,14 @@ public class FixedLoadingTable {
 	final static SyncObjectIO loader = new SyncObjectIO(FileLocator.getNPCFixedSpawnsFile());
 	
 	public static void registerFixedNPCSpawns(){
+		QuestX.logMSG("registering npc spawns");
 		loader.read();
+		QuestX.logMSG("wrapper length = " + loader.getReadableData().size());
 		for(SyncWrapper wrapper : loader.getReadableData()){
+			if(wrapper.getTag().equalsIgnoreCase("NPC_COUNT")){
+				continue;
+			}
+			System.out.println("Wrapper tag = " + wrapper.getTag());
 			String npcName = wrapper.getTag();
 			SyncLocation sl = (SyncLocation) wrapper.getObject();
 			Location spawnLocation = sl.getBukkitLocation();
@@ -33,8 +39,14 @@ public class FixedLoadingTable {
 			QuestX.logChat(p, ChatColor.RED + "There is no NPC created with this name!");
 			return;
 		} else {
+			if(fixedSpawns.containsKey(npcName)){
+				QuestX.logChat(p, "A fixed spawn location for this NPC already exists");
+				return;
+			}
 			loader.read();
-			loader.insertWriteableData(loader.getReadableData());
+			for(SyncWrapper wrap : loader.getReadableData()){
+				loader.add(wrap.getTag(), wrap.getObject());
+			}
 			loader.add(npcName, new SyncLocation(l));
 			loader.write();
 			loader.clearReadArray();

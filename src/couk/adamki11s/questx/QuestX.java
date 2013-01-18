@@ -17,6 +17,7 @@ import couk.adamki11s.events.NPCInteractEvent;
 import couk.adamki11s.io.InitialSetup;
 import couk.adamki11s.io.npc.CreateNPC;
 import couk.adamki11s.npcs.NPCHandler;
+import couk.adamki11s.npcs.loading.FixedLoadingTable;
 import couk.adamki11s.threads.ThreadController;
 
 public class QuestX extends JavaPlugin {
@@ -48,8 +49,12 @@ public class QuestX extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
+		
+		System.out.println("hotspot test");
 
 		InitialSetup.run();
+		
+		FixedLoadingTable.registerFixedNPCSpawns();
 
 		handle = new NPCHandler(this);
 		p = this;
