@@ -1,6 +1,7 @@
 package couk.adamki11s.io;
 
 import java.io.File;
+import java.io.IOException;
 
 public class FileLocator {
 	
@@ -33,6 +34,18 @@ public class FileLocator {
 	
 	public static File getNPCQuestLinkFile(String npcName){
 		return new File(npc_data_root + File.separator + npcName + File.separator + questScript);
+	}
+	
+	public static File getNPCTaskProgressionPlayerFile(String npcName, String playerName){
+		return new File(npc_data_root + File.separator + npcName + File.separator + "Progression" + File.separator + playerName + ".prog");
+	}
+	
+	public static void createPlayerNPCProgressionFile(String npcName, String playerName){
+		try {
+			new File(npc_data_root + File.separator + npcName + File.separator + "Progression" + File.separator + playerName + ".prog").createNewFile();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

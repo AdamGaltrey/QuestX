@@ -8,6 +8,7 @@ import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.FireworkEffect.Type;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Firework;
@@ -15,6 +16,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 
+import couk.adamki11s.extras.inventory.ExtrasInventory;
+import couk.adamki11s.io.FileLocator;
 import couk.adamki11s.questx.QuestX;
 
 public class TaskManager {
@@ -142,8 +145,17 @@ public class TaskManager {
 	public String getCompleteTaskSpeech() {
 		return this.getTaskLoader().getCompleteTaskSpeech();
 	}
-
+	
 	public void awardPlayer(Player p) {
+		
+		ExtrasInventory ei = new ExtrasInventory();
+		
+		for (ItemStack is : this.getTaskLoader().getRequiredItems()) {
+			ei.removeFromInventory(p, is.getTypeId(), is.getAmount());
+		}
+		
+		
+		
 		if (this.getTaskLoader().isAwardItems()) {
 			ItemStack[] rewardItems = this.getTaskLoader().getRewardItems();
 			for (ItemStack i : rewardItems) {
@@ -174,6 +186,10 @@ public class TaskManager {
 		 Location pL = p.getLocation();
 		Fireworks display = new Fireworks(pL, 10, 20);
 		display.circularDisplay();
+		
+		TaskRegister.unRegisterTask(this);
+		
+		FileLocator.createPlayerNPCProgressionFile(this.getTaskLoader().getNpcName(), this.getPlayerName());
 		//display.showDisplay();
 
 	}

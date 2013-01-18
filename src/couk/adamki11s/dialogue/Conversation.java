@@ -106,6 +106,11 @@ public class Conversation {
 			} else if (selTrigger.getTriggerType() == TriggerType.TASK) {
 				System.out.println("INSIDE TRIGGER code");
 				System.out.println("Does player have task = " + TaskRegister.doesPlayerHaveTask(p.getName()));
+				boolean alreadyDone = TaskRegister.hasPlayerCompletedTask(this.getConvoData().getSimpleNpc().getName(), p.getName());
+				if(alreadyDone){
+					QuestX.logChat(p, "You have already completed this task!");
+					return;
+				}
 				if(TaskRegister.doesPlayerHaveTask(p.getName())){
 					System.out.println("In has task code");
 					QuestX.logChat(p, ChatColor.RED + "You already have a task assigned!");

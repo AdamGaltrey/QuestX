@@ -1,7 +1,9 @@
 package couk.adamki11s.npcs.tasks;
 
+import java.io.File;
 import java.util.HashSet;
 
+import couk.adamki11s.io.FileLocator;
 import couk.adamki11s.questx.QuestX;
 
 public class TaskRegister {
@@ -11,6 +13,12 @@ public class TaskRegister {
 	public static void registerTask(TaskManager tm) {
 		managers.add(tm);
 		QuestX.logMSG("Task added to Register");
+	}
+	
+	public static void unRegisterTask(TaskManager tm){
+		if(managers.contains(tm)){
+			managers.remove(tm);
+		}
 	}
 	
 	public static TaskManager getTaskManager(String pName){
@@ -53,6 +61,15 @@ public class TaskRegister {
 			return false;
 		} else {
 			return true;
+		}
+	}
+	
+	public static boolean hasPlayerCompletedTask(String npcName, String playerName){
+		File f = FileLocator.getNPCTaskProgressionPlayerFile(npcName, playerName);
+		if(f == null){
+			return false;
+		} else {
+			return f.exists();
 		}
 	}
 

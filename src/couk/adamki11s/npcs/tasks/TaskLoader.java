@@ -1,9 +1,11 @@
 package couk.adamki11s.npcs.tasks;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.bukkit.inventory.ItemStack;
 
+import couk.adamki11s.io.FileLocator;
 import couk.adamki11s.io.SyncConfiguration;
 import couk.adamki11s.questx.QuestX;
 
@@ -22,6 +24,15 @@ public class TaskLoader {
 		this.taskFile = taskFile;
 		this.npcName = npcName;
 		QuestX.logMSG("TaskLoader Instantiated");
+	}
+	
+	public void setTaskCompleted(String playerName){
+		File completed = FileLocator.getNPCTaskProgressionPlayerFile(npcName, playerName);
+		try {
+			completed.createNewFile();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void load() {
