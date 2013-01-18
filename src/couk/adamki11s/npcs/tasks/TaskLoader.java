@@ -6,8 +6,8 @@ import java.io.IOException;
 import org.bukkit.inventory.ItemStack;
 
 import couk.adamki11s.io.FileLocator;
-import couk.adamki11s.io.SyncConfiguration;
 import couk.adamki11s.questx.QuestX;
+import couk.adamki11s.sync.io.configuration.SyncConfiguration;
 
 public class TaskLoader {
 

@@ -11,7 +11,7 @@ import couk.adamki11s.dialogue.triggers.TaskTrigger;
 import couk.adamki11s.dialogue.triggers.Trigger;
 import couk.adamki11s.dialogue.triggers.TriggerType;
 import couk.adamki11s.io.FileLocator;
-import couk.adamki11s.io.SyncWriter;
+import couk.adamki11s.sync.io.writer.SyncWriter;
 
 public class DLGParser {
 

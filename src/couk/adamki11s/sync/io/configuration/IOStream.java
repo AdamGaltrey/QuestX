@@ -1,4 +1,4 @@
-package couk.adamki11s.io;
+package couk.adamki11s.sync.io.configuration;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -9,6 +9,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
+
+import couk.adamki11s.io.GenericIO;
+import couk.adamki11s.io.IDENTIFIER;
+
 
 public class IOStream extends GenericIO {
 

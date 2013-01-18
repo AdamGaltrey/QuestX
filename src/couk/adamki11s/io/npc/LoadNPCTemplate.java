@@ -9,8 +9,8 @@ import couk.adamki11s.data.ItemStackDrop;
 import couk.adamki11s.data.ItemStackProbability;
 import couk.adamki11s.io.FileLocator;
 import couk.adamki11s.io.NPCTag;
-import couk.adamki11s.io.SyncConfiguration;
 import couk.adamki11s.questx.QuestX;
+import couk.adamki11s.sync.io.configuration.SyncConfiguration;
 
 public class LoadNPCTemplate {
 

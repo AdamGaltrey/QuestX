@@ -47,5 +47,9 @@ public class FileLocator {
 			e.printStackTrace();
 		}
 	}
+	
+	public static File getNPCFixedSpawnsFile(){
+		return new File(data_root + File.separator + "fixed_spawns.qxs");
+	}
 
 }

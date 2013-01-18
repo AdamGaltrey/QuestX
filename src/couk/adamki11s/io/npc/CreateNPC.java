@@ -11,8 +11,9 @@ import org.bukkit.inventory.ItemStack;
 import couk.adamki11s.data.ItemStackDrop;
 import couk.adamki11s.io.FileLocator;
 import couk.adamki11s.io.NPCTag;
-import couk.adamki11s.io.SyncConfiguration;
-import couk.adamki11s.io.SyncWriter;
+import couk.adamki11s.sync.io.configuration.SyncConfiguration;
+import couk.adamki11s.sync.io.writer.SyncWriter;
+
 
 public class CreateNPC {
 

@@ -1,4 +1,4 @@
-package couk.adamki11s.io;
+package couk.adamki11s.sync.io.writer;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

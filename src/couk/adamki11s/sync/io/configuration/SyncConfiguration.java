@@ -1,11 +1,13 @@
-package couk.adamki11s.io;
+package couk.adamki11s.sync.io.configuration;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.UUID;
 
+import couk.adamki11s.io.IDENTIFIER;
 import couk.adamki11s.io.IDENTIFIER.ID;
+
 
 public class SyncConfiguration extends IOStream {
 	
