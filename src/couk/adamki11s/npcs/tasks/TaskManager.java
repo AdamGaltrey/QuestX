@@ -171,24 +171,10 @@ public class TaskManager {
 			// adjust rep accordingly
 		}
 
-		final Location pL = p.getLocation();
-
-		for (int i = 0; i < 5; i++) {
-			Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(QuestX.p, new Runnable() {
-				@Override
-				public void run() {
-					Random r = new Random();
-					Firework fw = pL.getWorld().spawn(pL, Firework.class);
-					FireworkMeta fwm = fw.getFireworkMeta();
-					FireworkEffect effect = FireworkEffect.builder().withColor(Color.fromRGB(r.nextInt(255) + 1, r.nextInt(255) + 1, r.nextInt(255) + 1))
-							.with(Type.values()[r.nextInt(Type.values().length)]).build();
-					fwm.addEffects(effect);
-					fwm.setPower(2);
-					fw.setFireworkMeta(fwm);
-				}
-			}, i * 20L);
-
-		}
+		 Location pL = p.getLocation();
+		Fireworks display = new Fireworks(pL, 10, 20);
+		display.circularDisplay();
+		//display.showDisplay();
 
 	}
 }

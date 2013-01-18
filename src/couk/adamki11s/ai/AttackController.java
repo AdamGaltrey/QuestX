@@ -56,6 +56,7 @@ public class AttackController {
 		} else {
 			p.sendMessage("Left attack zone NPC aggro lost!");
 			npc.unAggro();
+			npc.moveTick();
 		}
 
 		// else if aggressor has left area stop attacking
