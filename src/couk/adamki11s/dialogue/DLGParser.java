@@ -77,9 +77,9 @@ public class DLGParser {
 					} else if(tt == TriggerType.END){
 						realTriggers[i - 1] = new EndTrigger(tt);
 					} else if(tt == TriggerType.TASK){
-						realTriggers[i - 1] = new TaskTrigger(tt, FileLocator.getNPCTriggerFile(c.getConvoData().getSimpleNpc().getName()));
+						realTriggers[i - 1] = new TaskTrigger(tt, FileLocator.getNPCTaskFile(c.getConvoData().getSimpleNpc().getName()));
 					} else {
-						realTriggers[i - 1] = new QuestTrigger(tt, FileLocator.getNPCTriggerFile(c.getConvoData().getSimpleNpc().getName()));
+						realTriggers[i - 1] = new QuestTrigger(tt, FileLocator.getNPCQuestLinkFile(c.getConvoData().getSimpleNpc().getName()));
 					}
 				}
 				

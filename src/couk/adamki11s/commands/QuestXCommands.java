@@ -43,6 +43,7 @@ public class QuestXCommands implements CommandExecutor {
 				return true;
 			} else {
 				Player p = (Player) sender;
+				
 				ItemStack[] gear = new ItemStack[]{null, null, null, null, new ItemStack(Material.WOOD_AXE)};
 
 

@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 
 import org.bukkit.ChatColor;
+import org.bukkit.entity.CreatureType;
+import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 
 import couk.adamki11s.data.ItemStackDrop;
@@ -15,7 +17,7 @@ import couk.adamki11s.io.SyncWriter;
 public class CreateNPC {
 
 	final String npc_root = FileLocator.npc_data_root;
-	final File folder;
+	final File folder, progFolder;
 
 	public static boolean isNameUnique(String name) {
 		File f = new File(FileLocator.npc_data_root + File.separator + name);
@@ -29,16 +31,16 @@ public class CreateNPC {
 		this.name = name;
 		this.nameColour = nameColour;
 		this.folder = new File(npc_root + File.separator + name);
+		this.progFolder = new File(npc_root + File.separator + name + File.separator + "Progression");
 	}
-	
-	
+
 	String inventDrops, gear;
 	boolean moveable, attackable, aggressive, load;
 	int minPauseTicks, maxPauseTicks, maxVariation, respawnTicks, maxHealth, damageMod;
 	double retalliationMultiplier;
 
-	public void setProperties(boolean moveable, boolean attackable, boolean aggressive, boolean load, int minPauseTicks, int maxPauseTicks, int maxVariation, int respawnTicks,
-			int maxHealth, int damageMod, double retalliationMultiplier, String inventDrops, String gear) {
+	public void setProperties(boolean moveable, boolean attackable, boolean aggressive, boolean load, int minPauseTicks, int maxPauseTicks, int maxVariation,
+			int respawnTicks, int maxHealth, int damageMod, double retalliationMultiplier, String inventDrops, String gear) {
 		this.moveable = moveable;
 		this.attackable = attackable;
 		this.aggressive = aggressive;
@@ -53,23 +55,26 @@ public class CreateNPC {
 		this.inventDrops = inventDrops;
 		this.gear = gear;
 	}
-	
-	public void createNPCFiles(){
+
+	public void createNPCFiles() {
 		folder.mkdirs();
-		File prop = new File(folder + File.separator + FileLocator.propertyFile),
-		trig = new File(folder + File.separator + FileLocator.triggerScriptFile),
-		dlg = new File(folder + File.separator + FileLocator.dlgFile);
-		
-		try{
-		prop.createNewFile();
-		trig.createNewFile();
-		dlg.createNewFile();
-		} catch (IOException iox){
+		progFolder.mkdirs();
+
+		File prop = FileLocator.getNPCPropertiesFile(this.name), task = FileLocator.getNPCTaskFile(this.name), dlg = FileLocator.getNPCDlgFile(this.name), progress = FileLocator
+				.getNPCTaskProgressionFile(this.name), kills = FileLocator.getNPCTaskKillsFile(this.name);
+
+		try {
+			prop.createNewFile();
+			task.createNewFile();
+			dlg.createNewFile();
+			progress.createNewFile();
+			kills.createNewFile();
+		} catch (IOException iox) {
 			iox.printStackTrace();
 		}
-		
+
 		SyncConfiguration syncConfig = new SyncConfiguration(prop);
-		
+
 		syncConfig.add(NPCTag.LOAD.toString(), "true");
 		syncConfig.add(NPCTag.NAME.toString(), this.name);
 		syncConfig.add(NPCTag.CHAT_COLOUR.toString(), this.nameColour.getChar());
@@ -85,19 +90,28 @@ public class CreateNPC {
 		syncConfig.add(NPCTag.RETALLIATION_MULTIPLIER.toString(), this.retalliationMultiplier);
 		syncConfig.add(NPCTag.INVENTORY_DROPS.toString(), this.inventDrops);
 		syncConfig.add(NPCTag.GEAR.toString(), this.gear);
-		
+
 		syncConfig.write();
-		
+
 		SyncWriter write = new SyncWriter(dlg);
 		write.addString("1#say#1#\"Default Speech.\"#a#e");
 		write.addString("1#reply#1#\"Default Response.\"");
 		write.write();
-		
-		write = new SyncWriter(trig);
-		write.addString("HEAD:NULL");
-		write.write();
-		
-		
+
+		syncConfig = new SyncConfiguration(task);
+		syncConfig.add("TASK_NAME", "Fetch, Kill, Return");
+		syncConfig.add("FETCH_ITEMS", "1:0:5,5:1:3,5:2:7");// Format -->
+															// <id>:<data>:<quantity>,
+		syncConfig.add("KILL_ENTITIES:", EntityType.COW.toString() + ":7," + EntityType.CHICKEN.toString() + ":3"); // Format
+																											// -->
+																											// <entity>:<number
+																											// to
+																											// kill>,
+		syncConfig.add("REWARD_ITEMS:", "1:0:1");// item stacks
+		syncConfig.add("REWARD_EXP:", 5);// reward exp
+		syncConfig.add("REWARD_REP:", 0);// reward reputation
+		syncConfig.write();
+
 	}
 
 }
