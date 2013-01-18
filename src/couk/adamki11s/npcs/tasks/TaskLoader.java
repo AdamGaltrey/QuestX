@@ -5,13 +5,14 @@ import java.io.File;
 import org.bukkit.inventory.ItemStack;
 
 import couk.adamki11s.io.SyncConfiguration;
+import couk.adamki11s.questx.QuestX;
 
 public class TaskLoader {
 
 	private final File taskFile;
 
 	final String npcName;
-	String taskName;
+	String taskName, taskDescription;
 	ItemStack[] retrieveItems, rewardItems;
 	int rewardExp, rewardRep;
 	EntityKillTracker ekt;
@@ -20,19 +21,27 @@ public class TaskLoader {
 	public TaskLoader(File taskFile, String npcName) {
 		this.taskFile = taskFile;
 		this.npcName = npcName;
+		QuestX.logMSG("TaskLoader Instantiated");
 	}
 
 	public void load() {
 		SyncConfiguration config = new SyncConfiguration(this.taskFile);
+		QuestX.logMSG("Reading config");
 		config.read();
+		QuestX.logMSG("Config read to memory");
+		
 		this.taskName = config.getString("TASK_NAME");
 
+		QuestX.logMSG("Reading fetch_items");
+		
 		if (!config.getString("FETCH_ITEMS").trim().equalsIgnoreCase("0")) {
 			this.retrieveItems = ISAParser.parseISA(config.getString("FETCH_ITEMS"));
 			this.fetchItems = true;
 		} else {
 			this.fetchItems = false;
 		}
+		
+		QuestX.logMSG("Reading reward_items");
 
 		if (!config.getString("REWARD_ITEMS").trim().equalsIgnoreCase("0")) {
 			this.rewardItems = ISAParser.parseISA(config.getString("REWARD_ITEMS"));
@@ -41,19 +50,27 @@ public class TaskLoader {
 			this.awardItems = false;
 		}
 		
+		QuestX.logMSG("Reading kill_entities");
+		
 		if (!config.getString("KILL_ENTITIES").trim().equalsIgnoreCase("0")) {
 			this.ekt = new EntityKillTracker(config.getString("KILL_ENTITIES"));
 			this.killEntities = true;
 		} else {
 			this.killEntities = false;
 		}
+		
+		this.taskDescription = config.getString("TASK_DESCRIPTION");
 
 		this.rewardExp = config.getInt("REWARD_EXP");
 		this.rewardRep = config.getInt("REWARD_REP");
 		
-		config.write();
+		QuestX.logMSG("TaskLoad Operation completed");
 	}
 
+	public String getTaskDescription(){
+		return this.taskDescription;
+	}
+	
 	public String getNpcName() {
 		return npcName;
 	}

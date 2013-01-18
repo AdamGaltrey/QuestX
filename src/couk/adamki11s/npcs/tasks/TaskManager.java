@@ -1,12 +1,11 @@
 package couk.adamki11s.npcs.tasks;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-
 import org.bukkit.Bukkit;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+
+import couk.adamki11s.questx.QuestX;
 
 public class TaskManager {
 
@@ -17,6 +16,7 @@ public class TaskManager {
 	public TaskManager(String playerName, TaskLoader task) {
 		this.pName = playerName;
 		this.currentTask = task;
+		QuestX.logMSG("TaskManager instantitated");
 	}
 
 	public TaskLoader getTaskLoader() {
@@ -29,6 +29,15 @@ public class TaskManager {
 
 	public void trackEntityKill(EntityType e) {
 		this.getTaskLoader().getEKT().trackKill(e);
+	}
+	
+	public String whatIsLeftToDo(){
+		//TODO
+		return null;
+	}
+	
+	public boolean isTaskComplete(){
+		return (this.areEntityKillsCompleted() && this.areRequiredItemsGathered());
 	}
 
 	boolean areEntityKillsCompleted() {

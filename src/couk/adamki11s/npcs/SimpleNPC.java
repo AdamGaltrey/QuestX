@@ -203,7 +203,7 @@ public class SimpleNPC {
 			if (!FileLocator.doesNPCDlgFileExist(this.getName())) {
 				p.sendMessage(ChatColor.AQUA + "[QuestX] " + ChatColor.RED + "No dialogue.dlg file found or it is empty!");
 			} else {
-				c = new Conversation(p, this);
+				c = new Conversation(p.getName(), this);
 				c.loadConversation();
 				c.startConversation();
 				Location pl = p.getLocation();

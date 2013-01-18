@@ -61,14 +61,13 @@ public class CreateNPC {
 		progFolder.mkdirs();
 
 		File prop = FileLocator.getNPCPropertiesFile(this.name), task = FileLocator.getNPCTaskFile(this.name), dlg = FileLocator.getNPCDlgFile(this.name), progress = FileLocator
-				.getNPCTaskProgressionFile(this.name), kills = FileLocator.getNPCTaskKillsFile(this.name);
+				.getNPCTaskProgressionFile(this.name);
 
 		try {
 			prop.createNewFile();
 			task.createNewFile();
 			dlg.createNewFile();
 			progress.createNewFile();
-			kills.createNewFile();
 		} catch (IOException iox) {
 			iox.printStackTrace();
 		}
@@ -94,22 +93,23 @@ public class CreateNPC {
 		syncConfig.write();
 
 		SyncWriter write = new SyncWriter(dlg);
-		write.addString("1#say#1#\"Default Speech.\"#a#e");
-		write.addString("1#reply#1#\"Default Response.\"");
+		write.addString("1#say#1#\"Give me a task!\"#a#t");
+		write.addString("1#reply#1#\"Okay!\"");
 		write.write();
 
 		syncConfig = new SyncConfiguration(task);
 		syncConfig.add("TASK_NAME", "Fetch, Kill, Return");
-		syncConfig.add("FETCH_ITEMS", "1:0:5,5:1:3,5:2:7");// Format -->
+		syncConfig.add("TASK_DESCRIPTION", "Fetch 5 stone and kill 7 cows");
+		syncConfig.add("FETCH_ITEMS", "1:0:5");// Format -->
 															// <id>:<data>:<quantity>,
-		syncConfig.add("KILL_ENTITIES:", EntityType.COW.toString() + ":7," + EntityType.CHICKEN.toString() + ":3"); // Format
+		syncConfig.add("KILL_ENTITIES", EntityType.COW.toString() + ":7"); // Format
 																											// -->
 																											// <entity>:<number
 																											// to
 																											// kill>,
-		syncConfig.add("REWARD_ITEMS:", "1:0:1");// item stacks
-		syncConfig.add("REWARD_EXP:", 5);// reward exp
-		syncConfig.add("REWARD_REP:", 0);// reward reputation
+		syncConfig.add("REWARD_ITEMS", "0");// item stacks
+		syncConfig.add("REWARD_EXP", "0");// reward exp
+		syncConfig.add("REWARD_REP", "0");// reward reputation
 		syncConfig.write();
 
 	}

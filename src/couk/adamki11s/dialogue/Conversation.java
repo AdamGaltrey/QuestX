@@ -14,6 +14,9 @@ import couk.adamki11s.events.ConversationRegister;
 import couk.adamki11s.io.FileLocator;
 import couk.adamki11s.npcs.NPCHandler;
 import couk.adamki11s.npcs.SimpleNPC;
+import couk.adamki11s.npcs.tasks.TaskLoader;
+import couk.adamki11s.npcs.tasks.TaskManager;
+import couk.adamki11s.npcs.tasks.TaskRegister;
 import couk.adamki11s.questx.QuestX;
 
 public class Conversation {
@@ -22,7 +25,7 @@ public class Conversation {
 	DialogueSet[] dialogue;
 	String currentNode = "1";
 	boolean conversing = false, indexSelected = false;
-	
+
 	final NPCHandler handle = new NPCHandler((JavaPlugin) QuestX.p);
 
 	public void respond(String s) {
@@ -35,8 +38,8 @@ public class Conversation {
 		}
 	}
 
-	public Conversation(Player p, SimpleNPC npc) {
-		this.convoData = new ConversationData(p, npc);
+	public Conversation(String pName, SimpleNPC npc) {
+		this.convoData = new ConversationData(pName, npc);
 	}
 
 	public void loadConversation() {
@@ -56,8 +59,8 @@ public class Conversation {
 		this.conversing = false;
 		ConversationRegister.playersConversing.remove(this);
 	}
-	
-	public boolean isConversing(){
+
+	public boolean isConversing() {
 		return this.conversing;
 	}
 
@@ -79,6 +82,12 @@ public class Conversation {
 	public void selectSpeechOption(int index) {
 		DialogueSet d = this.getDialogeSetFromNode(currentNode);
 		DialogueItem[] items = d.getItems();
+		QuestX.logMSG("Items length = " + items.length);
+		if(index > items.length || index < 1){
+			QuestX.logChat(this.getConvoData().getPlayer(), "Invalid chat option!");
+			this.displaySpeechOptions();
+			return;
+		}
 		DialogueItem selected = items[index - 1];
 		Player p = this.convoData.getPlayer();
 		if (selected.doesPlayerHaveRequiredRepLevel(p.getName())) {
@@ -90,9 +99,34 @@ public class Conversation {
 			System.out.println("Current node = " + this.currentNode);
 			this.currentNode = this.currentNode + index;
 			System.out.println("Current node = " + this.currentNode);
+			System.out.println("Trigger type = " + selTrigger.getTriggerType().toString());
 			if (selTrigger.getTriggerType() == TriggerType.END) {
 				this.endConversation();
 				return;
+			} else if (selTrigger.getTriggerType() == TriggerType.TASK) {
+				System.out.println("INSIDE TRIGGER code");
+				System.out.println("Does player have task = " + TaskRegister.doesPlayerHaveTask(p.getName()));
+				if(TaskRegister.doesPlayerHaveTask(p.getName())){
+					System.out.println("In has task code");
+					QuestX.logChat(p, ChatColor.RED + "You already have a task assigned!");
+					QuestX.logChat(p, ChatColor.WHITE + "/questx task cancel" + ChatColor.RED + " to cancel current task.");
+					this.endConversation();
+					return;
+				} else {
+					System.out.println("In has NOT task code");
+					TaskLoader tl = new TaskLoader(FileLocator.getNPCTaskFile(this.getConvoData().getSimpleNpc().getName()), this.getConvoData().getSimpleNpc().getName());
+					QuestX.logMSG("Loading task...");
+					tl.load();
+					QuestX.logMSG("Task Loaded!");
+					TaskManager manage = new TaskManager(p.getName(), tl);
+					TaskRegister.registerTask(manage);
+					QuestX.logChat(p, ChatColor.ITALIC + tl.getTaskName() + ChatColor.RESET + ChatColor.GREEN + " task started!");
+					QuestX.logChat(p, "Task description : " + tl.getTaskDescription());
+					p.sendMessage("Not recieving messages?");
+					QuestX.logMSG("Not recieving msgs?");
+					this.endConversation();
+					return;
+				}
 			} else {
 				this.displaySpeechOptions();
 			}
