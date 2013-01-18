@@ -30,18 +30,22 @@ public class TaskManager {
 	public void trackEntityKill(EntityType e) {
 		this.getTaskLoader().getEKT().trackKill(e);
 	}
-	
-	public String whatIsLeftToDo(){
-		//TODO
+
+	public String whatIsLeftToDo() {
+		// TODO
 		return null;
 	}
-	
-	public boolean isTaskComplete(){
-		return (this.areEntityKillsCompleted() && this.areRequiredItemsGathered());
+
+	public boolean isTaskCompleted() {
+		if (this.isTrackingEntityKills()) {
+			return (this.areEntityKillsCompleted() && this.areRequiredItemsGathered());
+		} else {
+			return this.areRequiredItemsGathered();
+		}
 	}
 
 	boolean areEntityKillsCompleted() {
-		return this.getTaskLoader().getEKT().areKillsCompleted();
+		return this.getTaskLoader().getEKT().areRequiredEntitiesKilled();
 	}
 
 	boolean areRequiredItemsGathered() {
@@ -52,8 +56,10 @@ public class TaskManager {
 			for (ItemStack is : req) {
 				int currentIsSum = 0;
 				for (ItemStack contained : pContents) {
-					if (contained.getTypeId() == is.getTypeId() && contained.getData().getData() == is.getData().getData()) {
-						currentIsSum += contained.getAmount();
+					if (contained != null) {
+						if (contained.getTypeId() == is.getTypeId() && contained.getData().getData() == is.getData().getData()) {
+							currentIsSum += contained.getAmount();
+						}
 					}
 				}
 				if (currentIsSum < is.getAmount()) {
@@ -70,9 +76,12 @@ public class TaskManager {
 		return this.pName;
 	}
 
-	public boolean isTaskCompleted() {
-		// TODO
-		return false;
+	public String getIncompleteTaskSpeech() {
+		return this.getTaskLoader().getIncompleteTaskSpeech();
+	}
+
+	public String getCompleteTaskSpeech() {
+		return this.getTaskLoader().getCompleteTaskSpeech();
 	}
 
 }

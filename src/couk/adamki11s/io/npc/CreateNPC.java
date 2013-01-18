@@ -101,12 +101,12 @@ public class CreateNPC {
 		syncConfig.add("TASK_NAME", "Fetch, Kill, Return");
 		syncConfig.add("TASK_DESCRIPTION", "Fetch 5 stone and kill 7 cows");
 		syncConfig.add("FETCH_ITEMS", "1:0:5");// Format -->
-															// <id>:<data>:<quantity>,
-		syncConfig.add("KILL_ENTITIES", EntityType.COW.toString() + ":7"); // Format
-																											// -->
-																											// <entity>:<number
-																											// to
-																											// kill>,
+												// <id>:<data>:<quantity>,
+		syncConfig.add("KILL_ENTITIES", EntityType.COW.toString() + ":7");
+		
+		syncConfig.add("INCOMPLETE_TASK_SPEECH", "Talk to me when you have finished the task!");
+		syncConfig.add("COMPLETE_TASK_SPEECH", "Congratulations, enjoy your reward!");
+		
 		syncConfig.add("REWARD_ITEMS", "0");// item stacks
 		syncConfig.add("REWARD_EXP", "0");// reward exp
 		syncConfig.add("REWARD_REP", "0");// reward reputation

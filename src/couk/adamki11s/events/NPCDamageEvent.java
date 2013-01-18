@@ -11,6 +11,7 @@ import org.bukkit.plugin.Plugin;
 
 import couk.adamki11s.npcs.NPCHandler;
 import couk.adamki11s.npcs.SimpleNPC;
+import couk.adamki11s.npcs.tasks.TaskRegister;
 
 public class NPCDamageEvent implements Listener{
 	

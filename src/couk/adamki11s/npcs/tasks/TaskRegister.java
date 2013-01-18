@@ -12,6 +12,15 @@ public class TaskRegister {
 		managers.add(tm);
 		QuestX.logMSG("Task added to Register");
 	}
+	
+	public static TaskManager getTaskManager(String pName){
+		for (TaskManager tm : managers) {
+			if (tm.getPlayerName().equalsIgnoreCase(pName)) {
+				return tm;
+			}
+		}
+		return null;
+	}
 
 	public static boolean doesPlayerHaveTask(String player) {
 		for (TaskManager tm : managers) {

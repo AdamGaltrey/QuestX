@@ -26,6 +26,9 @@ import couk.adamki11s.data.ItemStackDrop;
 import couk.adamki11s.dialogue.Conversation;
 import couk.adamki11s.events.ConversationRegister;
 import couk.adamki11s.io.FileLocator;
+import couk.adamki11s.npcs.tasks.TaskManager;
+import couk.adamki11s.npcs.tasks.TaskRegister;
+import couk.adamki11s.questx.QuestX;
 
 public class SimpleNPC {
 
@@ -200,6 +203,17 @@ public class SimpleNPC {
 
 	public void interact(Player p) {
 		if (!this.isConversing() && !this.isUnderAttack()) {
+			if(TaskRegister.doesPlayerHaveTask(p.getName())){
+				TaskManager tm = TaskRegister.getTaskManager(p.getName());
+				boolean completed = tm.isTaskCompleted();
+				if(!completed){
+					QuestX.logChat(p, tm.getIncompleteTaskSpeech());
+					return;
+				} else {
+					QuestX.logChat(p, tm.getCompleteTaskSpeech());
+					return;
+				}
+			}
 			if (!FileLocator.doesNPCDlgFileExist(this.getName())) {
 				p.sendMessage(ChatColor.AQUA + "[QuestX] " + ChatColor.RED + "No dialogue.dlg file found or it is empty!");
 			} else {

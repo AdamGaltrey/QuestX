@@ -6,9 +6,11 @@ import java.util.Map;
 
 import org.bukkit.entity.EntityType;
 
+import couk.adamki11s.questx.QuestX;
+
 public class EntityKillTracker {
 
-	HashSet<EntityType> types = new HashSet<EntityType>();
+	//HashSet<EntityType> types = new HashSet<EntityType>();
 	HashMap<EntityType, Integer> required = new HashMap<EntityType, Integer>();
 	HashMap<EntityType, Integer> current = new HashMap<EntityType, Integer>();
 
@@ -21,14 +23,16 @@ public class EntityKillTracker {
 		for (String parse : ents) {
 			String[] components = parse.split(":");
 			EntityType e = EntityType.valueOf(components[0]);
-			types.add(e);
+			//types.add(e);
 			int k = Integer.parseInt(components[1]);
 			this.required.put(e, k);
+			this.current.put(e, 0);
+			QuestX.logMSG("Loaded EntityType : " + e.toString() + ", amount = " + k);
 		}
 	}
 
 	public void trackKill(EntityType e) {
-		if (this.types.contains(e)) {
+		if (this.required.get(e) != null) {
 			int cur = this.current.get(e) + 1;
 			this.current.put(e, cur);
 		}
@@ -43,11 +47,6 @@ public class EntityKillTracker {
 			}
 		}
 		return true;
-	}
-
-	public boolean areKillsCompleted() {
-		// TODO
-		return false;
 	}
 
 }

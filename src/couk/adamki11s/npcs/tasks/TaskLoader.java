@@ -12,7 +12,7 @@ public class TaskLoader {
 	private final File taskFile;
 
 	final String npcName;
-	String taskName, taskDescription;
+	String taskName, taskDescription, incompleteTaskSpeech, completeTaskSpeech;
 	ItemStack[] retrieveItems, rewardItems;
 	int rewardExp, rewardRep;
 	EntityKillTracker ekt;
@@ -31,6 +31,10 @@ public class TaskLoader {
 		QuestX.logMSG("Config read to memory");
 		
 		this.taskName = config.getString("TASK_NAME");
+		this.taskDescription = config.getString("TASK_DESCRIPTION");
+		
+		this.incompleteTaskSpeech = config.getString("INCOMPLETE_TASK_SPEECH");
+		this.completeTaskSpeech = config.getString("COMPLETE_TASK_SPEECH");
 
 		QuestX.logMSG("Reading fetch_items");
 		
@@ -59,7 +63,7 @@ public class TaskLoader {
 			this.killEntities = false;
 		}
 		
-		this.taskDescription = config.getString("TASK_DESCRIPTION");
+		
 
 		this.rewardExp = config.getInt("REWARD_EXP");
 		this.rewardRep = config.getInt("REWARD_REP");
@@ -97,6 +101,14 @@ public class TaskLoader {
 	
 	public ItemStack[] getRequiredItems(){
 		return this.retrieveItems;
+	}
+
+	public String getIncompleteTaskSpeech() {
+		return incompleteTaskSpeech;
+	}
+
+	public String getCompleteTaskSpeech() {
+		return completeTaskSpeech;
 	}
 	
 	

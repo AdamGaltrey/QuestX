@@ -10,6 +10,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import couk.adamki11s.commands.QuestXCommands;
 import couk.adamki11s.events.ConversationRegister;
+import couk.adamki11s.events.EntityDeathMonitor;
 import couk.adamki11s.events.MovementMonitor;
 import couk.adamki11s.events.NPCDamageEvent;
 import couk.adamki11s.events.NPCInteractEvent;
@@ -29,6 +30,7 @@ public class QuestX extends JavaPlugin {
 	NPCInteractEvent npcInteractEvent;
 	ConversationRegister playerChatEvent;
 	MovementMonitor playerMoveEvent;
+	EntityDeathMonitor entityDeathMonitorEvent;
 
 	public static Plugin p;
 		
@@ -61,7 +63,7 @@ public class QuestX extends JavaPlugin {
 		npcInteractEvent = new NPCInteractEvent(this, handle);
 		playerChatEvent = new ConversationRegister(this, handle);
 		playerMoveEvent = new MovementMonitor(this, handle);
-
+		entityDeathMonitorEvent = new EntityDeathMonitor(this);
 		// register events
 
 		String name = "Adam";
