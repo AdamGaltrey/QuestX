@@ -39,8 +39,8 @@ public class CreateNPC {
 	int minPauseTicks, maxPauseTicks, maxVariation, respawnTicks, maxHealth, damageMod;
 	double retalliationMultiplier;
 
-	public void setProperties(boolean moveable, boolean attackable, boolean aggressive, boolean load, int minPauseTicks, int maxPauseTicks, int maxVariation,
-			int respawnTicks, int maxHealth, int damageMod, double retalliationMultiplier, String inventDrops, String gear) {
+	public void setProperties(boolean moveable, boolean attackable, boolean aggressive, boolean load, int minPauseTicks, int maxPauseTicks, int maxVariation, int respawnTicks,
+			int maxHealth, int damageMod, double retalliationMultiplier, String inventDrops, String gear) {
 		this.moveable = moveable;
 		this.attackable = attackable;
 		this.aggressive = aggressive;
@@ -60,12 +60,14 @@ public class CreateNPC {
 		folder.mkdirs();
 		progFolder.mkdirs();
 
-		File prop = FileLocator.getNPCPropertiesFile(this.name), task = FileLocator.getNPCTaskFile(this.name), dlg = FileLocator.getNPCDlgFile(this.name);
+		File prop = FileLocator.getNPCPropertiesFile(this.name), task = FileLocator.getNPCTaskFile(this.name), dlg = FileLocator.getNPCDlgFile(this.name), qLink = FileLocator
+				.getNPCQuestLinkFile(this.name);
 
 		try {
 			prop.createNewFile();
 			task.createNewFile();
 			dlg.createNewFile();
+			qLink.createNewFile();
 		} catch (IOException iox) {
 			iox.printStackTrace();
 		}
@@ -101,10 +103,10 @@ public class CreateNPC {
 		syncConfig.add("FETCH_ITEMS", "1:0:5");// Format -->
 												// <id>:<data>:<quantity>,
 		syncConfig.add("KILL_ENTITIES", EntityType.COW.toString() + ":7");
-		
+
 		syncConfig.add("INCOMPLETE_TASK_SPEECH", "Talk to me when you have finished the task!");
 		syncConfig.add("COMPLETE_TASK_SPEECH", "Congratulations, enjoy your reward!");
-		
+
 		syncConfig.add("REWARD_ITEMS", "0");// item stacks
 		syncConfig.add("REWARD_EXP", "0");// reward exp
 		syncConfig.add("REWARD_REP", "0");// reward reputation
