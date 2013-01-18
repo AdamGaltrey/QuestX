@@ -268,6 +268,7 @@ public class SimpleNPC {
 	public void despawnNPC() {
 		if (isSpawned) {
 			this.isSpawned = false;
+			this.unAggro();
 			this.handle.getNPCManager().despawnHumanByName(this.name);
 			this.randMovement = null;
 		}
