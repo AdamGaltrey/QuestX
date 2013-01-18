@@ -109,6 +109,7 @@ public class Conversation {
 				boolean alreadyDone = TaskRegister.hasPlayerCompletedTask(this.getConvoData().getSimpleNpc().getName(), p.getName());
 				if(alreadyDone){
 					QuestX.logChat(p, "You have already completed this task!");
+					this.endConversation();
 					return;
 				}
 				if(TaskRegister.doesPlayerHaveTask(p.getName())){
