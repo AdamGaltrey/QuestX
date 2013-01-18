@@ -123,5 +123,13 @@ public class SyncObjectIO extends ObjectIOStream {
 		}
 		return null;
 	}
+	
+	public void clearWriteArray(){
+		this.writeableData.clear();
+	}
+	
+	public void clearReadArray(){
+		this.readableData.clear();
+	}
 
 }

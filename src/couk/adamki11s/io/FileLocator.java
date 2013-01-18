@@ -51,5 +51,9 @@ public class FileLocator {
 	public static File getNPCFixedSpawnsFile(){
 		return new File(data_root + File.separator + "fixed_spawns.qxs");
 	}
+	
+	public static boolean doesNPCNameExist(String npcName){
+		return (getNPCRootDir(npcName).exists());
+	}
 
 }

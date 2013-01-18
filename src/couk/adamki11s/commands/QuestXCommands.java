@@ -1,5 +1,6 @@
 package couk.adamki11s.commands;
 
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -8,6 +9,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.Vector;
 
 import com.topcat.npclib.entity.HumanNPC;
 import couk.adamki11s.ai.RandomMovement;
@@ -18,6 +20,7 @@ import couk.adamki11s.dialogue.Conversation;
 import couk.adamki11s.npcs.NPCHandler;
 import couk.adamki11s.npcs.SimpleNPC;
 import couk.adamki11s.npcs.UniqueNameRegister;
+import couk.adamki11s.npcs.tasks.Fireworks;
 import couk.adamki11s.questx.QuestX;
 
 public class QuestXCommands implements CommandExecutor {
@@ -43,6 +46,7 @@ public class QuestXCommands implements CommandExecutor {
 				return true;
 			} else {
 				Player p = (Player) sender;
+				
 				
 				ItemStack[] gear = new ItemStack[]{null, null, null, null, new ItemStack(Material.WOOD_AXE)};
 
