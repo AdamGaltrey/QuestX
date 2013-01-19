@@ -34,7 +34,7 @@ public class AttackController {
 
 		Location loc = p.getLocation();
 		double var = ((double)npc.getMaxVariation()) * (npc.getRetalliationMultiplier()); //Adds var * RetalMultiplier to the attack radius
-		Location root = npc.getRootLocation();
+		Location root = npc.getSpawnedLocation();
 		Location bl = new Location(loc.getWorld(), root.getBlockX() - var, root.getBlockY() - var, root.getBlockZ() - var), tr = new Location(loc.getWorld(), root.getBlockX()
 				+ var, root.getBlockY() + var, root.getBlockZ() + var);
 

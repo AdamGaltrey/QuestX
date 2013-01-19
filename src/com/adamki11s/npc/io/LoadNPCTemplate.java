@@ -1,4 +1,4 @@
-package com.adamki11s.io.npc;
+package com.adamki11s.npc.io;
 
 import java.io.File;
 
@@ -48,9 +48,14 @@ public class LoadNPCTemplate {
 		}
 		return false;
 	}
+	
+	public NPCTemplate getLoadedNPCTemplate(){
+		return this.npcTemplate;
+	}
 
 	public void loadProperties() {
-		File prop = new File(folder + File.separator + FileLocator.propertyFile);
+		File prop = FileLocator.getNPCPropertiesFile(name);
+		//File prop = new File(folder + File.separator + FileLocator.propertyFile);
 		if (prop.exists()) {
 			SyncConfiguration conf = new SyncConfiguration(prop);
 			conf.read();
@@ -59,6 +64,7 @@ public class LoadNPCTemplate {
 
 			this.moveable = conf.getBoolean(NPCTag.MOVEABLE.toString());
 			this.attackable = conf.getBoolean(NPCTag.ATTACKABLE.toString());
+			System.out.println("Is attackable = " + this.attackable);
 			this.aggressive = conf.getBoolean(NPCTag.AGGRESSIVE.toString());
 
 			this.minPauseTicks = conf.getInt(NPCTag.MIN_PAUSE_TICKS.toString());
@@ -86,7 +92,7 @@ public class LoadNPCTemplate {
 
 			if (!unload) {
 				// create template npc
-				this.npcTemplate = new NPCTemplate(gear, nameColour, aggressive, aggressive, aggressive, damageMod, damageMod, damageMod, damageMod, damageMod, itemStackDrop,
+				this.npcTemplate = new NPCTemplate(name, nameColour, moveable, attackable, aggressive, minPauseTicks, maxPauseTicks, maxVariation, maxHealth, respawnTicks, itemStackDrop,
 						npcGear, damageMod, retalliationMultiplier);
 			}
 

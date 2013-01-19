@@ -15,7 +15,7 @@ import com.adamki11s.events.MovementMonitor;
 import com.adamki11s.events.NPCDamageEvent;
 import com.adamki11s.events.NPCInteractEvent;
 import com.adamki11s.io.InitialSetup;
-import com.adamki11s.io.npc.CreateNPC;
+import com.adamki11s.npc.io.CreateNPC;
 import com.adamki11s.npcs.NPCHandler;
 import com.adamki11s.npcs.loading.FixedLoadingTable;
 import com.adamki11s.threads.ThreadController;
@@ -50,14 +50,13 @@ public class QuestX extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
-		
-		System.out.println("hotspot test");
+		handle = new NPCHandler(this);
 
 		InitialSetup.run();
 		
-		FixedLoadingTable.registerFixedNPCSpawns();
+		FixedLoadingTable.spawnFixedNPCS(handle);
 
-		handle = new NPCHandler(this);
+		
 		p = this;
 		this.getCommand("QuestX").setExecutor(new QuestXCommands(this));
 		this.tControl = new ThreadController(handle);

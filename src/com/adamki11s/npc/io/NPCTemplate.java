@@ -1,9 +1,12 @@
-package com.adamki11s.io.npc;
+package com.adamki11s.npc.io;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
 
 import com.adamki11s.data.ItemStackDrop;
+import com.adamki11s.npcs.NPCHandler;
+import com.adamki11s.npcs.SimpleNPC;
 
 
 public class NPCTemplate {
@@ -32,6 +35,14 @@ public class NPCTemplate {
 		this.gear = gear;
 		this.damageMod = damageMod;
 		this.retalliationMultiplier = retalliationMultiplier;
+	}
+	
+	
+	//int health, int respawnTicks, ItemStackDrop inventory, ItemStack[] gear, int damageMod, double retalliationMultiplier) {
+	public void registerSimpleNPCFixedSpawn(NPCHandler handle, Location fixedLocation){
+		SimpleNPC snpc = new SimpleNPC(handle, name, nameColour, moveable, attackable, aggressive, minPauseTicks, maxPauseTicks, maxVariation, maxHealth, respawnTicks, inventory, gear, damageMod, retalliationMultiplier);
+		snpc.setFixedLocation(fixedLocation);
+		snpc.spawnNPC();
 	}
 
 }

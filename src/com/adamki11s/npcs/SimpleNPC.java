@@ -21,6 +21,7 @@ import com.adamki11s.data.ItemStackDrop;
 import com.adamki11s.dialogue.Conversation;
 import com.adamki11s.events.ConversationRegister;
 import com.adamki11s.io.FileLocator;
+import com.adamki11s.npcs.spawning.NPCSpawnController;
 import com.adamki11s.npcs.tasks.TaskManager;
 import com.adamki11s.npcs.tasks.TaskRegister;
 import com.adamki11s.questx.QuestX;
@@ -29,12 +30,10 @@ import com.topcat.npclib.entity.NPC;
 
 //import net.minecraft.server.EntityLiving;
 
-
 public class SimpleNPC {
 
 	final String name;
 	final ChatColor nameColour;
-	final Location rootLocation;
 	final boolean moveable, attackable, aggressive;
 	final int minPauseTicks, maxPauseTicks, maxVariation, respawnTicks, maxHealth, damageMod;
 	final double retalliationMultiplier;
@@ -48,6 +47,9 @@ public class SimpleNPC {
 
 	final NPCHandler handle;
 
+	Location fixedLocation, spawnedLocation;
+	boolean isSpawnFixed = false;
+
 	HumanNPC npc;
 	boolean isSpawned = false, underAttack = false;
 
@@ -55,12 +57,11 @@ public class SimpleNPC {
 
 	int health;
 
-	public SimpleNPC(NPCHandler handle, String name, ChatColor nameColour, Location rootLocation, boolean moveable, boolean attackable, boolean aggressive, int minPauseTicks,
-			int maxPauseTicks, int maxVariation, int health, int respawnTicks, ItemStackDrop inventory, ItemStack[] gear, int damageMod, double retalliationMultiplier) {
+	public SimpleNPC(NPCHandler handle, String name, ChatColor nameColour, boolean moveable, boolean attackable, boolean aggressive, int minPauseTicks, int maxPauseTicks, int maxVariation,
+			int health, int respawnTicks, ItemStackDrop inventory, ItemStack[] gear, int damageMod, double retalliationMultiplier) {
 		UniqueNameRegister.addNPCName(name);
 		this.name = name;
 		this.nameColour = nameColour;
-		this.rootLocation = rootLocation;
 		this.moveable = moveable;
 		this.attackable = attackable;
 		this.aggressive = aggressive;
@@ -76,6 +77,27 @@ public class SimpleNPC {
 		this.retalliationMultiplier = retalliationMultiplier;
 
 		handle.registerNPC(this);
+	}
+
+	public void setFixedLocation(Location l) {
+		this.isSpawnFixed = true;
+		this.fixedLocation = l;
+	}
+	
+	public void setNewSpawnLocation(Location l){
+		this.spawnedLocation = l;
+	}
+	
+	public Location getFixedLocation(){
+		return this.fixedLocation;
+	}
+	
+	public Location getSpawnedLocation(){
+		return this.spawnedLocation;
+	}
+	
+	public boolean isSpawnFixed(){
+		return this.isSpawnFixed;
 	}
 
 	public double getRetalliationMultiplier() {
@@ -244,7 +266,9 @@ public class SimpleNPC {
 			this.health = this.maxHealth;
 			this.waitedSpawnTicks = 0;
 			System.out.println("Spawning NPC " + this.getName());
-			this.npc = (HumanNPC) this.handle.getNPCManager().spawnHumanNPC(this.name, this.rootLocation);
+			Location toSpawn = NPCSpawnController.getRespawnLocation(this);
+			this.spawnedLocation = toSpawn;
+			this.npc = (HumanNPC) this.handle.getNPCManager().spawnHumanNPC(this.name, toSpawn);
 			isSpawned = true;
 			this.setBoots(this.gear[0]);
 			this.setLegs(this.gear[1]);
@@ -252,7 +276,7 @@ public class SimpleNPC {
 			this.setHelmet(this.gear[3]);
 			this.setItemInHand(this.gear[4]);
 			if (moveable) {
-				this.randMovement = new RandomMovement(this, this.rootLocation, this.minPauseTicks, this.maxPauseTicks, this.maxVariation);
+				this.randMovement = new RandomMovement(this, toSpawn, this.minPauseTicks, this.maxPauseTicks, this.maxVariation);
 			}
 		}
 	}
@@ -310,10 +334,6 @@ public class SimpleNPC {
 
 	public ChatColor getNameColour() {
 		return nameColour;
-	}
-
-	public Location getRootLocation() {
-		return rootLocation;
 	}
 
 	public boolean isMoveable() {
