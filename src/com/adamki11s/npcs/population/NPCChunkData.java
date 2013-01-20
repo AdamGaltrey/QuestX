@@ -3,14 +3,12 @@ package com.adamki11s.npcs.population;
 public class NPCChunkData {
 	
 	final int x, z;
-	final String world;
 	
 	int spawnCount = 0;
 	
-	public NPCChunkData(int x, int z, String world) {
+	public NPCChunkData(int x, int z) {
 		this.x = x;
 		this.z = z;
-		this.world = world;
 	}
 	
 	public void increaseSpawnCount(){
@@ -32,11 +30,5 @@ public class NPCChunkData {
 	public int getZ() {
 		return z;
 	}
-
-	public String getWorld() {
-		return world;
-	}
-	
-	
 
 }

@@ -295,6 +295,9 @@ public class SimpleNPC {
 			this.unAggro();
 			this.handle.getNPCManager().despawnHumanByName(this.name);
 			this.randMovement = null;
+			if(!this.isSpawnFixed()){
+				this.handle.removeNPC(this);
+			}
 		}
 	}
 
