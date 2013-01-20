@@ -4,7 +4,6 @@ import com.adamki11s.ai.MovementController;
 import com.adamki11s.ai.RespawnController;
 import com.adamki11s.npcs.NPCHandler;
 
-
 public class SyncThread implements Runnable {
 
 	final NPCHandler handle;
@@ -14,7 +13,10 @@ public class SyncThread implements Runnable {
 		this.handle = handle;
 		this.tickRate = tickRate;
 	}
-	
+
+	public void onShutdown() {
+
+	}
 
 	@Override
 	public void run() {

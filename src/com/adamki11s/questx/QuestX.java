@@ -15,8 +15,8 @@ import com.adamki11s.events.MovementMonitor;
 import com.adamki11s.events.NPCDamageEvent;
 import com.adamki11s.events.NPCInteractEvent;
 import com.adamki11s.io.InitialSetup;
-import com.adamki11s.npc.io.CreateNPC;
 import com.adamki11s.npcs.NPCHandler;
+import com.adamki11s.npcs.io.CreateNPC;
 import com.adamki11s.npcs.loading.FixedLoadingTable;
 import com.adamki11s.threads.ThreadController;
 
@@ -71,11 +71,11 @@ public class QuestX extends JavaPlugin {
 		entityDeathMonitorEvent = new EntityDeathMonitor(this);
 		// register events
 
-		String name = "Adam";
+		/*String name = "Adam";
 
-		boolean unique = CreateNPC.isNameUnique(name);
+		boolean unique = CreateNPC.isNameUnique(name);*/
 
-		if (unique) {
+		/*if (unique) {
 
 			CreateNPC create = new CreateNPC(name, ChatColor.RED);
 
@@ -86,7 +86,7 @@ public class QuestX extends JavaPlugin {
 
 		} else {
 			System.out.println("[QuestX] An NPC with this name already exists!");
-		}
+		}*/
 
 		// Updater updater = new Updater(this, "bukkitdev_slug", this.getFile(),
 		// Updater.UpdateType.DEFAULT, false);//Final boolean = show dl progress
@@ -94,7 +94,8 @@ public class QuestX extends JavaPlugin {
 
 	@Override
 	public void onDisable() {
-
+		tControl.terminateAsyncThread();
+		tControl.terminateSyncronousThread();
 	}
 
 }

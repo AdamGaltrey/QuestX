@@ -40,6 +40,14 @@ public class FileLocator {
 		return new File(npc_data_root + File.separator + npcName + File.separator + "Progression" + File.separator + playerName + ".prog");
 	}
 	
+	public static File getPlayerPopulationDensityDatabase(){
+		return new File(data_root + File.separator + "pop_density.db");
+	}
+	
+	public static File getWorldConfig(){
+		return new File(data_root + File.separator + "npc_world_config.txt");
+	}
+	
 	public static void createPlayerNPCProgressionFile(String npcName, String playerName){
 		try {
 			new File(npc_data_root + File.separator + npcName + File.separator + "Progression" + File.separator + playerName + ".prog").createNewFile();

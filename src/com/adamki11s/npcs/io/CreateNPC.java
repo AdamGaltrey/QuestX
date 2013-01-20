@@ -1,4 +1,4 @@
-package com.adamki11s.npc.io;
+package com.adamki11s.npcs.io;
 
 import java.io.File;
 import java.io.IOException;

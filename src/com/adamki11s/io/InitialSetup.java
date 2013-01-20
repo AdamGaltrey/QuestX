@@ -5,6 +5,7 @@ import java.io.IOException;
 
 import org.bukkit.Bukkit;
 
+import com.adamki11s.sync.io.configuration.SyncConfiguration;
 import com.adamki11s.sync.io.objects.SyncObjectIO;
 
 
@@ -21,6 +22,15 @@ public class InitialSetup {
 			SyncObjectIO io = new SyncObjectIO(f);
 			io.add("NPC_COUNT", 0);
 			io.write();
+		}
+		File wConfig = FileLocator.getWorldConfig();
+		if(!wConfig.exists()){
+			fileSetup(wConfig);
+			SyncConfiguration conf = new SyncConfiguration(wConfig);
+			conf.add("SPAWNABLE_WORLDS", "world");
+			conf.addComment("List the worlds in which you want NPC's to spawn in, if you do not want NPC's spawning in a certain world simply exclude their name from the list.");
+			conf.addComment("Multiple Worlds should be delimited by commas as such world1,world2,world3");
+			conf.write();
 		}
 	}
 

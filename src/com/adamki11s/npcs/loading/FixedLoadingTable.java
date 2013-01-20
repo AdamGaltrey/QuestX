@@ -7,9 +7,9 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import com.adamki11s.io.FileLocator;
-import com.adamki11s.npc.io.LoadNPCTemplate;
-import com.adamki11s.npc.io.NPCTemplate;
 import com.adamki11s.npcs.NPCHandler;
+import com.adamki11s.npcs.io.LoadNPCTemplate;
+import com.adamki11s.npcs.io.NPCTemplate;
 import com.adamki11s.questx.QuestX;
 import com.adamki11s.sync.io.objects.SyncObjectIO;
 import com.adamki11s.sync.io.objects.SyncWrapper;
