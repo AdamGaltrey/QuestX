@@ -23,15 +23,18 @@ public class PopulationDensityThread implements Runnable {
 	final File db;
 	final SyncSQL sql;
 	String[] worlds;
+	
+	int gdCacheUpdate = 0;
 
 	HashMap<String, PreparedStatement[]> preparedStatements = new HashMap<String, PreparedStatement[]>();
 
 	public PopulationDensityThread() {
 		this.db = FileLocator.getPlayerPopulationDensityDatabase();
 		this.sql = new SyncSQL(this.db);
-		this.loadWorldsToSpawn();
+		this.worlds = WorldConfigData.getWorlds();
 		this.initiateSQLite();
 		this.loadPreparedStatements();
+		GlobalDensityCache.updateGlobalDensity(this.sql, worlds);
 	}
 
 	void loadPreparedStatements() {
@@ -63,21 +66,6 @@ public class PopulationDensityThread implements Runnable {
 		}
 	}
 
-	void loadWorldsToSpawn() {
-		File f = FileLocator.getWorldConfig();
-		SyncConfiguration conf = new SyncConfiguration(f);
-		conf.read();
-		String raw = conf.getString("SPAWNABLE_WORLDS");
-		StringBuilder trimmed = new StringBuilder();
-		for (String s : raw.split(",")) {
-			trimmed.append(s.trim()).append(",");
-		}
-		this.worlds = trimmed.toString().split(",");
-		for (String s : this.worlds) {
-			QuestX.logMSG("World = '" + s + "'");
-		}
-	}
-
 	void initiateSQLite() {
 		QuestX.logMSG("Connecting to SQLite database...");
 		if (this.sql.initialise()) {
@@ -89,7 +77,7 @@ public class PopulationDensityThread implements Runnable {
 			try {
 				if (!this.sql.doesTableExist(w.getName())) {
 					String worldTable = "CREATE TABLE " + w.getName()
-							+ "('id' INTEGER PRIMARY KEY AUTOINCREMENT, 'x' INTEGER NOT NULL, 'z' INTEGER NOT NULL, 'density' BIGINT NOT NULL)";
+							+ "('id' INTEGER PRIMARY KEY AUTOINCREMENT, 'x' INTEGER NOT NULL, 'z' INTEGER NOT NULL, 'density' INTEGER NOT NULL)";
 					String insert = "INSERT INTO " + w.getName() + " (x,z,density) VALUES (0,0,0)";
 					QuestX.logMSG("Creating SQLite table '" + w.getName() + "'.");
 					this.sql.standardQuery(worldTable);
@@ -115,6 +103,14 @@ public class PopulationDensityThread implements Runnable {
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
+		
+		if(this.gdCacheUpdate < 25){
+			this.gdCacheUpdate++;
+		} else {
+			this.gdCacheUpdate = 0;
+			GlobalDensityCache.updateGlobalDensity(this.sql, worlds);
+		}
+		
 		QuestX.logMSG("Updating , time elapsed = 5 minutes");
 		if (Bukkit.getServer().getOnlinePlayers().length < 1) {
 			return;
@@ -161,7 +157,7 @@ public class PopulationDensityThread implements Runnable {
 		
 		for(ChunkDensity cd : density){
 			try {
-				QuestX.logMSG("Updating data for chunk (" + cd.getX() + ", " + cd.getZ() + ")");
+				QuestX.logMSG("Updating data for chunk (" + cd.getX() + ", " + cd.getZ() + ") World - " + worldName);
 				preps[0].setInt(1, cd.getX());
 				preps[0].setInt(2, cd.getZ());
 				ResultSet xzCheck = preps[0].executeQuery();

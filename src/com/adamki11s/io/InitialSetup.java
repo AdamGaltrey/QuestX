@@ -5,6 +5,7 @@ import java.io.IOException;
 
 import org.bukkit.Bukkit;
 
+import com.adamki11s.npcs.population.WorldConfigData;
 import com.adamki11s.sync.io.configuration.SyncConfiguration;
 import com.adamki11s.sync.io.objects.SyncObjectIO;
 
@@ -27,11 +28,16 @@ public class InitialSetup {
 		if(!wConfig.exists()){
 			fileSetup(wConfig);
 			SyncConfiguration conf = new SyncConfiguration(wConfig);
+			conf.add("MAX_SPAWNS_PER_CHUNK", 2);
+			conf.add("MAX_SPAWNS_PER_WORLD", 200);
+			conf.add("DESPAWN_IFUNTOUCHED_MINUTES", 45);
+			conf.addComment("After how many minutes this NPC will despawn if no one has interacted with it. Does not apply to fixed spawns");
 			conf.add("SPAWNABLE_WORLDS", "world");
 			conf.addComment("List the worlds in which you want NPC's to spawn in, if you do not want NPC's spawning in a certain world simply exclude their name from the list.");
 			conf.addComment("Multiple Worlds should be delimited by commas as such world1,world2,world3");
 			conf.write();
 		}
+		WorldConfigData.loadWorldConfigData();
 	}
 
 	static void folderSetup(File f) {
