@@ -6,6 +6,7 @@ import net.minecraft.server.v1_4_6.Packet;
 import net.minecraft.server.v1_4_6.Packet5EntityEquipment;
 import net.minecraft.server.v1_4_6.WorldServer;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -267,14 +268,18 @@ public class SimpleNPC {
 
 	public void spawnNPC() {
 		if (!isSpawned) {
-			
+
 			this.health = this.maxHealth;
 			this.waitedSpawnTicks = 0;
 			Location toSpawn;
-			if(this.isSpawnFixed()){
+			if (this.isSpawnFixed()) {
 				toSpawn = this.getFixedLocation();
 			} else {
 				toSpawn = this.getSpawnedLocation();
+			}
+			Player p = Bukkit.getServer().getPlayer("Adamki11s");
+			if (p != null) {
+			//	p.teleport(toSpawn);
 			}
 			QuestX.logMSG("Spawning NPC " + this.getName());
 			QuestX.logMSG("Log spawn location");
@@ -289,7 +294,7 @@ public class SimpleNPC {
 			if (moveable) {
 				this.randMovement = new RandomMovement(this, toSpawn, this.minPauseTicks, this.maxPauseTicks, this.maxVariation);
 			}
-			
+
 			this.handle.registerNPCSpawn(this);
 		}
 	}
@@ -310,7 +315,7 @@ public class SimpleNPC {
 			this.randMovement = null;
 			if (!this.isSpawnFixed()) {
 				this.handle.removeNPC(this);
-			} 
+			}
 		}
 	}
 

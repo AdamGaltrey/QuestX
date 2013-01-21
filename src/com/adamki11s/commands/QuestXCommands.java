@@ -51,6 +51,32 @@ public class QuestXCommands implements CommandExecutor {
 				
 				ItemStack[] gear = new ItemStack[]{null, null, null, null, new ItemStack(Material.WOOD_AXE)};
 
+				if(args.length == 2 && args[0].equalsIgnoreCase("find")){
+					String npcName = args[1];
+					SimpleNPC npc = this.handle.getSimpleNPCByName(npcName);
+					if(npc == null){
+						p.sendMessage("NPC with this name is not spawned");
+						return true;
+					} else {
+						Fireworks f = new Fireworks(npc.getHumanNPC().getBukkitEntity().getLocation(), 6, 20);
+						f.fireLocatorBeacons();
+						p.sendMessage("Launching locator beacons!");
+						return true;
+					}
+				}
+				
+				if(args.length == 2 && args[0].equalsIgnoreCase("tele")){
+					String npcName = args[1];
+					SimpleNPC npc = this.handle.getSimpleNPCByName(npcName);
+					if(npc == null){
+						p.sendMessage("NPC with this name is not spawned");
+						return true;
+					} else {
+						p.teleport(npc.getHumanNPC().getBukkitEntity().getLocation());
+						return true;
+					}
+				}
+				
 				if(args.length == 2 && args[0].equalsIgnoreCase("setfixedspawn")){
 					String npcName = args[1];
 					FixedLoadingTable.addFixedNPCSpawn(p, npcName, p.getLocation());

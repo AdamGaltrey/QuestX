@@ -109,7 +109,7 @@ public class NPCHandler {
 		if (front == null) {
 			QuestX.logMSG("Spawned npc is null, breaking...");
 		} else {
-			QuestX.logMSG("Setting new npc spawn location...");
+			//QuestX.logMSG("Setting new npc spawn location...");
 			front.setNewSpawnLocation(l);
 			QuestX.logMSG("Spawning NPC...");
 			front.spawnNPC();

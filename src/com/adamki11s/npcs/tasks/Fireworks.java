@@ -25,6 +25,30 @@ public class Fireworks {
 		this.sectors = sectors;
 	}
 	
+	public void fireLocatorBeacons(){
+		Bukkit.getServer().getScheduler().runTaskAsynchronously(QuestX.p, new Runnable(){ 
+			
+			public void run(){
+				for(int i = 1; i < 20; i++){
+					Location launch = new Location(root.getWorld(), root.getX(), 70 + i, root.getZ());
+					Firework fw = root.getWorld().spawn(launch, Firework.class);
+					FireworkMeta fwm = fw.getFireworkMeta();
+					FireworkEffect effect = FireworkEffect.builder().withColor(Color.fromRGB(r.nextInt(255) + 1, r.nextInt(255) + 1, r.nextInt(255) + 1))
+							.with(Type.BALL_LARGE).build();
+					fwm.addEffects(effect);
+					fwm.setPower(0);
+					fw.setFireworkMeta(fwm);
+					try {
+						Thread.sleep(200);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+			
+		});
+	}
+	
 	public void circularDisplay(){
 		Bukkit.getServer().getScheduler().runTaskAsynchronously(QuestX.p, new Runnable(){ 
 			

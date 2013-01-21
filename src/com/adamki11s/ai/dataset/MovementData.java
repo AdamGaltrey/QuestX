@@ -27,27 +27,37 @@ public class MovementData {
 		br.add(maxVariation, maxVariation, maxVariation);
 	}
 
+	final int failsafeIterations = 50;
+
 	public void generate() {
 		Random r = new Random();
 		int rx = rootPoint.getBlockX(), ry = rootPoint.getBlockY(), rz = rootPoint.getBlockZ(), dx, dy, dz;
 		World w = this.rootPoint.getWorld();
-
+		int it = 0;
 		do {
 			dx = r.nextInt(maxVariation * 2) - maxVariation;
 			dy = r.nextInt(maxVariation * 2) - maxVariation;
 			dz = r.nextInt(maxVariation * 2) - maxVariation;
+			it++;
+			if (it > this.failsafeIterations) {
+				break;
+			}
 		} while (!canMoveHere(w, dx, dy, dz, rx, ry, rz));
-		
-		this.endPoint = new Location(w, (rx + dx), (ry + dy) - 1, (rz + dz));
-		this.pauseTicks = r.nextInt(maxPauseTicks - minPauseTicks) + minPauseTicks;
+
+		if (it > this.failsafeIterations) {
+			return;
+		} else {
+			this.endPoint = new Location(w, (rx + dx), (ry + dy) - 1, (rz + dz));
+			this.pauseTicks = r.nextInt(maxPauseTicks - minPauseTicks) + minPauseTicks;
+		}
 	}
 
 	private boolean canMoveHere(World w, int dx, int dy, int dz, int rx, int ry, int rz) {
-		if(dx == 0 && dy == 0 && dz == 0){
+		if (dx == 0 && dy == 0 && dz == 0) {
 			return false;
 		}
 		Block b = w.getBlockAt((rx + dx), (ry + dy) - 1, (rz + dz));
-		b.setType(Material.EMERALD_BLOCK);
+		// b.setType(Material.EMERALD_BLOCK);
 		return (!b.isLiquid() && b.getTypeId() != 0 && b.getRelative(0, 1, 0).getTypeId() == 0 && b.getRelative(0, 2, 0).getTypeId() == 0);
 	}
 
