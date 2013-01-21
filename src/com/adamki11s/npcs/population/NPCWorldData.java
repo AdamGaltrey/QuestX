@@ -4,7 +4,7 @@ public class NPCWorldData {
 	
 	final String world;
 	final int maxSpawns = WorldConfigData.getMaxSpawnsPerWorld();
-	int currentSpawns;
+	int currentSpawns = 0;
 	
 	public NPCWorldData(String world){
 		this.world = world;

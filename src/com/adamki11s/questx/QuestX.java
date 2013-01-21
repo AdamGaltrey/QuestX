@@ -19,6 +19,7 @@ import com.adamki11s.io.InitialSetup;
 import com.adamki11s.npcs.NPCHandler;
 import com.adamki11s.npcs.io.CreateNPC;
 import com.adamki11s.npcs.loading.FixedLoadingTable;
+import com.adamki11s.npcs.population.WorldConfigData;
 import com.adamki11s.threads.ThreadController;
 
 
@@ -37,7 +38,7 @@ public class QuestX extends JavaPlugin {
 
 	public static Plugin p;
 		
-	public static final void logMSG(String msg){
+	public static synchronized void logMSG(String msg){
 		log.info("[QuestX] " + msg);
 	}
 	
@@ -55,9 +56,12 @@ public class QuestX extends JavaPlugin {
 	public void onEnable() {
 
 		
-		handle = new NPCHandler(this, null);
+		
 
 		InitialSetup.run();
+		
+		handle = new NPCHandler(this, WorldConfigData.getWorlds());
+		
 		
 		FixedLoadingTable.spawnFixedNPCS(handle);
 

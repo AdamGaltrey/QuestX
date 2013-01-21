@@ -20,7 +20,7 @@ public class GlobalDensityCache {
 			if(!nodes.containsKey(w)){
 				nodes.put(w, new LinkedHashMap<NPCChunkData, Long>());
 			}
-			String query = "SELECT * FROM " + w;
+			String query = "SELECT * FROM " + w + " ORDER BY density ASC";
 			long gDensity = 0;
 			try {
 				ResultSet set = sql.sqlQuery(query);

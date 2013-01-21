@@ -29,6 +29,8 @@ public class WorldConfigData {
 		maxSpawnsPerChunk = conf.getInt("MAX_SPAWNS_PER_CHUNK");
 		maxSpawnsPerWorld = conf.getInt("MAX_SPAWNS_PER_WORLD");
 		untouchedDespawnMinutes = conf.getInt("DESPAWN_IFUNTOUCHED_MINUTES");
+		
+		QuestX.logMSG("Max spawns per world = " + maxSpawnsPerWorld);
 	}
 
 	public static String[] getWorlds() {

@@ -7,6 +7,7 @@ import org.bukkit.inventory.ItemStack;
 import com.adamki11s.data.ItemStackDrop;
 import com.adamki11s.npcs.NPCHandler;
 import com.adamki11s.npcs.SimpleNPC;
+import com.adamki11s.questx.QuestX;
 
 
 public class NPCTemplate {
@@ -43,6 +44,12 @@ public class NPCTemplate {
 		SimpleNPC snpc = new SimpleNPC(handle, name, nameColour, moveable, attackable, aggressive, minPauseTicks, maxPauseTicks, maxVariation, maxHealth, respawnTicks, inventory, gear, damageMod, retalliationMultiplier);
 		snpc.setFixedLocation(fixedLocation);
 		snpc.spawnNPC();
+	}
+	
+	public void addSimpleNPCToWaitingList(NPCHandler handle){
+		QuestX.logMSG("Adding new simple npc to list");
+		SimpleNPC snpc = new SimpleNPC(handle, name, nameColour, moveable, attackable, aggressive, minPauseTicks, maxPauseTicks, maxVariation, maxHealth, respawnTicks, inventory, gear, damageMod, retalliationMultiplier);
+		handle.addToWaitingList(snpc);
 	}
 
 }

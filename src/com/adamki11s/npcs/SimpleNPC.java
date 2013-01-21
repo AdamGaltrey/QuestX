@@ -21,7 +21,6 @@ import com.adamki11s.data.ItemStackDrop;
 import com.adamki11s.dialogue.Conversation;
 import com.adamki11s.events.ConversationRegister;
 import com.adamki11s.io.FileLocator;
-import com.adamki11s.npcs.spawning.NPCSpawnController;
 import com.adamki11s.npcs.tasks.TaskManager;
 import com.adamki11s.npcs.tasks.TaskRegister;
 import com.adamki11s.questx.QuestX;
@@ -85,6 +84,8 @@ public class SimpleNPC {
 	}
 
 	public void setNewSpawnLocation(Location l) {
+		QuestX.logMSG("Setting new spawn location");
+		QuestX.logMSG(l.toString());
 		this.spawnedLocation = l;
 	}
 
@@ -266,13 +267,19 @@ public class SimpleNPC {
 
 	public void spawnNPC() {
 		if (!isSpawned) {
-
+			
 			this.health = this.maxHealth;
 			this.waitedSpawnTicks = 0;
-			System.out.println("Spawning NPC " + this.getName());
-			Location toSpawn = NPCSpawnController.getRespawnLocation(this);
-			this.spawnedLocation = toSpawn;
-			this.npc = (HumanNPC) this.handle.getNPCManager().spawnHumanNPC(this.name, toSpawn);
+			Location toSpawn;
+			if(this.isSpawnFixed()){
+				toSpawn = this.getFixedLocation();
+			} else {
+				toSpawn = this.getSpawnedLocation();
+			}
+			QuestX.logMSG("Spawning NPC " + this.getName());
+			QuestX.logMSG("Log spawn location");
+			QuestX.logMSG(toSpawn.toString());
+			this.npc = (HumanNPC) this.handle.getNPCManager().spawnHumanNPC(this.name, this.getSpawnedLocation());
 			isSpawned = true;
 			this.setBoots(this.gear[0]);
 			this.setLegs(this.gear[1]);

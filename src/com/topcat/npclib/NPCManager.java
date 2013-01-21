@@ -25,6 +25,7 @@ import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.adamki11s.questx.QuestX;
 import com.topcat.npclib.entity.HumanNPC;
 import com.topcat.npclib.entity.NPC;
 import com.topcat.npclib.nms.BServer;
@@ -116,6 +117,13 @@ public class NPCManager {
 			id = name + i;
 			i++;
 		}
+		QuestX.logMSG("Log Name ---");
+		QuestX.logMSG(name);
+		QuestX.logMSG("Log Location ---");
+		QuestX.logMSG(l.toString());
+		QuestX.logMSG("Log ID ---");
+		QuestX.logMSG(id);
+
 		return spawnHumanNPC(name, l, id);
 	}
 
