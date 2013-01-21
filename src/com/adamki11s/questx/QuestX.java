@@ -50,7 +50,7 @@ public class QuestX extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
-		handle = new NPCHandler(this);
+		handle = new NPCHandler(this, null);
 
 		InitialSetup.run();
 		

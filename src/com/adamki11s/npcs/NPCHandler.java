@@ -25,9 +25,11 @@ public class NPCHandler {
 
 	public NPCHandler(JavaPlugin main, String worlds[]) {
 		npc = new NPCManager(main);
-		for (String w : worlds) {
-			npcWorldData.add(new NPCWorldData(w));
-			npcChunkData.put(w, new HashSet<NPCChunkData>());
+		if (worlds != null) {
+			for (String w : worlds) {
+				npcWorldData.add(new NPCWorldData(w));
+				npcChunkData.put(w, new HashSet<NPCChunkData>());
+			}
 		}
 	}
 
@@ -59,16 +61,36 @@ public class NPCHandler {
 		}
 		return false;
 	}
+	
+	void incrementSpawnCount(Chunk c){
+		HashSet<NPCChunkData> cData = npcChunkData.get(c.getWorld().getName());
+		for (NPCChunkData cd : cData) {
+			if (cd.getX() == c.getX() && cd.getZ() == c.getZ()) {
+				cd.increaseSpawnCount();
+			}
+		}
+	}
+	
+	void decrementSpawnCount(Chunk c){
+		HashSet<NPCChunkData> cData = npcChunkData.get(c.getWorld().getName());
+		for (NPCChunkData cd : cData) {
+			if (cd.getX() == c.getX() && cd.getZ() == c.getZ()) {
+				cd.decreaseSpawnCount();
+			}
+		}
+	}
 
 	public void addChunkData(String world, NPCChunkData npcCD) {
 		this.npcChunkData.get(world).add(npcCD);
 	}
 
 	public void registerNPC(SimpleNPC npc) {
+		this.incrementSpawnCount(npc.getHumanNPC().getBukkitEntity().getLocation().getChunk());
 		this.npcList.add(npc);
 	}
 
 	public void removeNPC(SimpleNPC npc) {
+		this.decrementSpawnCount(npc.getHumanNPC().getBukkitEntity().getLocation().getChunk());
 		this.npcList.remove(npc);
 	}
 

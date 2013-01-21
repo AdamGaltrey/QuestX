@@ -26,7 +26,7 @@ public class Conversation {
 	String currentNode = "1";
 	boolean conversing = false, indexSelected = false;
 
-	final NPCHandler handle = new NPCHandler((JavaPlugin) QuestX.p);
+	final NPCHandler handle = new NPCHandler((JavaPlugin) QuestX.p, null);
 
 	public void respond(String s) {
 		int i = 1;
