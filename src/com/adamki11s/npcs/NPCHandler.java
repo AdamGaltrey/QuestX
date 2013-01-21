@@ -2,6 +2,7 @@ package com.adamki11s.npcs;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 
 import org.bukkit.Chunk;
 import org.bukkit.entity.Entity;
@@ -9,17 +10,21 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.adamki11s.npcs.population.NPCChunkData;
 import com.adamki11s.npcs.population.NPCWorldData;
+import com.adamki11s.npcs.population.SpawnLocationDispatcher;
 import com.topcat.npclib.NPCManager;
 import com.topcat.npclib.entity.HumanNPC;
-import com.topcat.npclib.entity.NPC;
 
 public class NPCHandler {
 
 	final NPCManager npc;
+	
+	volatile LinkedList<SimpleNPC> waiting = new LinkedList<SimpleNPC>();
 
 	volatile HashSet<SimpleNPC> npcList = new HashSet<SimpleNPC>();
 
 	final HashSet<NPCWorldData> npcWorldData = new HashSet<NPCWorldData>();
+	
+	HashMap<String, SpawnLocationDispatcher> spawnDispatchers = new HashMap<String, SpawnLocationDispatcher>();
 
 	HashMap<String, HashSet<NPCChunkData>> npcChunkData = new HashMap<String, HashSet<NPCChunkData>>();
 
@@ -29,8 +34,22 @@ public class NPCHandler {
 			for (String w : worlds) {
 				npcWorldData.add(new NPCWorldData(w));
 				npcChunkData.put(w, new HashSet<NPCChunkData>());
+				spawnDispatchers.put(w, new SpawnLocationDispatcher(w, this));
 			}
 		}
+	}
+	
+	public SpawnLocationDispatcher getDispatcher(String world){
+		return this.spawnDispatchers.get(world);
+	}
+	
+	public SimpleNPC getNextWaitingToSpawn(){
+		if(this.waiting.size() < 1){
+			return null;
+		}
+		SimpleNPC front = this.waiting.getFirst();
+		this.waiting.removeFirst();
+		return front;
 	}
 
 	public boolean doesNeedChunkData(Chunk c) {
@@ -74,7 +93,7 @@ public class NPCHandler {
 	void incrementSpawnCount(Chunk c){
 		HashSet<NPCChunkData> cData = npcChunkData.get(c.getWorld().getName());
 		if(cData == null){
-			System.out.println("NPCCHunkdData is null");
+			System.out.println("NPCChunkData is null");
 			return;
 		}
 		for (NPCChunkData cd : cData) {

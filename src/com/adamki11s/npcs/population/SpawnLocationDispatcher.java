@@ -35,6 +35,7 @@ public class SpawnLocationDispatcher {
 	}
 
 	public Location getSpawnLocation() {
+		this.updateDensity();
 		LinkedHashMap<NPCChunkData, Long> nodes = GlobalDensityCache.getNodes(this.world);
 		NPCChunkData cd = null;
 		boolean canSpawn = false;
