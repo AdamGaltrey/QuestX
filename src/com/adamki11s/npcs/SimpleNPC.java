@@ -83,20 +83,20 @@ public class SimpleNPC {
 		this.isSpawnFixed = true;
 		this.fixedLocation = l;
 	}
-	
-	public void setNewSpawnLocation(Location l){
+
+	public void setNewSpawnLocation(Location l) {
 		this.spawnedLocation = l;
 	}
-	
-	public Location getFixedLocation(){
+
+	public Location getFixedLocation() {
 		return this.fixedLocation;
 	}
-	
-	public Location getSpawnedLocation(){
+
+	public Location getSpawnedLocation() {
 		return this.spawnedLocation;
 	}
-	
-	public boolean isSpawnFixed(){
+
+	public boolean isSpawnFixed() {
 		return this.isSpawnFixed;
 	}
 
@@ -196,7 +196,11 @@ public class SimpleNPC {
 			ConversationRegister.endPlayerNPCConversation(c.getConvoData().getPlayer());
 		}
 		if (health <= 0) {
-			p.sendMessage("You killed NPC '" + this.getName() + "'. NPC will respawn in " + this.respawnTicks / 20 + " seconds.");
+			if (this.isSpawnFixed()) {
+				p.sendMessage("You killed NPC '" + this.getName() + "'. NPC will respawn in " + this.respawnTicks / 20 + " seconds.");
+			} else {
+				p.sendMessage("You killed NPC '" + this.getName() + "'. This NPC may respawn elsewhere now.");
+			}
 			for (ItemStack i : this.inventory.getDrops()) {
 				p.getWorld().dropItemNaturally(this.npc.getBukkitEntity().getLocation(), i);
 			}
@@ -278,6 +282,8 @@ public class SimpleNPC {
 			if (moveable) {
 				this.randMovement = new RandomMovement(this, toSpawn, this.minPauseTicks, this.maxPauseTicks, this.maxVariation);
 			}
+			
+			this.handle.registerNPCSpawn(this);
 		}
 	}
 
@@ -295,9 +301,9 @@ public class SimpleNPC {
 			this.unAggro();
 			this.handle.getNPCManager().despawnHumanByName(this.name);
 			this.randMovement = null;
-			if(!this.isSpawnFixed()){
+			if (!this.isSpawnFixed()) {
 				this.handle.removeNPC(this);
-			}
+			} 
 		}
 	}
 

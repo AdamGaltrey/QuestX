@@ -42,6 +42,15 @@ public class NPCHandler {
 		}
 		return true;
 	}
+	
+	public boolean canNPCBeSpawned(String world){
+		for (NPCWorldData npcWD : this.npcWorldData) {
+			if (npcWD.getWorld().equalsIgnoreCase(world)) {
+				return npcWD.canSpawnMore();
+			}
+		}
+		return false;
+	}
 
 	public boolean canNPCBeSpawned(Chunk c) {
 		for (NPCWorldData npcWD : this.npcWorldData) {
@@ -64,6 +73,10 @@ public class NPCHandler {
 	
 	void incrementSpawnCount(Chunk c){
 		HashSet<NPCChunkData> cData = npcChunkData.get(c.getWorld().getName());
+		if(cData == null){
+			System.out.println("NPCCHunkdData is null");
+			return;
+		}
 		for (NPCChunkData cd : cData) {
 			if (cd.getX() == c.getX() && cd.getZ() == c.getZ()) {
 				cd.increaseSpawnCount();
@@ -85,9 +98,12 @@ public class NPCHandler {
 	}
 
 	public void registerNPC(SimpleNPC npc) {
-		this.incrementSpawnCount(npc.getHumanNPC().getBukkitEntity().getLocation().getChunk());
 		this.npcList.add(npc);
 	}
+	
+	public void registerNPCSpawn(SimpleNPC npc){
+		this.incrementSpawnCount(npc.getHumanNPC().getBukkitEntity().getLocation().getChunk());
+}
 
 	public void removeNPC(SimpleNPC npc) {
 		this.decrementSpawnCount(npc.getHumanNPC().getBukkitEntity().getLocation().getChunk());

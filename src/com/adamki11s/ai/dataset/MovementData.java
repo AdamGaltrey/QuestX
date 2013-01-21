@@ -3,6 +3,7 @@ package com.adamki11s.ai.dataset;
 import java.util.Random;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 
@@ -46,6 +47,7 @@ public class MovementData {
 			return false;
 		}
 		Block b = w.getBlockAt((rx + dx), (ry + dy) - 1, (rz + dz));
+		b.setType(Material.EMERALD_BLOCK);
 		return (!b.isLiquid() && b.getTypeId() != 0 && b.getRelative(0, 1, 0).getTypeId() == 0 && b.getRelative(0, 2, 0).getTypeId() == 0);
 	}
 

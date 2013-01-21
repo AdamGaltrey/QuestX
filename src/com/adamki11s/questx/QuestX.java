@@ -1,5 +1,6 @@
 package com.adamki11s.questx;
 
+import java.util.Random;
 import java.util.logging.Logger;
 
 import org.bukkit.ChatColor;
@@ -47,9 +48,13 @@ public class QuestX extends JavaPlugin {
 	public NPCHandler getNPCHandler() {
 		return this.handle;
 	}
+	
+
 
 	@Override
 	public void onEnable() {
+
+		
 		handle = new NPCHandler(this, null);
 
 		InitialSetup.run();
