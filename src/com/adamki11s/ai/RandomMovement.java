@@ -17,15 +17,16 @@ public class RandomMovement {
 	int minPauseTicks, maxPauseTicks, maxVariation, pauseTicks;
 
 	public RandomMovement(SimpleNPC npc, Location rootPoint, int minPauseTicks, int maxPauseTicks, int maxVariation) {
-		md = new MovementData(rootPoint, currentPoint, minPauseTicks, maxPauseTicks, maxVariation);
+		
+		md = new MovementData(rootPoint, minPauseTicks, maxPauseTicks, maxVariation);
 
 		this.npc = npc;
 		this.rootPoint = rootPoint;
-		this.currentPoint = npc.getHumanNPC().getBukkitEntity().getLocation();
+		this.currentPoint = rootPoint;
 		this.maxPauseTicks = maxPauseTicks;
 		this.minPauseTicks = minPauseTicks;
 		this.maxVariation = maxVariation;
-		this.generateNewMovement();
+		this.generateNewMovement();//link to null
 	}
 
 	public synchronized void move() {
@@ -45,7 +46,7 @@ public class RandomMovement {
 		md.generate();
 		this.targetPoint = md.getEndPoint();
 		this.pauseTicks = md.getPauseTicks();
-		npc.getHumanNPC().walkTo(this.targetPoint);
+		npc.getHumanNPC().walkTo(this.targetPoint);//throwing null
 		npc.getHumanNPC().lookAtPoint(this.targetPoint);
 	}
 

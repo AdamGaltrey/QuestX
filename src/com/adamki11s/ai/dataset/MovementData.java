@@ -9,14 +9,13 @@ import org.bukkit.block.Block;
 
 public class MovementData {
 
-	Location rootPoint, currentPoint, endPoint, tl, br;
+	Location rootPoint, endPoint, tl, br;
 	int minPauseTicks, maxPauseTicks, maxVariation, pauseTicks;
 
-	public MovementData(Location rootPoint, Location currentPoint, int minPauseTicks, int maxPauseTicks, int maxVariation) {
+	public MovementData(Location rootPoint, int minPauseTicks, int maxPauseTicks, int maxVariation) {
 		this.rootPoint = rootPoint;
 		tl = rootPoint;
 		br = rootPoint;
-		this.currentPoint = currentPoint;
 		this.minPauseTicks = minPauseTicks;
 		this.maxPauseTicks = maxPauseTicks;// max server ticks until the npc
 											// will request a new movement
@@ -27,7 +26,7 @@ public class MovementData {
 		br.add(maxVariation, maxVariation, maxVariation);
 	}
 
-	final int failsafeIterations = 50;
+	final int failsafeIterations = 10000;
 
 	public void generate() {
 		Random r = new Random();
@@ -36,7 +35,15 @@ public class MovementData {
 		int it = 0;
 		do {
 			dx = r.nextInt(maxVariation * 2) - maxVariation;
-			dy = r.nextInt(maxVariation * 2) - maxVariation;
+			dy = r.nextInt(50) + 50;
+			/*
+			 * Temporary solution to stop dynamic spawning in caves.
+			 * 
+			 * 
+			 * 
+			 * 
+			 * 
+			 */
 			dz = r.nextInt(maxVariation * 2) - maxVariation;
 			it++;
 			if (it > this.failsafeIterations) {
@@ -58,7 +65,7 @@ public class MovementData {
 		}
 		Block b = w.getBlockAt((rx + dx), (ry + dy) - 1, (rz + dz));
 		// b.setType(Material.EMERALD_BLOCK);
-		return (!b.isLiquid() && b.getTypeId() != 0 && b.getRelative(0, 1, 0).getTypeId() == 0 && b.getRelative(0, 2, 0).getTypeId() == 0 && this.isHighestNonAirBlock(b));
+		return (!b.isLiquid() && b.getTypeId() != 0 && b.getRelative(0, 1, 0).getTypeId() == 0 && b.getRelative(0, 2, 0).getTypeId() == 0);
 	}
 	
 	private boolean isHighestNonAirBlock(Block b){

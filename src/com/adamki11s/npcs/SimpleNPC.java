@@ -282,18 +282,23 @@ public class SimpleNPC {
 			QuestX.logMSG("Log spawn location");
 			QuestX.logMSG(toSpawn.toString());
 
-			if (moveable) {
-				this.randMovement = new RandomMovement(this, toSpawn, this.minPauseTicks, this.maxPauseTicks, this.maxVariation);
-			}
+			
 
-			this.npc = (HumanNPC) this.handle.getNPCManager().spawnHumanNPC(this.name, this.getSpawnedLocation());
-			isSpawned = true;
+			this.npc = (HumanNPC) this.handle.getNPCManager().spawnHumanNPC(this.name, toSpawn);
+			
+			
+			if (moveable) {
+				this.randMovement = new RandomMovement(this, toSpawn, this.minPauseTicks, this.maxPauseTicks, this.maxVariation);//throwing null
+			}
+			
 			this.setBoots(this.gear[0]);
 			this.setLegs(this.gear[1]);
 			this.setChestplate(this.gear[2]);
 			this.setHelmet(this.gear[3]);
 			this.setItemInHand(this.gear[4]);
 
+			isSpawned = true;
+			
 			this.handle.registerNPCSpawn(this);
 		}
 	}
@@ -325,7 +330,7 @@ public class SimpleNPC {
 	}
 
 	public void moveTick() {
-		if (this.isMoveable()) {
+		if (this.isMoveable() && this.isSpawned()) {
 			this.randMovement.move();
 		}
 	}
