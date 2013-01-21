@@ -277,13 +277,15 @@ public class SimpleNPC {
 			} else {
 				toSpawn = this.getSpawnedLocation();
 			}
-			Player p = Bukkit.getServer().getPlayer("Adamki11s");
-			if (p != null) {
-			//	p.teleport(toSpawn);
-			}
+
 			QuestX.logMSG("Spawning NPC " + this.getName());
 			QuestX.logMSG("Log spawn location");
 			QuestX.logMSG(toSpawn.toString());
+
+			if (moveable) {
+				this.randMovement = new RandomMovement(this, toSpawn, this.minPauseTicks, this.maxPauseTicks, this.maxVariation);
+			}
+
 			this.npc = (HumanNPC) this.handle.getNPCManager().spawnHumanNPC(this.name, this.getSpawnedLocation());
 			isSpawned = true;
 			this.setBoots(this.gear[0]);
@@ -291,9 +293,6 @@ public class SimpleNPC {
 			this.setChestplate(this.gear[2]);
 			this.setHelmet(this.gear[3]);
 			this.setItemInHand(this.gear[4]);
-			if (moveable) {
-				this.randMovement = new RandomMovement(this, toSpawn, this.minPauseTicks, this.maxPauseTicks, this.maxVariation);
-			}
 
 			this.handle.registerNPCSpawn(this);
 		}
@@ -326,7 +325,9 @@ public class SimpleNPC {
 	}
 
 	public void moveTick() {
-		this.randMovement.move();
+		if (this.isMoveable()) {
+			this.randMovement.move();
+		}
 	}
 
 	public void moveTo(Location l) {

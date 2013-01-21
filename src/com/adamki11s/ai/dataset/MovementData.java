@@ -58,7 +58,19 @@ public class MovementData {
 		}
 		Block b = w.getBlockAt((rx + dx), (ry + dy) - 1, (rz + dz));
 		// b.setType(Material.EMERALD_BLOCK);
-		return (!b.isLiquid() && b.getTypeId() != 0 && b.getRelative(0, 1, 0).getTypeId() == 0 && b.getRelative(0, 2, 0).getTypeId() == 0);
+		return (!b.isLiquid() && b.getTypeId() != 0 && b.getRelative(0, 1, 0).getTypeId() == 0 && b.getRelative(0, 2, 0).getTypeId() == 0 && this.isHighestNonAirBlock(b));
+	}
+	
+	private boolean isHighestNonAirBlock(Block b){
+		for(int i = 128; i > 1; i--){
+			Location l = new Location(b.getWorld(),b.getX(), i, b.getZ());
+			if(b.getWorld().getBlockAt(l).getTypeId() == 0){
+				continue;
+			} else {
+				return (b.getY() == l.getY());
+			}
+		}
+		return true;
 	}
 
 	public Location getEndPoint() {
