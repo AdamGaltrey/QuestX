@@ -93,7 +93,26 @@ public class RespawnController {
 				for (String w : this.handle.getWorlds()) {
 					if (this.handle.canNPCBeSpawned(w)) {
 						
-						SimpleNPC spawn = this.handle.getNextWaitingToSpawn(w);
+						//SimpleNPC spawn = this.handle.getNextWaitingToSpawn(w);
+						
+						QuestX.logMSG("NPC can spawn in world '" + w + "'. Generating location..");
+						
+						final Location l = this.handle.getDispatcher(w).getSpawnLocation();
+						QuestX.logMSG("Location generated = " + l.toString());
+
+						SimpleNPC front = this.handle.getNextWaitingToSpawn(l.getWorld().getName());
+						
+						//this.waiting.removeFirst();
+						if (front == null) {
+							QuestX.logMSG("NPC aquired from front was nulL! Check it loaded properly");
+						} else {
+							QuestX.logMSG("NPC " + front.getName() + " selected from waiting list!");
+							QuestX.logMSG("Setting spawn location...");
+							front.setNewSpawnLocation(l);
+							QuestX.logMSG("Spawn set correctly!");
+							QuestX.logMSG("Spawning NPC...");
+							front.spawnNPC();
+						}
 						
 					} else {
 						QuestX.logMSG("NPC Cannot spawn in world '" + w + "'");

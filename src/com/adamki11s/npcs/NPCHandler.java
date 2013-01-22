@@ -86,13 +86,13 @@ public class NPCHandler {
 		return (this.waiting.size() < 1);
 	}
 
-	public SimpleNPC getNextWaitingToSpawn(String w) {
+	public synchronized SimpleNPC getNextWaitingToSpawn(String w) {
 		if (this.waiting.size() < 1) {
 			QuestX.logMSG("0 Elements waiting, breaking...");
 			return null;
 		}
 		
-		QuestX.logMSG("NPC can spawn in world '" + w + "'. Generating location..");
+		/*QuestX.logMSG("NPC can spawn in world '" + w + "'. Generating location..");
 		
 		Location l = this.getDispatcher(w).getSpawnLocation();
 		QuestX.logMSG("Location generated = " + l.toString());
@@ -113,8 +113,8 @@ public class NPCHandler {
 			front.setNewSpawnLocation(l);
 			QuestX.logMSG("Spawning NPC...");
 			front.spawnNPC();
-		}
-		return front;
+		}*/
+		return this.waiting.removeFirst();
 	}
 
 	public boolean doesNeedChunkData(Chunk c) {

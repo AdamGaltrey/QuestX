@@ -7,26 +7,29 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 
+import com.adamki11s.questx.QuestX;
+
 public class MovementData {
 
-	Location rootPoint, endPoint, tl, br;
+	Location rootPoint, endPoint;
 	int minPauseTicks, maxPauseTicks, maxVariation, pauseTicks;
 
 	public MovementData(Location rootPoint, int minPauseTicks, int maxPauseTicks, int maxVariation) {
 		this.rootPoint = rootPoint;
-		tl = rootPoint;
-		br = rootPoint;
+		
+		if(this.rootPoint == null){
+			QuestX.logMSG("NULL ROOT POINT PASSED TO MD");
+		}
+		
 		this.minPauseTicks = minPauseTicks;
 		this.maxPauseTicks = maxPauseTicks;// max server ticks until the npc
 											// will request a new movement
 											// packet
 		this.maxVariation = maxVariation; // Maximum distance the npc
 											// will move from the root location
-		tl.subtract(maxVariation, maxVariation, maxVariation);
-		br.add(maxVariation, maxVariation, maxVariation);
 	}
 
-	final int failsafeIterations = 10000;
+	final int failsafeIterations = 1000000;
 
 	public void generate() {
 		Random r = new Random();
@@ -35,9 +38,9 @@ public class MovementData {
 		int it = 0;
 		do {
 			dx = r.nextInt(maxVariation * 2) - maxVariation;
-			dy = r.nextInt(50) + 50;
+			dy = r.nextInt(maxVariation * 2) - maxVariation;
 			/*
-			 * Temporary solution to stop dynamic spawning in caves.
+			 * add extra checks to stop 'jumping' into caves
 			 * 
 			 * 
 			 * 
@@ -47,11 +50,16 @@ public class MovementData {
 			dz = r.nextInt(maxVariation * 2) - maxVariation;
 			it++;
 			if (it > this.failsafeIterations) {
+				QuestX.logMSG("ITERATION FAILSAFE TRIGGERED.");
 				break;
+			}
+			if(it % 1000 == 0){
+				QuestX.logMSG("Delta's = (" + dx + ", " + dy + ", " + dz);
 			}
 		} while (!canMoveHere(w, dx, dy, dz, rx, ry, rz));
 
 		if (it > this.failsafeIterations) {
+			this.endPoint = this.rootPoint;
 			return;
 		} else {
 			this.endPoint = new Location(w, (rx + dx), (ry + dy) - 1, (rz + dz));
@@ -63,7 +71,7 @@ public class MovementData {
 		if (dx == 0 && dy == 0 && dz == 0) {
 			return false;
 		}
-		Block b = w.getBlockAt((rx + dx), (ry + dy) - 1, (rz + dz));
+		Block b = w.getBlockAt((rx + dx), (ry + dy) - 1, (rz + dz));//block it stands on
 		// b.setType(Material.EMERALD_BLOCK);
 		return (!b.isLiquid() && b.getTypeId() != 0 && b.getRelative(0, 1, 0).getTypeId() == 0 && b.getRelative(0, 2, 0).getTypeId() == 0);
 	}

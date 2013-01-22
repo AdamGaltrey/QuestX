@@ -47,10 +47,10 @@ public class SimpleNPC {
 
 	final NPCHandler handle;
 
-	Location fixedLocation, spawnedLocation;
+	volatile Location fixedLocation, spawnedLocation;
 	boolean isSpawnFixed = false;
 
-	HumanNPC npc;
+	volatile HumanNPC npc;
 	boolean isSpawned = false, underAttack = false;
 
 	final ItemStack[] gear;// boots 1, legs 2, chest 3, head 4, arm 5
@@ -85,8 +85,8 @@ public class SimpleNPC {
 	}
 
 	public void setNewSpawnLocation(Location l) {
-		QuestX.logMSG("Setting new spawn location");
-		QuestX.logMSG(l.toString());
+		//QuestX.logMSG("Setting new spawn location");
+		//QuestX.logMSG(l.toString());
 		this.spawnedLocation = l;
 	}
 
@@ -266,7 +266,7 @@ public class SimpleNPC {
 		return ((HumanNPC) this.handle.getNPCManager().getNPC(id)).getName().equalsIgnoreCase(this.npc.getName());
 	}
 
-	public void spawnNPC() {
+	public synchronized void spawnNPC() {
 		if (!isSpawned) {
 
 			this.health = this.maxHealth;

@@ -66,18 +66,28 @@ public class SpawnLocationDispatcher {
 		Location spawn = new Location(w, 0, 0, 0);
 		
 		do{
-			int x = (cd.getX() * 16) + (r.nextInt(15) + 1), y = r.nextInt(100) + 20 , z = (cd.getZ() * 16) + (r.nextInt(15) + 1);
+			int x = (cd.getX() * 16) + (r.nextInt(15) + 1),
+			y = r.nextInt(55) + 45 ,//45-100 
+			/*
+			 * Temporary solution to stop dynamic spawning in caves.
+			 * 
+			 * 
+			 * 
+			 * 
+			 * 
+			 */
+			z = (cd.getZ() * 16) + (r.nextInt(15) + 1);
 			spawn.setX(x);
 			spawn.setY(y);
 			spawn.setZ(z);
-		} while(this.canMoveHere(spawn)); 
+		} while(!this.canMoveHere(spawn)); 
 		
 		return spawn;
 		
 	}
 	
 	private boolean canMoveHere(Location l) {
-		Block b = l.getBlock();
+		Block b = l.getBlock().getRelative(0, -1, 0);//block it stands on
 		//b.setType(Material.EMERALD_BLOCK);
 		return (!b.isLiquid() && b.getTypeId() != 0 && b.getRelative(0, 1, 0).getTypeId() == 0 && b.getRelative(0, 2, 0).getTypeId() == 0);
 	}
