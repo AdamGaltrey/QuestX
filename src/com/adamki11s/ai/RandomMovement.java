@@ -50,6 +50,10 @@ public class RandomMovement {
 			}
 		}
 	}
+	
+	public boolean isMovementScheduled(){
+		return this.newMDScheduled;
+	}
 
 	public synchronized void generateNewMovement() {
 		// QuestX.logMSG("Generating MData for '" + this.npc.getName() + "'");

@@ -78,6 +78,10 @@ public class SimpleNPC {
 
 		handle.registerNPC(this);
 	}
+	
+	public boolean isMovementScheduled(){
+		return (this.randMovement == null ? false : this.randMovement.isMovementScheduled());
+	}
 
 	public void setFixedLocation(Location l) {
 		this.isSpawnFixed = true;
@@ -330,7 +334,7 @@ public class SimpleNPC {
 	}
 
 	public void moveTick() {
-		if (this.isMoveable() && this.isSpawned()) {
+		if (this.isMoveable() && this.isSpawned() && !this.isMovementScheduled()) {
 			this.randMovement.move();
 		}
 	}
