@@ -29,7 +29,11 @@ final NPCHandler handle;
 		 System.out.println("r-clicked entity, entity is npc? = " + handle.getNPCManager().isNPC(e));
 		 if(handle.getNPCManager().isNPC(e)){
 			 SimpleNPC npc = handle.getSimpleNPCByEntity(e);
+			 if(npc != null){
 			 npc.interact(p);
+			 } else {
+				 p.sendMessage("Could not match entity to NPC");
+			 }
 		 }
 	}
 

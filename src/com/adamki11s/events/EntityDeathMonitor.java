@@ -29,6 +29,7 @@ public class EntityDeathMonitor implements Listener {
 				EntityDamageByEntityEvent edbee = (EntityDamageByEntityEvent) e.getLastDamageCause();
 				if (edbee.getDamager() instanceof Player) {
 					Player p = (Player) edbee.getDamager();
+					QuestX.logMSG("Killed E_TYPE = " + e.getType().toString());
 					if(TaskRegister.doesPlayerHaveTask(p.getName())){
 						TaskManager tm = TaskRegister.getTaskManager(p.getName());
 						tm.trackEntityKill(e.getType());

@@ -1,25 +1,16 @@
 package com.adamki11s.npcs.tasks;
 
-import java.util.Random;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Color;
-import org.bukkit.FireworkEffect;
-import org.bukkit.FireworkEffect.Type;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ExperienceOrb;
-import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.FireworkMeta;
 
 import com.adamki11s.extras.inventory.ExtrasInventory;
 import com.adamki11s.io.FileLocator;
 import com.adamki11s.questx.QuestX;
-
 
 public class TaskManager {
 
@@ -41,6 +32,10 @@ public class TaskManager {
 		return this.getTaskLoader().isKillEntities();
 	}
 
+	public boolean isTrackingNPCKills() {
+		return this.getTaskLoader().isKillNPCS();
+	}
+
 	public boolean doesNeedToFetchItems() {
 		return this.getTaskLoader().isFetchItems();
 	}
@@ -49,24 +44,30 @@ public class TaskManager {
 		this.getTaskLoader().getEKT().trackKill(e);
 	}
 
-	public String whatIsLeftToDo() {
-		// TODO
-		return null;
+	public void trackNPCKill(String npcName) {
+		this.getTaskLoader().getNKT().trackKill(npcName);
 	}
 
 	public boolean isTaskCompleted() {
-		boolean kills = true, items = true;
+		boolean kills = true, items = true, npcKills = true;
 		if (this.isTrackingEntityKills()) {
 			kills = this.areEntityKillsCompleted();
 		}
 		if (this.doesNeedToFetchItems()) {
 			items = this.areRequiredItemsGathered();
 		}
-		return (kills && items);
+		if (this.isTrackingNPCKills()) {
+			npcKills = this.areNPCKillsCompleted();
+		}
+		return (kills && items && npcKills);
 	}
 
 	boolean areEntityKillsCompleted() {
 		return this.getTaskLoader().getEKT().areRequiredEntitiesKilled();
+	}
+
+	boolean areNPCKillsCompleted() {
+		return this.getTaskLoader().getNKT().areRequiredNPCSKilled();
 	}
 
 	boolean areRequiredItemsGathered() {
@@ -102,18 +103,24 @@ public class TaskManager {
 	}
 
 	public void sendWhatIsLeftToDo(Player p) {
-		boolean kills = true, items = true;
+		boolean kills = true, items = true, npcKills = true;
 		if (this.isTrackingEntityKills()) {
 			kills = this.areEntityKillsCompleted();
 		}
 		if (this.doesNeedToFetchItems()) {
 			items = this.areRequiredItemsGathered();
 		}
+		if (this.isTrackingNPCKills()) {
+			npcKills = this.areNPCKillsCompleted();
+		}
 		if (!kills) {
 			p.sendMessage(this.getTaskLoader().getEKT().sendEntitiesToKill());
 		}
 		if (!items) {
 			p.sendMessage(this.sendItemsToGather());
+		}
+		if (!npcKills) {
+			p.sendMessage(this.getTaskLoader().nkt.sendNPCSToKill());
 		}
 	}
 
@@ -146,16 +153,17 @@ public class TaskManager {
 	public String getCompleteTaskSpeech() {
 		return this.getTaskLoader().getCompleteTaskSpeech();
 	}
-	
+
 	public void awardPlayer(Player p) {
-		
+
 		ExtrasInventory ei = new ExtrasInventory();
-		
-		for (ItemStack is : this.getTaskLoader().getRequiredItems()) {
-			ei.removeFromInventory(p, is.getTypeId(), is.getAmount());
+
+		if (this.doesNeedToFetchItems()) {
+			for (ItemStack is : this.getTaskLoader().getRequiredItems()) {
+				ei.removeFromInventory(p, is.getTypeId(), is.getAmount());
+			}
 		}
-		
-		
+
 		
 		if (this.getTaskLoader().isAwardItems()) {
 			ItemStack[] rewardItems = this.getTaskLoader().getRewardItems();
@@ -184,14 +192,14 @@ public class TaskManager {
 			// adjust rep accordingly
 		}
 
-		 Location pL = p.getLocation();
+		Location pL = p.getLocation();
 		Fireworks display = new Fireworks(pL, 10, 20);
 		display.circularDisplay();
-		
+
 		TaskRegister.unRegisterTask(this);
-		
+
 		FileLocator.createPlayerNPCProgressionFile(this.getTaskLoader().getNpcName(), this.getPlayerName());
-		//display.showDisplay();
+		// display.showDisplay();
 
 	}
 }

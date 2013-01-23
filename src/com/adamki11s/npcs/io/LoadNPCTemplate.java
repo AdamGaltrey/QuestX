@@ -92,7 +92,7 @@ public class LoadNPCTemplate {
 
 			if (!unload) {
 				// create template npc
-				this.npcTemplate = new NPCTemplate(name, nameColour, moveable, attackable, aggressive, minPauseTicks, maxPauseTicks, maxVariation, maxHealth, respawnTicks, itemStackDrop,
+				this.npcTemplate = new NPCTemplate(this.name, nameColour, moveable, attackable, aggressive, minPauseTicks, maxPauseTicks, maxVariation, maxHealth, respawnTicks, itemStackDrop,
 						npcGear, damageMod, retalliationMultiplier);
 			}
 

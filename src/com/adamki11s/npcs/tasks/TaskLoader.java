@@ -19,7 +19,8 @@ public class TaskLoader {
 	ItemStack[] retrieveItems, rewardItems;
 	int rewardExp, rewardRep;
 	EntityKillTracker ekt;
-	boolean fetchItems, killEntities, awardItems;
+	NPCKillTracker nkt;
+	boolean fetchItems, killEntities, killNPCS, awardItems;
 
 	public TaskLoader(File taskFile, String npcName) {
 		this.taskFile = taskFile;
@@ -75,6 +76,15 @@ public class TaskLoader {
 			this.killEntities = false;
 		}
 		
+		if (!config.getString("KILL_NPCS").trim().equalsIgnoreCase("0")) {
+			QuestX.logMSG("Loading NPC's to kill");
+			this.nkt = new NPCKillTracker(config.getString("KILL_NPCS"));
+			this.killNPCS = true;
+		} else {
+			QuestX.logMSG("Not loading NPC's to kill");
+			this.killNPCS = false;
+		}
+		
 		
 
 		this.rewardExp = config.getInt("REWARD_EXP");
@@ -102,6 +112,10 @@ public class TaskLoader {
 	public boolean isKillEntities() {
 		return killEntities;
 	}
+	
+	public boolean isKillNPCS(){
+		return killNPCS;
+	}
 
 	public boolean isAwardItems() {
 		return awardItems;
@@ -109,6 +123,10 @@ public class TaskLoader {
 	
 	public EntityKillTracker getEKT(){
 		return this.ekt;
+	}
+	
+	public NPCKillTracker getNKT(){
+		return this.nkt;
 	}
 	
 	public ItemStack[] getRequiredItems(){

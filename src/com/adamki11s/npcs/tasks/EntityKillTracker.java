@@ -20,6 +20,7 @@ public class EntityKillTracker {
 		this.parseInput(in);
 	}
 
+	//format entity_type:kills, 
 	void parseInput(String in) {
 		String[] ents = in.split(",");
 		for (String parse : ents) {

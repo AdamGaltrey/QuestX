@@ -105,6 +105,7 @@ public class CreateNPC {
 		syncConfig.add("FETCH_ITEMS", "1:0:5");// Format -->
 												// <id>:<data>:<quantity>,
 		syncConfig.add("KILL_ENTITIES", EntityType.COW.toString() + ":7");
+		syncConfig.add("KILL_NPCS", "Adam,Jim");
 
 		syncConfig.add("INCOMPLETE_TASK_SPEECH", "Talk to me when you have finished the task!");
 		syncConfig.add("COMPLETE_TASK_SPEECH", "Congratulations, enjoy your reward!");

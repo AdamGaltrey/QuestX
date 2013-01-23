@@ -1,21 +1,14 @@
 package com.adamki11s.npcs;
 
-import net.minecraft.server.v1_4_6.Entity;
-import net.minecraft.server.v1_4_6.EntityLiving;
 import net.minecraft.server.v1_4_6.Packet;
 import net.minecraft.server.v1_4_6.Packet5EntityEquipment;
 import net.minecraft.server.v1_4_6.WorldServer;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.entity.LivingEntity;
+import org.bukkit.craftbukkit.v1_4_6.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-
-import org.bukkit.craftbukkit.v1_4_6.entity.CraftLivingEntity;
-import org.bukkit.craftbukkit.v1_4_6.inventory.CraftItemStack;
 
 import com.adamki11s.ai.RandomMovement;
 import com.adamki11s.data.ItemStackDrop;
@@ -26,7 +19,6 @@ import com.adamki11s.npcs.tasks.TaskManager;
 import com.adamki11s.npcs.tasks.TaskRegister;
 import com.adamki11s.questx.QuestX;
 import com.topcat.npclib.entity.HumanNPC;
-import com.topcat.npclib.entity.NPC;
 
 //import net.minecraft.server.EntityLiving;
 
@@ -210,6 +202,10 @@ public class SimpleNPC {
 			for (ItemStack i : this.inventory.getDrops()) {
 				p.getWorld().dropItemNaturally(this.npc.getBukkitEntity().getLocation(), i);
 			}
+			if(TaskRegister.doesPlayerHaveTask(p.getName())){
+				TaskManager tm = TaskRegister.getTaskManager(p.getName());
+				tm.trackNPCKill(this.getName());
+			}
 			this.despawnNPC();
 		}
 	}
@@ -267,7 +263,8 @@ public class SimpleNPC {
 	}
 
 	public boolean doesNPCIDMatch(String id) {
-		return ((HumanNPC) this.handle.getNPCManager().getNPC(id)).getName().equalsIgnoreCase(this.npc.getName());
+		
+		return ((HumanNPC) this.handle.getNPCManager().getNPC(id)).getName().equalsIgnoreCase(this.getName());
 	}
 
 	public synchronized void spawnNPC() {
