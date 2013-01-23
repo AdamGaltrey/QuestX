@@ -9,8 +9,17 @@ public class FileLocator {
 	config_root = root + File.separator + "Configuration",
 	data_root = root + File.separator + "Data",
 	npc_data_root = data_root + File.separator + "NPCs",
+	quest_data_root = data_root + File.separator + "Quests",
 	
-	dlgFile = "dialogue.dlg", propertyFile = "properties.txt", taskScript = "task.qxs",questScript = "quest_link.qxs";
+	dlgFile = "dialogue.dlg", propertyFile = "properties.txt", taskScript = "task.qxs",questScript = "quest_link.qxs", questRoot = "quest.qxs";
+	
+	public static File getQuestFile(String name){
+		return new File(quest_data_root + File.separator + name + File.separator + questRoot);
+	}
+	
+	public static File getQuestProgressionPlayerFile(String qName, String pName){
+		return new File(quest_data_root + File.separator + qName + File.separator + "Progression" + File.separator + pName + ".prog");
+}
 	
 	public static File getNPCRootDir(String npcName){
 		return new File(npc_data_root + File.separator + npcName);
