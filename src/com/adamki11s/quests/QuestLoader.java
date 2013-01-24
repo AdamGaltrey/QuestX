@@ -2,8 +2,9 @@ package com.adamki11s.quests;
 
 import java.io.File;
 import java.util.HashMap;
-import java.util.LinkedList;
 
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import com.adamki11s.io.FileLocator;
@@ -85,6 +86,10 @@ public class QuestLoader {
 	
 	public synchronized void setTaskComplete(String player){
 		this.incrementTaskProgress(player);
+		Player p = Bukkit.getServer().getPlayer(player);
+		if(p != null){
+			p.sendMessage("Quest task completed!");
+		}
 	}
 	
 	public boolean isQuestComplete(String player){

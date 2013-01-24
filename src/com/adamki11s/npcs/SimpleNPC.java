@@ -17,6 +17,9 @@ import com.adamki11s.events.ConversationRegister;
 import com.adamki11s.io.FileLocator;
 import com.adamki11s.npcs.tasks.TaskManager;
 import com.adamki11s.npcs.tasks.TaskRegister;
+import com.adamki11s.quests.QuestLoader;
+import com.adamki11s.quests.QuestManager;
+import com.adamki11s.quests.QuestTask;
 import com.adamki11s.questx.QuestX;
 import com.topcat.npclib.entity.HumanNPC;
 
@@ -231,6 +234,18 @@ public class SimpleNPC {
 
 	public void interact(Player p) {
 		if (!this.isConversing() && !this.isUnderAttack()) {
+			
+			if(QuestManager.doesPlayerHaveQuest(p.getName())){
+				QuestTask qt = QuestManager.getCurrentQuestTask(p.getName());
+				if(qt.isTalkNPC()){
+					String s = qt.getData().toString();
+					if(s.equalsIgnoreCase(this.getName())){
+						QuestLoader ql = QuestManager.getQuestLoader(QuestManager.getCurrentQuestName(p.getName()));
+						ql.setTaskComplete(p.getName());
+					}
+				}
+			}
+			
 			if (TaskRegister.doesPlayerHaveTask(p.getName())) {
 				if (TaskRegister.doesPlayerHaveTaskFromNPC(p.getName(), this.getName())) {
 					TaskManager tm = TaskRegister.getTaskManager(p.getName());

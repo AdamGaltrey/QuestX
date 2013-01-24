@@ -27,10 +27,34 @@ public class QuestManager {
 		return currentQuest.containsKey(pName);
 	}
 	
+	public static void setCurrentPlayerQuest(String quest, String pName){
+		currentQuest.put(pName, quest);
+	}
+	
+	public static void removeCurrentPlayerQuest(String quest, String pName){
+		if(currentQuest.containsKey(pName)){
+			currentQuest.remove(pName);
+		}
+	}
+	
 	public static QuestLoader getQuestLoader(String quest){
 		for(QuestLoader q : quests){
 			if(q.getName().equalsIgnoreCase(quest)){
 				return q;
+			}
+		}
+		return null;
+	}
+	
+	public static String getCurrentQuestName(String player){
+		return currentQuest.get(player);
+	}
+	
+	public static QuestTask getCurrentQuestTask(String player){
+		String qName = currentQuest.get(player);
+		for(QuestLoader ql : quests){
+			if(ql.getName().equalsIgnoreCase(qName)){
+				return ql.getPlayerQuestTask(player);
 			}
 		}
 		return null;
