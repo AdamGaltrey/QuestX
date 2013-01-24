@@ -21,6 +21,10 @@ public class FileLocator {
 		return new File(quest_data_root + File.separator + qName + File.separator + "Progression" + File.separator + pName + ".prog");
 }
 	
+	public static File getCurrentQuestFile(){
+		return new File(quest_data_root + "Current.qxs");
+	}
+	
 	public static File getNPCRootDir(String npcName){
 		return new File(npc_data_root + File.separator + npcName);
 	}

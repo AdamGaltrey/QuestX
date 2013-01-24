@@ -3,8 +3,6 @@ package com.adamki11s.io;
 import java.io.File;
 import java.io.IOException;
 
-import org.bukkit.Bukkit;
-
 import com.adamki11s.npcs.population.WorldConfigData;
 import com.adamki11s.sync.io.configuration.SyncConfiguration;
 import com.adamki11s.sync.io.objects.SyncObjectIO;
@@ -37,6 +35,10 @@ public class InitialSetup {
 			conf.addComment("List the worlds in which you want NPC's to spawn in, if you do not want NPC's spawning in a certain world simply exclude their name from the list.");
 			conf.addComment("Multiple Worlds should be delimited by commas as such world1,world2,world3");
 			conf.write();
+		}
+		File currentQ = FileLocator.getCurrentQuestFile();
+		if(!currentQ.exists()){
+			fileSetup(currentQ);
 		}
 		WorldConfigData.loadWorldConfigData();
 	}
