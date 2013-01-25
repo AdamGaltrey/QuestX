@@ -18,7 +18,7 @@ public class QuestLoader {
 
 	QuestTask[] tasks;
 
-	String questName;
+	String questName, startText, endText;
 	int nodes, rewardExp, rewardRep;
 	ItemStack[] rewardItems;
 	
@@ -27,6 +27,7 @@ public class QuestLoader {
 
 	public QuestLoader(File f) {
 		this.config = new SyncConfiguration(f);
+		this.load();
 	}
 
 	void load() {
@@ -40,6 +41,8 @@ public class QuestLoader {
 		this.rewardItems = ISAParser.parseISA(this.config.getString("REWARD_ITEMS"));
 		this.rewardExp = this.config.getInt("REWARD_EXP");
 		this.rewardRep = this.config.getInt("REWARD_REP");
+		this.startText = this.config.getString("START_TEXT");
+		this.endText = this.config.getString("END_TEXT");
 		
 		
 		this.tasks = new QuestTask[i];
@@ -65,12 +68,29 @@ public class QuestLoader {
 		return this.questName;
 	}
 	
+	public String getStartText(){
+		return this.startText;
+	}
+	
+	public String getEndText(){
+		return this.endText;
+	}
+	
 	public boolean isPlayerProgressLoaded(String p){
 		return this.playerProgress.containsKey(p);
 	}
 	
+	public void playerStartedQuest(String p){
+		this.playerProgress.put(p, 1);
+		this.currentTask.put(p, this.tasks[0].getClonedInstance());//We only want to use the initial array for refernce, we don't want to change anything
+	}
+	
 	public QuestTask getPlayerQuestTask(String p){
 		return this.currentTask.get(p);
+	}
+	
+	public int getCurrentQuestNode(String p){
+		return this.playerProgress.get(p);
 	}
 	
 	public void loadPlayerProgress(String p){
@@ -81,7 +101,7 @@ public class QuestLoader {
 	}
 	
 	void setPlayerTask(String p){
-		this.currentTask.put(p, this.tasks[this.playerProgress.get(p) - 1]);
+		this.currentTask.put(p, this.tasks[this.playerProgress.get(p) - 1].getClonedInstance());
 	}
 	
 	public synchronized void setTaskComplete(String player){
@@ -101,6 +121,7 @@ public class QuestLoader {
 		this.playerProgress.put(p, current);
 		SyncConfiguration c = new SyncConfiguration(FileLocator.getQuestProgressionPlayerFile(questName, p));
 		c.add("P", current);
+		c.write();
 	}
 
 }

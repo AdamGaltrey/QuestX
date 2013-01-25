@@ -7,8 +7,8 @@ import com.adamki11s.io.FileLocator;
 
 public class QuestManager {
 
-	public static HashSet<QuestLoader> quests = new HashSet<QuestLoader>();
-	public static HashMap<String, String> currentQuest = new HashMap<String, String>();
+	public static volatile HashSet<QuestLoader> quests = new HashSet<QuestLoader>();
+	public static volatile HashMap<String, String> currentQuest = new HashMap<String, String>();
 
 	public static void loadQuest(String name) {
 		quests.add(new QuestLoader(FileLocator.getQuestFile(name)));
@@ -27,7 +27,7 @@ public class QuestManager {
 		return currentQuest.containsKey(pName);
 	}
 	
-	public static void setCurrentPlayerQuest(String quest, String pName){
+	public static void setCurrentPlayerQuest(String pName, String quest){
 		currentQuest.put(pName, quest);
 	}
 	
@@ -59,5 +59,5 @@ public class QuestManager {
 		}
 		return null;
 	}
-
+	
 }

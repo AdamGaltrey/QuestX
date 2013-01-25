@@ -1,5 +1,8 @@
 package com.adamki11s.npcs;
 
+import java.io.File;
+import java.util.HashSet;
+
 import net.minecraft.server.v1_4_6.Packet;
 import net.minecraft.server.v1_4_6.Packet5EntityEquipment;
 import net.minecraft.server.v1_4_6.WorldServer;
@@ -21,13 +24,14 @@ import com.adamki11s.quests.QuestLoader;
 import com.adamki11s.quests.QuestManager;
 import com.adamki11s.quests.QuestTask;
 import com.adamki11s.questx.QuestX;
+import com.adamki11s.sync.io.configuration.SyncConfiguration;
 import com.topcat.npclib.entity.HumanNPC;
 
 //import net.minecraft.server.EntityLiving;
 
 public class SimpleNPC {
 
-	final String name;
+	final String name, questName;
 	final ChatColor nameColour;
 	final boolean moveable, attackable, aggressive;
 	final int minPauseTicks, maxPauseTicks, maxVariation, respawnTicks, maxHealth, damageMod;
@@ -39,6 +43,8 @@ public class SimpleNPC {
 	RandomMovement randMovement;
 
 	Conversation c;
+
+	HashSet<Integer> completeQuestNodes = new HashSet<Integer>();
 
 	final NPCHandler handle;
 
@@ -71,10 +77,33 @@ public class SimpleNPC {
 		this.damageMod = damageMod;
 		this.retalliationMultiplier = retalliationMultiplier;
 
+		File fLink = FileLocator.getNPCQuestLinkFile(name);
+		SyncConfiguration cfg = new SyncConfiguration(fLink);
+		cfg.read();
+		this.questName = cfg.getString("QUEST_NAME");
+		String nodes = cfg.getString("NODES");
+		if (nodes != null) {
+			for (String num : nodes.split(",")) {
+				this.completeQuestNodes.add(Integer.parseInt(num));
+			}
+		}
+
 		handle.registerNPC(this);
 	}
-	
-	public boolean isMovementScheduled(){
+
+	public HashSet<Integer> getCompleteQuestNodes() {
+		return this.completeQuestNodes;
+	}
+
+	public String getQuestName() {
+		return this.questName;
+	}
+
+	public boolean doesLinkToQuest() {
+		return (this.questName == null || this.questName.equalsIgnoreCase("null") || this.questName.equalsIgnoreCase("0"));
+	}
+
+	public boolean isMovementScheduled() {
 		return (this.randMovement == null ? false : this.randMovement.isMovementScheduled());
 	}
 
@@ -84,8 +113,8 @@ public class SimpleNPC {
 	}
 
 	public void setNewSpawnLocation(Location l) {
-		//QuestX.logMSG("Setting new spawn location");
-		//QuestX.logMSG(l.toString());
+		// QuestX.logMSG("Setting new spawn location");
+		// QuestX.logMSG(l.toString());
 		this.spawnedLocation = l;
 	}
 
@@ -205,7 +234,7 @@ public class SimpleNPC {
 			for (ItemStack i : this.inventory.getDrops()) {
 				p.getWorld().dropItemNaturally(this.npc.getBukkitEntity().getLocation(), i);
 			}
-			if(TaskRegister.doesPlayerHaveTask(p.getName())){
+			if (TaskRegister.doesPlayerHaveTask(p.getName())) {
 				TaskManager tm = TaskRegister.getTaskManager(p.getName());
 				tm.trackNPCKill(this.getName());
 			}
@@ -234,18 +263,18 @@ public class SimpleNPC {
 
 	public void interact(Player p) {
 		if (!this.isConversing() && !this.isUnderAttack()) {
-			
-			if(QuestManager.doesPlayerHaveQuest(p.getName())){
+
+			if (QuestManager.doesPlayerHaveQuest(p.getName())) {
 				QuestTask qt = QuestManager.getCurrentQuestTask(p.getName());
-				if(qt.isTalkNPC()){
+				if (qt.isTalkNPC()) {
 					String s = qt.getData().toString();
-					if(s.equalsIgnoreCase(this.getName())){
+					if (s.equalsIgnoreCase(this.getName())) {
 						QuestLoader ql = QuestManager.getQuestLoader(QuestManager.getCurrentQuestName(p.getName()));
 						ql.setTaskComplete(p.getName());
 					}
 				}
 			}
-			
+
 			if (TaskRegister.doesPlayerHaveTask(p.getName())) {
 				if (TaskRegister.doesPlayerHaveTaskFromNPC(p.getName(), this.getName())) {
 					TaskManager tm = TaskRegister.getTaskManager(p.getName());
@@ -278,7 +307,7 @@ public class SimpleNPC {
 	}
 
 	public boolean doesNPCIDMatch(String id) {
-		
+
 		return ((HumanNPC) this.handle.getNPCManager().getNPC(id)).getName().equalsIgnoreCase(this.getName());
 	}
 
@@ -298,15 +327,13 @@ public class SimpleNPC {
 			QuestX.logMSG("Log spawn location");
 			QuestX.logMSG(toSpawn.toString());
 
-			
-
 			this.npc = (HumanNPC) this.handle.getNPCManager().spawnHumanNPC(this.name, toSpawn);
-			
-			
+
 			if (moveable) {
-				this.randMovement = new RandomMovement(this, toSpawn, this.minPauseTicks, this.maxPauseTicks, this.maxVariation);//throwing null
+				this.randMovement = new RandomMovement(this, toSpawn, this.minPauseTicks, this.maxPauseTicks, this.maxVariation);// throwing
+																																	// null
 			}
-			
+
 			this.setBoots(this.gear[0]);
 			this.setLegs(this.gear[1]);
 			this.setChestplate(this.gear[2]);
@@ -314,7 +341,7 @@ public class SimpleNPC {
 			this.setItemInHand(this.gear[4]);
 
 			isSpawned = true;
-			
+
 			this.handle.registerNPCSpawn(this);
 		}
 	}

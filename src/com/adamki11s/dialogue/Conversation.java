@@ -15,9 +15,11 @@ import com.adamki11s.npcs.SimpleNPC;
 import com.adamki11s.npcs.tasks.TaskLoader;
 import com.adamki11s.npcs.tasks.TaskManager;
 import com.adamki11s.npcs.tasks.TaskRegister;
+import com.adamki11s.quests.QuestLoader;
+import com.adamki11s.quests.QuestManager;
+import com.adamki11s.quests.QuestTask;
 import com.adamki11s.questx.QuestX;
-import com.topcat.npclib.entity.HumanNPC;
-
+import com.adamki11s.sync.io.configuration.SyncConfiguration;
 
 public class Conversation {
 
@@ -83,7 +85,7 @@ public class Conversation {
 		DialogueSet d = this.getDialogeSetFromNode(currentNode);
 		DialogueItem[] items = d.getItems();
 		QuestX.logMSG("Items length = " + items.length);
-		if(index > items.length || index < 1){
+		if (index > items.length || index < 1) {
 			QuestX.logChat(this.getConvoData().getPlayer(), "Invalid chat option!");
 			this.displaySpeechOptions();
 			return;
@@ -107,12 +109,12 @@ public class Conversation {
 				System.out.println("INSIDE TRIGGER code");
 				System.out.println("Does player have task = " + TaskRegister.doesPlayerHaveTask(p.getName()));
 				boolean alreadyDone = TaskRegister.hasPlayerCompletedTask(this.getConvoData().getSimpleNpc().getName(), p.getName());
-				if(alreadyDone){
+				if (alreadyDone) {
 					QuestX.logChat(p, "You have already completed this task!");
 					this.endConversation();
 					return;
 				}
-				if(TaskRegister.doesPlayerHaveTask(p.getName())){
+				if (TaskRegister.doesPlayerHaveTask(p.getName())) {
 					System.out.println("In has task code");
 					QuestX.logChat(p, ChatColor.RED + "You already have a task assigned!");
 					QuestX.logChat(p, ChatColor.WHITE + "/questx task cancel" + ChatColor.RED + " to cancel current task.");
@@ -133,12 +135,44 @@ public class Conversation {
 					this.endConversation();
 					return;
 				}
+			} else if (selTrigger.getTriggerType() == TriggerType.QUEST) {
+				SimpleNPC npc = this.getConvoData().getSimpleNpc();
+				if(npc.doesLinkToQuest()){
+					String qName = npc.getQuestName();
+					if(QuestManager.doesPlayerHaveQuest(p.getName())){
+						if(QuestManager.getCurrentQuestName(p.getName()).equalsIgnoreCase(qName)){
+							//run checks
+							if(npc.getQuestName().equalsIgnoreCase(qName)){
+								if(this.canNPCCompleteQuestNode(qName, p.getName())){
+									//do complete check
+								}
+							} //double check
+						} else {
+							//doing a different quest
+						}
+					} else {
+						//start a quest
+						if(!QuestManager.isQuestLoaded(qName)){
+							QuestManager.loadQuest(qName);
+						}
+						QuestManager.setCurrentPlayerQuest(p.getName(), qName);
+						QuestLoader ql = QuestManager.getQuestLoader(qName);
+						p.sendMessage(ql.getStartText());
+						QuestManager.getCurrentQuestTask(p.getName()).sendWhatIsLeftToDo(p);
+					}
+				}
 			} else {
 				this.displaySpeechOptions();
 			}
 		} else {
 			p.sendMessage("You must have at least " + items[index - 1].getRequriedRep().getMinRep() + " reputation.");
 		}
+	}
+	
+	boolean canNPCCompleteQuestNode(String quest, String player){
+		SimpleNPC n = this.getConvoData().getSimpleNpc();
+		int currentNode = QuestManager.getQuestLoader(quest).getCurrentQuestNode(player);
+		return (n.getCompleteQuestNodes().contains(currentNode));
 	}
 
 	DialogueSet getDialogeSetFromNode(String node) {

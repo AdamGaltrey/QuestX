@@ -5,6 +5,7 @@ import org.bukkit.inventory.ItemStack;
 import com.adamki11s.npcs.tasks.EntityKillTracker;
 import com.adamki11s.npcs.tasks.ISAParser;
 import com.adamki11s.npcs.tasks.NPCKillTracker;
+import com.adamki11s.npcs.tasks.NPCTalkTracker;
 
 public class QuestTaskParser {
 
@@ -21,10 +22,11 @@ public class QuestTaskParser {
 			o = getNPCKillObject(input);
 			break;
 		case TALK_NPC:
-			o = input;
+			o = new NPCTalkTracker(input);
 			break;
 		}
-		return new QuestTask(type, o);
+		String npcName = input.substring(input.lastIndexOf(":"));
+		return new QuestTask(type, o, npcName);
 	}
 
 	static ItemStack[] getInventoryObject(String input) {
