@@ -31,6 +31,8 @@ public class QuestManager {
 	
 	public static void setCurrentPlayerQuest(String pName, String quest){
 		currentQuest.put(pName, quest);
+		QuestLoader ql = getQuestLoader(quest);
+		ql.playerStartedQuest(pName);
 	}
 	
 	public static void removeCurrentPlayerQuest(String quest, String pName){

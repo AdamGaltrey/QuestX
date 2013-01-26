@@ -263,18 +263,46 @@ public class SimpleNPC {
 		}
 	}
 
+	boolean canNPCCompleteQuestNode(String player) {
+		int currentNode = QuestManager.getQuestLoader(this.getQuestName()).getCurrentQuestNode(player);
+		return (this.getCompleteQuestNodes().contains(currentNode));
+	}
+
 	public void interact(Player p) {
 		if (!this.isConversing() && !this.isUnderAttack()) {
 
-			if (QuestManager.doesPlayerHaveQuest(p.getName())) {
-				QuestTask qt = QuestManager.getCurrentQuestTask(p.getName());
+			if (this.doesLinkToQuest()) {
+				if (QuestManager.doesPlayerHaveQuest(p.getName())) {
+					if (QuestManager.getCurrentQuestName(p.getName()).equalsIgnoreCase(this.getQuestName())) {
+						QuestLoader ql = QuestManager.getQuestLoader(this.getQuestName());
+						QuestTask t = QuestManager.getCurrentQuestTask(p.getName());
+						// run checks
+						if (this.canNPCCompleteQuestNode(p.getName())) {
+							// do complete check
+							if (t.isTaskComplete(p)) {
+								ql.incrementTaskProgress(p.getName());
+								p.sendMessage(t.getCompleteTaskText());
+							} else {
+								t.sendWhatIsLeftToDo(p);
+							}
+						} else {
+							p.sendMessage("Sorry You need to see " + t.getNPCToCompleteName() + " to complete this part of the quest");
+						}
+					} else {
+						// doing a different quest
+					}
+				}
+
+				/*QuestTask qt = QuestManager.getCurrentQuestTask(p.getName());
 				if (qt.isTalkNPC()) {
 					String s = qt.getData().toString();
 					if (s.equalsIgnoreCase(this.getName())) {
 						QuestLoader ql = QuestManager.getQuestLoader(QuestManager.getCurrentQuestName(p.getName()));
 						ql.setTaskComplete(p.getName());
 					}
-				}
+				}*/
+			} else {
+				
 			}
 
 			if (TaskRegister.doesPlayerHaveTask(p.getName())) {

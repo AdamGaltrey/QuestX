@@ -29,6 +29,16 @@ public class SyncConfiguration extends IOStream {
 		return this.f;
 	}
 
+	public void createFileIfNeeded() {
+		if (!this.f.exists()) {
+			try {
+				this.f.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
 	public void erase() {
 		this.writeableData.clear();
 		this.readableData.clear();

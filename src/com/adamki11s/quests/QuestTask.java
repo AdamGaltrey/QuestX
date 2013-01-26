@@ -4,54 +4,56 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import com.adamki11s.io.FileLocator;
 import com.adamki11s.npcs.tasks.EntityKillTracker;
 import com.adamki11s.npcs.tasks.NPCKillTracker;
 import com.adamki11s.npcs.tasks.NPCTalkTracker;
+import com.adamki11s.sync.io.configuration.SyncConfiguration;
 
 public class QuestTask {
-	
+
 	final QType type;
 	final Object taskData;
-	final String npcComplete;
-	
-	//no node, they should be loaded and stored in order
-	public QuestTask(QType type, Object taskData, String npcComplete){
+	final String npcComplete, completeTaskText;
+
+	// no node, they should be loaded and stored in order
+	public QuestTask(QType type, Object taskData, String npcComplete, String completeTaskText) {
 		this.type = type;
 		this.taskData = taskData;
 		this.npcComplete = npcComplete;
+		this.completeTaskText = completeTaskText;
 	}
-	
+
 	/*
-	 * Fetch items -instanceof- ItemStack[]
-	 * KILL_ENTITIES -instanceof- EntityKillTracker
-	 * KILL_NPC -instanceof- NPCKillTracker
-	 * TALK_NPC -instanceof- String (NPC_Name) 
+	 * Fetch items -instanceof- ItemStack[] KILL_ENTITIES -instanceof-
+	 * EntityKillTracker KILL_NPC -instanceof- NPCKillTracker TALK_NPC
+	 * -instanceof- String (NPC_Name)
 	 */
-	public Object getData(){
+	public Object getData() {
 		return this.taskData;
 	}
-	
-	public QuestTask getClonedInstance(){
-		return new QuestTask(type, taskData, npcComplete);
+
+	public QuestTask getClonedInstance() {
+		return new QuestTask(type, taskData, npcComplete, completeTaskText);
 	}
-	
-	//The NPC who the player needs to return too to complete the task.
-	public String getNPCToCompleteName(){
+
+	// The NPC who the player needs to return too to complete the task.
+	public String getNPCToCompleteName() {
 		return this.npcComplete;
 	}
-	
-	public boolean isTaskComplete(Player p){
-		if(this.isItemStacks()){
+
+	public boolean isTaskComplete(Player p) {
+		if (this.isItemStacks()) {
 			return (this.areRequiredItemsGathered(p));
-		} else if(this.isKillEntities()){
-			return ((EntityKillTracker)this.taskData).areRequiredEntitiesKilled();
-		} else if(this.isKillNPC()){
-			return ((NPCKillTracker)this.taskData).areRequiredNPCSKilled();
+		} else if (this.isKillEntities()) {
+			return ((EntityKillTracker) this.taskData).areRequiredEntitiesKilled();
+		} else if (this.isKillNPC()) {
+			return ((NPCKillTracker) this.taskData).areRequiredNPCSKilled();
 		} else {
-			return ((NPCTalkTracker)this.taskData).isCompleted();
+			return ((NPCTalkTracker) this.taskData).isCompleted();
 		}
 	}
-	
+
 	boolean areRequiredItemsGathered(Player p) {
 		ItemStack[] req = (ItemStack[]) this.taskData;
 		if (p != null) {
@@ -74,40 +76,44 @@ public class QuestTask {
 			return false;
 		}
 	}
-	
-	public boolean isItemStacks(){
+
+	public boolean isItemStacks() {
 		return (this.taskData instanceof ItemStack[]);
 	}
-	
-	public boolean isKillEntities(){
+
+	public boolean isKillEntities() {
 		return (this.taskData instanceof EntityKillTracker);
 	}
-	
-	public boolean isKillNPC(){
+
+	public boolean isKillNPC() {
 		return (this.taskData instanceof NPCKillTracker);
 	}
-	
-	public boolean isTalkNPC(){
+
+	public boolean isTalkNPC() {
 		return (this.taskData instanceof NPCTalkTracker);
 	}
-	
-	public void sendWhatIsLeftToDo(Player p){
-		if(this.isItemStacks()){
+
+	public String getCompleteTaskText() {
+		return this.completeTaskText;
+	}
+
+	public void sendWhatIsLeftToDo(Player p) {
+		if (this.isItemStacks()) {
 			p.sendMessage(this.sendItemsToGather(p));
 			return;
-		} else if(this.isKillEntities()){
-			p.sendMessage(((EntityKillTracker)this.taskData).sendEntitiesToKill());
+		} else if (this.isKillEntities()) {
+			p.sendMessage(((EntityKillTracker) this.taskData).sendEntitiesToKill());
 			return;
-		} else if(this.isKillNPC()){
-			p.sendMessage(((NPCKillTracker)this.taskData).sendNPCSToKill());
+		} else if (this.isKillNPC()) {
+			p.sendMessage(((NPCKillTracker) this.taskData).sendNPCSToKill());
 			return;
-		} else if(this.isTalkNPC()){
-			p.sendMessage(((NPCTalkTracker)this.taskData).sendWhoToTalkTo());
+		} else if (this.isTalkNPC()) {
+			p.sendMessage(((NPCTalkTracker) this.taskData).sendWhoToTalkTo());
 			return;
 		}
 		p.sendMessage("Looks like there was an error? You have no task.");
 	}
-	
+
 	String sendItemsToGather(Player p) {
 		ItemStack[] req = (ItemStack[]) this.taskData;
 		StringBuilder buff = new StringBuilder();

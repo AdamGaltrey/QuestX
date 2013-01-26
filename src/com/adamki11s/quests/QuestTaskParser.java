@@ -6,30 +6,41 @@ import com.adamki11s.npcs.tasks.EntityKillTracker;
 import com.adamki11s.npcs.tasks.ISAParser;
 import com.adamki11s.npcs.tasks.NPCKillTracker;
 import com.adamki11s.npcs.tasks.NPCTalkTracker;
+import com.adamki11s.questx.QuestX;
 
 public class QuestTaskParser {
 
-	public static QuestTask getTaskObject(String input, QType type) {
+	public static synchronized QuestTask getTaskObject(String input, QType type) {
 		Object o = null;
-		switch (type) {
-		case FETCH_ITEMS:
-			o = getInventoryObject(input);
-			break;
-		case KILL_ENTITIES:
-			o = getEntityKillObject(input);
-			break;
-		case KILL_NPC:
-			o = getNPCKillObject(input);
-			break;
-		case TALK_NPC:
-			o = new NPCTalkTracker(input);
-			break;
+		QuestX.logMSG("QTYPE = " + type.toString());
+		QuestX.logMSG("ENTERING SWITCH");
+		QuestX.logMSG("SWITCHING CHECKS = " + type);
+		
+		int lio = input.lastIndexOf(":");
+		String completeNodeText = input.substring(lio);
+		String npcName = input.substring((input.substring(0, lio).lastIndexOf(":")), lio);
+		String inputData = input.substring(0, (input.substring(0, lio).lastIndexOf(":")));
+		QuestX.logMSG("CNT = " + completeNodeText + ", npcn = " + npcName + " inputData = " + inputData);
+		
+		if(type == QType.FETCH_ITEMS){
+			o = getInventoryObject(inputData);
+		} else if(type == QType.KILL_ENTITIES){
+			o = getEntityKillObject(inputData);
+		} else if(type == QType.KILL_NPC){
+			o = getNPCKillObject(inputData);
+		} else {
+			o = new NPCTalkTracker(inputData);
 		}
-		String npcName = input.substring(input.lastIndexOf(":"));
-		return new QuestTask(type, o, npcName);
+		
+		QuestX.logMSG("LEFT SWITCH");
+		QuestX.logMSG("Starting task parse***********");
+		
+		
+		return new QuestTask(type, o, npcName, completeNodeText);
 	}
 
 	static ItemStack[] getInventoryObject(String input) {
+		QuestX.logMSG("Parsing isa array");
 		return ISAParser.parseISA(input);
 	}
 

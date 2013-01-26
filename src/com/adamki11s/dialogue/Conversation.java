@@ -1,7 +1,5 @@
 package com.adamki11s.dialogue;
 
-import java.io.File;
-
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -19,7 +17,6 @@ import com.adamki11s.quests.QuestLoader;
 import com.adamki11s.quests.QuestManager;
 import com.adamki11s.quests.QuestTask;
 import com.adamki11s.questx.QuestX;
-import com.adamki11s.sync.io.configuration.SyncConfiguration;
 
 public class Conversation {
 
@@ -138,30 +135,30 @@ public class Conversation {
 			} else if (selTrigger.getTriggerType() == TriggerType.QUEST) {
 				QuestX.logMSG("Inside quest code");
 				SimpleNPC npc = this.getConvoData().getSimpleNpc();
-				if(npc.doesLinkToQuest()){
+				if (npc.doesLinkToQuest()) {
 					QuestX.logMSG("NPC links to quest = " + npc.getQuestName());
 					String qName = npc.getQuestName();
-					if(QuestManager.doesPlayerHaveQuest(p.getName())){
-						if(QuestManager.getCurrentQuestName(p.getName()).equalsIgnoreCase(qName)){
-							//run checks
-							if(npc.getQuestName().equalsIgnoreCase(qName)){
-								if(this.canNPCCompleteQuestNode(qName, p.getName())){
-									//do complete check
-								}
-							} //double check
-						} else {
-							//doing a different quest
-						}
+					if (!QuestManager.doesPlayerHaveQuest(p.getName())) {
+							// start a quest
+							QuestX.logMSG("Player does not have quest!");
+							if (!QuestManager.isQuestLoaded(qName)) {
+								QuestManager.loadQuest(qName);
+							}
+							QuestX.logMSG("QUEST LOADED ############");
+							QuestManager.setCurrentPlayerQuest(p.getName(), qName);
+							QuestLoader ql = QuestManager.getQuestLoader(qName);
+							QuestX.logMSG(ql.getStartText() + "<<<<<< START TEXT");
+							p.sendMessage(ql.getStartText());
+							QuestTask t = QuestManager.getCurrentQuestTask(p.getName());
+							if (t != null) {
+								QuestX.logMSG("Task in non-null");
+								//t.sendWhatIsLeftToDo(p);
+							} else {
+								QuestX.logMSG("Task is null!");
+							}
+							this.endConversation();
 					} else {
-						//start a quest
-						QuestX.logMSG("Player does not have quest!");
-						if(!QuestManager.isQuestLoaded(qName)){
-							QuestManager.loadQuest(qName);
-						}
-						QuestManager.setCurrentPlayerQuest(p.getName(), qName);
-						QuestLoader ql = QuestManager.getQuestLoader(qName);
-						p.sendMessage(ql.getStartText());
-						QuestManager.getCurrentQuestTask(p.getName()).sendWhatIsLeftToDo(p);
+						//player already has quest
 					}
 				} else {
 					QuestX.logMSG("NPC has no link to a quest");
@@ -174,8 +171,8 @@ public class Conversation {
 			p.sendMessage("You must have at least " + items[index - 1].getRequriedRep().getMinRep() + " reputation.");
 		}
 	}
-	
-	boolean canNPCCompleteQuestNode(String quest, String player){
+
+	boolean canNPCCompleteQuestNode(String quest, String player) {
 		SimpleNPC n = this.getConvoData().getSimpleNpc();
 		int currentNode = QuestManager.getQuestLoader(quest).getCurrentQuestNode(player);
 		return (n.getCompleteQuestNodes().contains(currentNode));

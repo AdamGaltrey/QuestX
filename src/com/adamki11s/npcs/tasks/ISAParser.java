@@ -2,12 +2,16 @@ package com.adamki11s.npcs.tasks;
 
 import org.bukkit.inventory.ItemStack;
 
+import com.adamki11s.questx.QuestX;
+
 public class ISAParser {
 	
-	public static ItemStack[] parseISA(String isaRaw){
+	public static synchronized ItemStack[] parseISA(String isaRaw){
+		QuestX.logMSG("Beinning ISA parse = " + isaRaw);
 		String[] components = isaRaw.split(",");
 		ItemStack[] isa = new ItemStack[components.length]; 
 		int count = 0;
+		QuestX.logMSG("Starting split loop");
 		for(String is : components){
 			String[] dataValues = is.split(":");
 			int id, quantity;
@@ -17,6 +21,7 @@ public class ISAParser {
 				quantity = Integer.parseInt(dataValues[2]);
 				data = (byte) Integer.parseInt(dataValues[1]);
 			} catch (NumberFormatException nfe){
+				QuestX.logMSG("NFE thrown!!");
 				throw new NumberFormatException();
 			}
 			ItemStack isAdd = new ItemStack(id, quantity);
@@ -24,6 +29,7 @@ public class ISAParser {
 			isa[count] = isAdd;
 			count++;
 		}
+		QuestX.logMSG("Split loop ended, returning");
 		return isa;
 	}
 

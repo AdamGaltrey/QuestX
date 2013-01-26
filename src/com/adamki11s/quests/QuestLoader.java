@@ -16,14 +16,15 @@ public class QuestLoader {
 
 	final SyncConfiguration config;
 
-	QuestTask[] tasks;
+	volatile QuestTask[] tasks;
 
 	String questName, startText, endText;
 	int nodes, rewardExp, rewardRep;
 	ItemStack[] rewardItems;
 
-	HashMap<String, Integer> playerProgress = new HashMap<String, Integer>();
-	HashMap<String, QuestTask> currentTask = new HashMap<String, QuestTask>();
+	volatile HashMap<String, Integer> playerProgress = new HashMap<String, Integer>();
+	volatile HashMap<Integer, String> nodeCompleteText = new HashMap<Integer, String>();
+	volatile HashMap<String, QuestTask> currentTask = new HashMap<String, QuestTask>();
 
 	public QuestLoader(File f) {
 		this.config = new SyncConfiguration(f);
@@ -33,10 +34,10 @@ public class QuestLoader {
 	void load() {
 		this.config.read();
 		this.questName = config.getString("NAME");
-		int i = 1;
-		do {
+		int i = 0;
+		while (config.doesKeyExist((i + 1) + "")) {
 			i++;
-		} while (config.doesKeyExist(i + ""));
+		}
 		this.nodes = i;
 		if (!this.config.getString("REWARD_ITEMS").equalsIgnoreCase("0")) {
 			this.rewardItems = ISAParser.parseISA(this.config.getString("REWARD_ITEMS"));
@@ -56,18 +57,23 @@ public class QuestLoader {
 			String qtypeEnum = raw.substring(0, raw.indexOf(":"));
 			String dataString = raw.substring(raw.indexOf(":") + 1);
 			QuestX.logMSG("READING---------------");
-			QuestX.logMSG("qtype = " + qtypeEnum);
-			QuestX.logMSG("datastring = " + dataString);
 			QType qType = QType.parseType(qtypeEnum);
 			if (qType == null) {
 				// throw exception
+				QuestX.logMSG("QUEST TYPE IS NULL!!!!!");
+			} else {
+				QuestX.logMSG("Quest Type = '" + qType.toString() + "'");
 			}
 			QuestX.logMSG("raw = " + raw);
 			QuestX.logMSG("qtypeEnum = " + qtypeEnum);
 			QuestX.logMSG("dataString = " + dataString);
+			
 			this.tasks[c - 1] = QuestTaskParser.getTaskObject(dataString, qType);
 			// this.tasks[c - 1] = new
+			QuestX.logMSG("QUEST TASK LOAD LOOOP-----------");
 		}
+		
+		QuestX.logMSG("QUEST LOAD COMPLETE");
 	}
 
 	public String getName() {
@@ -87,6 +93,7 @@ public class QuestLoader {
 	}
 
 	public void playerStartedQuest(String p) {
+		this.loadAndCheckPlayerProgress(p);
 		this.playerProgress.put(p, 1);
 		this.currentTask.put(p, this.tasks[0].getClonedInstance());// We only
 																	// want to
@@ -99,8 +106,23 @@ public class QuestLoader {
 																	// change
 																	// anything
 	}
+	
+	public void loadAndCheckPlayerProgress(String p){
+		File f = FileLocator.getQuestProgressionPlayerFile(questName, p);
+		SyncConfiguration c = new SyncConfiguration(f);
+		if(f.exists()){
+			c.read();
+			this.playerProgress.put(p, c.getInt("P"));
+		} else {
+			c.createFileIfNeeded();
+			c.add("P", 1);
+			c.write();
+			this.playerProgress.put(p, 1);
+		}
+	}
 
 	public QuestTask getPlayerQuestTask(String p) {
+		QuestX.logMSG("Logging player progress = " + this.playerProgress.get(p));
 		return this.currentTask.get(p);
 	}
 
@@ -131,7 +153,7 @@ public class QuestLoader {
 		return this.playerProgress.get(player) > this.nodes;
 	}
 
-	void incrementTaskProgress(String p) {
+	public void incrementTaskProgress(String p) {
 		int current = this.playerProgress.get(p) + 1;
 		this.playerProgress.put(p, current);
 		SyncConfiguration c = new SyncConfiguration(FileLocator.getQuestProgressionPlayerFile(questName, p));
