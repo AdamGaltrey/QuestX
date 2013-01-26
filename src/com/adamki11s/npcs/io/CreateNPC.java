@@ -114,6 +114,12 @@ public class CreateNPC {
 		syncConfig.add("REWARD_EXP", "0");// reward exp
 		syncConfig.add("REWARD_REP", "0");// reward reputation
 		syncConfig.write();
+		
+		File fLink = FileLocator.getNPCQuestLinkFile(name);
+		syncConfig = new SyncConfiguration(fLink);
+		syncConfig.add("QUEST_NAME", 0);
+		syncConfig.add("NODES", 0);
+		syncConfig.write();
 
 	}
 
