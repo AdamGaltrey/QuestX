@@ -222,6 +222,9 @@ public class SimpleNPC {
 	}
 
 	public void damageNPC(Player p, int damage) {
+		if(this.isSpawnFixed){
+			return;
+		}
 		health -= damage;
 		this.aggressor = p;
 		this.underAttack = true;
