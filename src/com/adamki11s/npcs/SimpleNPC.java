@@ -290,6 +290,7 @@ public class SimpleNPC {
 									p.sendMessage(ql.getEndText());
 									Fireworks f = new Fireworks(p.getLocation(), 6, 60);
 									f.circularDisplay();
+									QuestManager.removeCurrentPlayerQuest(ql.getName(), p.getName());
 								}
 							} else {
 								t.sendWhatIsLeftToDo(p);

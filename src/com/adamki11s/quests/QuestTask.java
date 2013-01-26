@@ -4,6 +4,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import com.adamki11s.extras.inventory.ExtrasInventory;
 import com.adamki11s.io.FileLocator;
 import com.adamki11s.npcs.tasks.EntityKillTracker;
 import com.adamki11s.npcs.tasks.NPCKillTracker;
@@ -112,6 +113,16 @@ public class QuestTask {
 			return;
 		}
 		p.sendMessage("Looks like there was an error? You have no task.");
+	}
+	
+	public void removeItems(Player p){
+		ExtrasInventory ei = new ExtrasInventory();
+
+		if (this.isItemStacks()) {
+			for (ItemStack is : ((ItemStack[])this.taskData)) {
+				ei.removeFromInventory(p, is.getTypeId(), is.getAmount());
+			}
+		}
 	}
 
 	String sendItemsToGather(Player p) {

@@ -67,12 +67,12 @@ public class QuestLoader {
 			QuestX.logMSG("raw = " + raw);
 			QuestX.logMSG("qtypeEnum = " + qtypeEnum);
 			QuestX.logMSG("dataString = " + dataString);
-			
+
 			this.tasks[c - 1] = QuestTaskParser.getTaskObject(dataString, qType);
 			// this.tasks[c - 1] = new
 			QuestX.logMSG("QUEST TASK LOAD LOOOP-----------");
 		}
-		
+
 		QuestX.logMSG("QUEST LOAD COMPLETE");
 	}
 
@@ -94,7 +94,6 @@ public class QuestLoader {
 
 	public void playerStartedQuest(String p) {
 		this.loadAndCheckPlayerProgress(p);
-		this.playerProgress.put(p, 1);
 		this.currentTask.put(p, this.tasks[0].getClonedInstance());// We only
 																	// want to
 																	// use the
@@ -106,13 +105,14 @@ public class QuestLoader {
 																	// change
 																	// anything
 	}
-	
-	public void loadAndCheckPlayerProgress(String p){
+
+	public void loadAndCheckPlayerProgress(String p) {
 		File f = FileLocator.getQuestProgressionPlayerFile(questName, p);
 		SyncConfiguration c = new SyncConfiguration(f);
-		if(f.exists()){
+		if (f.exists()) {
 			c.read();
 			this.playerProgress.put(p, c.getInt("P"));
+			QuestX.logMSG("'" + p + "' progress loaded = " + c.getInt("P"));
 		} else {
 			c.createFileIfNeeded();
 			c.add("P", 1);
@@ -154,11 +154,18 @@ public class QuestLoader {
 	}
 
 	public void incrementTaskProgress(String p) {
+		QuestTask qt = this.currentTask.get(p);
+		qt.removeItems(Bukkit.getServer().getPlayer(p));
+		
 		int current = this.playerProgress.get(p) + 1;
 		this.playerProgress.put(p, current);
+		if (current < +this.nodes) {
+			this.currentTask.put(p, this.tasks[current - 1].getClonedInstance());
+		}
 		SyncConfiguration c = new SyncConfiguration(FileLocator.getQuestProgressionPlayerFile(questName, p));
 		c.add("P", current);
 		c.write();
+
 	}
 
 }

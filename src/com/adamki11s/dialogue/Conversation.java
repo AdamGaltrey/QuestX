@@ -138,6 +138,7 @@ public class Conversation {
 				if (npc.doesLinkToQuest()) {
 					QuestX.logMSG("NPC links to quest = " + npc.getQuestName());
 					String qName = npc.getQuestName();
+					
 					if (!QuestManager.doesPlayerHaveQuest(p.getName())) {
 						// start a quest
 						QuestX.logMSG("Player does not have quest!");
@@ -147,6 +148,7 @@ public class Conversation {
 						QuestX.logMSG("QUEST LOADED ############");
 						QuestManager.setCurrentPlayerQuest(p.getName(), qName);
 						QuestLoader ql = QuestManager.getQuestLoader(qName);
+						ql.loadPlayerProgress(p.getName());
 						if (ql.isQuestComplete(p.getName())) {
 							QuestX.logChat(p, "You have already completed this quest!");
 						} else {

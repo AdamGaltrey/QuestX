@@ -27,6 +27,7 @@ public class QuestManager {
 	
 	public static boolean hasPlayerCompletedQuest(String qName, String player){
 		QuestLoader ql = getQuestLoader(qName);
+		ql.loadAndCheckPlayerProgress(player);
 		return ql.isQuestComplete(player);
 	}
 	
