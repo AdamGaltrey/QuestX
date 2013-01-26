@@ -45,14 +45,14 @@ public class FixedLoadingTable {
 		}
 	}
 
-	public static void addFixedNPCSpawn(Player p, String npcName, Location l) {
+	public static boolean addFixedNPCSpawn(Player p, String npcName, Location l) {
 		if (!FileLocator.doesNPCNameExist(npcName)) {
 			QuestX.logChat(p, ChatColor.RED + "There is no NPC created with this name!");
-			return;
+			return false;
 		} else {
 			if (fixedSpawns.containsKey(npcName)) {
 				QuestX.logChat(p, "A fixed spawn location for this NPC already exists");
-				return;
+				return false;
 			}
 			loader.read();
 			for (SyncWrapper wrap : loader.getReadableData()) {
@@ -66,6 +66,7 @@ public class FixedLoadingTable {
 			fixedSpawns.put(npcName, l);
 
 			QuestX.logChat(p, "Fixed spawn created successfully for NPC '" + npcName + "'.");
+			return true;
 		}
 	}
 

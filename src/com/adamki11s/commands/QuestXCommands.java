@@ -89,8 +89,10 @@ public class QuestXCommands implements CommandExecutor {
 
 				if (args.length == 2 && args[0].equalsIgnoreCase("setfixedspawn")) {
 					String npcName = args[1];
-					FixedLoadingTable.addFixedNPCSpawn(p, npcName, p.getLocation());
-					this.handle.getSimpleNPCByName(npcName).spawnNPC();
+					boolean suc = FixedLoadingTable.addFixedNPCSpawn(p, npcName, p.getLocation());
+					if (suc) {
+						this.handle.getSimpleNPCByName(npcName).spawnNPC();
+					}
 					return true;
 				}
 
