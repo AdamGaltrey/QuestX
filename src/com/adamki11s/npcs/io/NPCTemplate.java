@@ -43,6 +43,7 @@ public class NPCTemplate {
 	public void registerSimpleNPCFixedSpawn(NPCHandler handle, Location fixedLocation){
 		SimpleNPC snpc = new SimpleNPC(handle, name, nameColour, moveable, attackable, aggressive, minPauseTicks, maxPauseTicks, maxVariation, maxHealth, respawnTicks, inventory, gear, damageMod, retalliationMultiplier);
 		snpc.setFixedLocation(fixedLocation);
+		snpc.setNewSpawnLocation(fixedLocation);
 		snpc.spawnNPC();
 	}
 	

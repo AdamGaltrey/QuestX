@@ -11,6 +11,7 @@ import com.adamki11s.dialogue.triggers.TaskTrigger;
 import com.adamki11s.dialogue.triggers.Trigger;
 import com.adamki11s.dialogue.triggers.TriggerType;
 import com.adamki11s.io.FileLocator;
+import com.adamki11s.questx.QuestX;
 import com.adamki11s.sync.io.writer.SyncWriter;
 
 
@@ -55,6 +56,7 @@ public class DLGParser {
 				String[] speechOptions = new String[options];
 				String[] gTagIds = new String[options];
 				String[] trigIds = new String[options];
+				QuestX.logMSG(options + " dialogue options scanned");
 				for(int i = 1; i <= options; i++){
 					speechOptions[i - 1] = parts[2 + i];
 					gTagIds[i - 1] = parts[2 + (options) + i];
@@ -148,7 +150,7 @@ public class DLGParser {
 	 * 
 	 * 0#say#2#"Hello There."#"Bye!"#a,a#n,e
 	 * 
-	 * 0#reply#2#"Hi there %pname%, what can i do for you?","See you around"
+	 * 0#reply#2#"Hi there %pname%, what can i do for you?"#"See you around"
 	 * 
 	 * 
 	 * 01#say#1#"Where am I?"#a#n
