@@ -1,7 +1,5 @@
 package com.adamki11s.npcs.population;
 
-import java.io.File;
-import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -13,14 +11,11 @@ import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
-import com.adamki11s.io.FileLocator;
 import com.adamki11s.questx.QuestX;
-import com.adamki11s.sync.io.configuration.SyncConfiguration;
 import com.adamki11s.sync.sql.SyncSQL;
 
 public class PopulationDensityThread implements Runnable {
 
-	final File db;
 	final SyncSQL sql;
 	String[] worlds;
 	
@@ -28,11 +23,9 @@ public class PopulationDensityThread implements Runnable {
 
 	HashMap<String, PreparedStatement[]> preparedStatements = new HashMap<String, PreparedStatement[]>();
 
-	public PopulationDensityThread() {
-		this.db = FileLocator.getPlayerPopulationDensityDatabase();
-		this.sql = new SyncSQL(this.db);
+	public PopulationDensityThread(SyncSQL sql) {
+		this.sql = sql;
 		this.worlds = WorldConfigData.getWorlds();
-		this.initiateSQLite();
 		this.loadPreparedStatements();
 		GlobalDensityCache.updateGlobalDensity(this.sql, worlds);
 	}
@@ -63,31 +56,6 @@ public class PopulationDensityThread implements Runnable {
 			// " SET x=x+1, z=z+1 WHERE x=?, z=?";
 			// String checkChunk = "SELECT (x,z) FROM pop_density_" + worldName
 			// + " WHERE x=?, z=?";
-		}
-	}
-
-	void initiateSQLite() {
-		QuestX.logMSG("Connecting to SQLite database...");
-		if (this.sql.initialise()) {
-			QuestX.logMSG("Connection successfull!");
-		} else {
-			QuestX.logMSG("Something went wrong!");
-		}
-		for (World w : Bukkit.getServer().getWorlds()) {
-			try {
-				if (!this.sql.doesTableExist(w.getName())) {
-					String worldTable = "CREATE TABLE " + w.getName()
-							+ "('id' INTEGER PRIMARY KEY AUTOINCREMENT, 'x' INTEGER NOT NULL, 'z' INTEGER NOT NULL, 'density' INTEGER NOT NULL)";
-					String insert = "INSERT INTO " + w.getName() + " (x,z,density) VALUES (0,0,0)";
-					QuestX.logMSG("Creating SQLite table '" + w.getName() + "'.");
-					this.sql.standardQuery(worldTable);
-					this.sql.standardQuery(insert);
-					QuestX.logMSG("Table created successfully.");
-
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
 		}
 	}
 

@@ -53,8 +53,8 @@ public class FileLocator {
 		return new File(npc_data_root + File.separator + npcName + File.separator + "Progression" + File.separator + playerName + ".prog");
 	}
 	
-	public static File getPlayerPopulationDensityDatabase(){
-		return new File(data_root + File.separator + "pop_density.db");
+	public static File getQuestXDatabase(){
+		return new File(data_root + File.separator + "questx_data.db");
 	}
 	
 	public static File getWorldConfig(){

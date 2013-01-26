@@ -149,7 +149,6 @@ public class Conversation {
 							QuestManager.loadQuest(qName);
 						}
 						QuestX.logMSG("QUEST LOADED ############");
-						
 						QuestLoader ql = QuestManager.getQuestLoader(qName);
 						ql.loadPlayerProgress(p.getName());
 						if (ql.isQuestComplete(p.getName())) {

@@ -1,24 +1,31 @@
 package com.adamki11s.npcs;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.adamki11s.io.FileLocator;
 import com.adamki11s.npcs.population.NPCChunkData;
 import com.adamki11s.npcs.population.NPCWorldData;
 import com.adamki11s.npcs.population.SpawnLocationDispatcher;
 import com.adamki11s.questx.QuestX;
+import com.adamki11s.questx.sql.SQLTables;
+import com.adamki11s.sync.sql.SyncSQL;
 import com.topcat.npclib.NPCManager;
 import com.topcat.npclib.entity.HumanNPC;
 
 public class NPCHandler {
 
+	final SyncSQL sql;
 	final NPCManager npc;
 	final String[] worlds;
 
@@ -32,6 +39,10 @@ public class NPCHandler {
 
 	HashMap<String, HashSet<NPCChunkData>> npcChunkData = new HashMap<String, HashSet<NPCChunkData>>();
 
+	public SyncSQL getSQL(){
+		return this.sql;
+	}
+	
 	public void addToWaitingList(SimpleNPC npc) {
 
 		if (npc == null) {
@@ -61,6 +72,8 @@ public class NPCHandler {
 	}
 
 	public NPCHandler(JavaPlugin main, String worlds[]) {
+		this.sql = new SyncSQL(FileLocator.getQuestXDatabase());
+		SQLTables.initiateSQLite(sql);
 		this.worlds = worlds;
 		npc = new NPCManager(main);
 		QuestX.logMSG("Checking worlds NPCHandler constructor");
@@ -77,6 +90,8 @@ public class NPCHandler {
 
 		}
 	}
+	
+	
 
 	public SpawnLocationDispatcher getDispatcher(String world) {
 		return this.spawnDispatchers.get(world);

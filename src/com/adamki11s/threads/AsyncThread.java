@@ -21,7 +21,7 @@ public class AsyncThread implements Runnable {
 		mControl = new MovementController(handle);
 		rControl = new RespawnController(handle);
 		aControl = new AttackController(handle);
-		pdThread = new PopulationDensityThread();
+		pdThread = new PopulationDensityThread(handle.getSQL());
 		this.tickRate = tickRate;
 	}
 	
