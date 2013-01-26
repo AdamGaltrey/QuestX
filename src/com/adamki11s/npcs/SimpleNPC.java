@@ -286,7 +286,7 @@ public class SimpleNPC {
 							if (this.canNPCCompleteQuestNode(p.getName())) {
 								// do complete check
 								if (t.isTaskComplete(p)) {
-									ql.incrementTaskProgress(p.getName());
+									ql.incrementTaskProgress(p);
 									p.sendMessage(t.getCompleteTaskText());
 									if (ql.isQuestComplete(p.getName())) {
 										p.sendMessage(ql.getEndText());

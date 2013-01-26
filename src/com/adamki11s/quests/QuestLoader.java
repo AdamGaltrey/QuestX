@@ -265,11 +265,10 @@ public class QuestLoader {
 		this.currentTask.put(p, this.tasks[this.playerProgress.get(p) - 1].getClonedInstance());
 	}
 
-	public synchronized void setTaskComplete(String player) {
+	public synchronized void setTaskComplete(Player player) {
 		this.incrementTaskProgress(player);
-		Player p = Bukkit.getServer().getPlayer(player);
-		if (p != null) {
-			p.sendMessage("Quest task completed!");
+		if (player != null) {
+			player.sendMessage("Quest task completed!");
 		}
 	}
 
@@ -277,16 +276,18 @@ public class QuestLoader {
 		return this.playerProgress.get(player) > this.nodes;
 	}
 
-	public void incrementTaskProgress(String p) {
+	public void incrementTaskProgress(Player p) {
 		QuestTask qt = this.currentTask.get(p);
-		qt.removeItems(Bukkit.getServer().getPlayer(p));
+		qt.removeItems(p);
 
 		int current = this.playerProgress.get(p) + 1;
-		this.playerProgress.put(p, current);
+		this.playerProgress.put(p.getName(), current);
 		if (current < +this.nodes) {
-			this.currentTask.put(p, this.tasks[current - 1].getClonedInstance());
+			this.currentTask.put(p.getName(), this.tasks[current - 1].getClonedInstance());
+		} else {
+			this.awardPlayerOnQuestComplete(p);
 		}
-		SyncConfiguration c = new SyncConfiguration(FileLocator.getQuestProgressionPlayerFile(questName, p));
+		SyncConfiguration c = new SyncConfiguration(FileLocator.getQuestProgressionPlayerFile(questName, p.getName()));
 		c.add("P", current);
 		c.write();
 
