@@ -4,11 +4,8 @@ import java.io.File;
 import java.io.IOException;
 
 import org.bukkit.ChatColor;
-import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.EntityType;
-import org.bukkit.inventory.ItemStack;
 
-import com.adamki11s.data.ItemStackDrop;
 import com.adamki11s.io.FileLocator;
 import com.adamki11s.io.NPCTag;
 import com.adamki11s.sync.io.configuration.SyncConfiguration;
@@ -113,6 +110,9 @@ public class CreateNPC {
 		syncConfig.add("REWARD_ITEMS", "0");// item stacks
 		syncConfig.add("REWARD_EXP", "0");// reward exp
 		syncConfig.add("REWARD_REP", "0");// reward reputation
+		syncConfig.add("REWARD_GOLD", 0);
+		syncConfig.add("REWARD_PERMISSIONS_ADD", "0");
+		syncConfig.add("REWARD_PERMISSIONS_REMOVE", "0");
 		syncConfig.write();
 		
 		File fLink = FileLocator.getNPCQuestLinkFile(name);

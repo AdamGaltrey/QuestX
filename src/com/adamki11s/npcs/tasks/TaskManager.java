@@ -164,7 +164,6 @@ public class TaskManager {
 			}
 		}
 
-		
 		if (this.getTaskLoader().isAwardItems()) {
 			ItemStack[] rewardItems = this.getTaskLoader().getRewardItems();
 			for (ItemStack i : rewardItems) {
@@ -179,17 +178,38 @@ public class TaskManager {
 			}
 		}
 
-		int rewardExp;
-		if ((rewardExp = this.getTaskLoader().rewardExp) > 0) {
-			for (int exp = 1; exp <= rewardExp; exp++) {
+		if (this.getTaskLoader().isAwardExp()) {
+			for (int exp = 1; exp <= this.getTaskLoader().getRewardExp(); exp++) {
 				ExperienceOrb orb = p.getWorld().spawn(p.getLocation().add(0.5, 10, 0.5), ExperienceOrb.class);
 				orb.setExperience(1);
 			}
 		}
 
-		int rewardRep;
-		if ((rewardRep = this.getTaskLoader().rewardRep) != 0) {
-			// adjust rep accordingly
+		if (this.getTaskLoader().isAwardRep()) {
+			int awardRep = this.getTaskLoader().getRewardRep();
+			// adjust rep
+		}
+
+		if (this.getTaskLoader().isAwardGold()) {
+			if (QuestX.economy.hasAccount(p.getName())) {
+				QuestX.economy.bankDeposit(p.getName(), this.getTaskLoader().getRewardGold());
+			} else {
+				// can't award, no account
+			}
+		}
+
+		if (this.getTaskLoader().isAwardingAddPerms()) {
+			for (String perm : this.getTaskLoader().getAddPerms()) {
+				QuestX.permission.playerAdd(p, perm);
+			}
+		}
+		
+		if (this.getTaskLoader().isAwardingRemPerms()) {
+			for (String perm : this.getTaskLoader().getRemPerms()) {
+				if(QuestX.permission.has(p, perm)){
+					QuestX.permission.playerRemove(p, perm);
+				}
+			}
 		}
 
 		Location pL = p.getLocation();

@@ -16,11 +16,12 @@ public class TaskLoader {
 
 	final String npcName;
 	String taskName, taskDescription, incompleteTaskSpeech, completeTaskSpeech;
+	String[] addPerms, remPerms;
 	ItemStack[] retrieveItems, rewardItems;
-	int rewardExp, rewardRep;
+	int rewardExp, rewardRep, rewardGold;
 	EntityKillTracker ekt;
 	NPCKillTracker nkt;
-	boolean fetchItems, killEntities, killNPCS, awardItems;
+	boolean fetchItems, killEntities, killNPCS, awardItems, apAdd, apRem;
 
 	public TaskLoader(File taskFile, String npcName) {
 		this.taskFile = taskFile;
@@ -84,13 +85,66 @@ public class TaskLoader {
 			QuestX.logMSG("Not loading NPC's to kill");
 			this.killNPCS = false;
 		}
-		
-		
 
 		this.rewardExp = config.getInt("REWARD_EXP");
 		this.rewardRep = config.getInt("REWARD_REP");
+		this.rewardGold = config.getInt("REWARD_GOLD");
+		
+		if(!config.getString("REWARD_PERMISSIONS_ADD").equalsIgnoreCase("0")){
+			this.addPerms = config.getString("REWARD_PERMISSIONS_ADD").split(",");
+			this.apAdd = true;
+		} else {
+			this.apAdd = false;
+		}
+		
+		if(!config.getString("REWARD_PERMISSIONS_REMOVE").equalsIgnoreCase("0")){
+			this.remPerms = config.getString("REWARD_PERMISSIONS_REMOVE").split(",");
+			this.apRem = true;
+		} else {
+			this.apRem = false;
+		}
 		
 		QuestX.logMSG("TaskLoad Operation completed");
+	}
+	
+	public boolean isAwardingAddPerms(){
+		return this.apAdd;
+	}
+	
+	public boolean isAwardingRemPerms(){
+		return this.apRem;
+	}
+	
+	public String[] getAddPerms(){
+		return this.addPerms;
+	}
+	
+	public String[] getRemPerms(){
+		return this.remPerms;
+	}
+	
+	public int getRewardExp(){
+		return this.rewardExp;
+	}
+	
+	public int getRewardRep(){
+		return this.rewardRep;
+	}
+	
+	public int getRewardGold(){
+		return this.rewardGold;
+	}
+	
+	public boolean isAwardGold(){
+		return (this.rewardGold > 0);
+	}
+	
+	public boolean isAwardExp(){
+		return (this.rewardExp > 0);
+	}
+	
+	public boolean isAwardRep(){
+		return (this.rewardRep != 0);
 	}
 
 	public String getTaskDescription(){
@@ -104,7 +158,7 @@ public class TaskLoader {
 	public String getTaskName() {
 		return taskName;
 	}
-
+	
 	public boolean isFetchItems() {
 		return fetchItems;
 	}

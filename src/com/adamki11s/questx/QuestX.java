@@ -2,9 +2,13 @@ package com.adamki11s.questx;
 
 import java.util.logging.Logger;
 
+import net.milkbowl.vault.economy.Economy;
+import net.milkbowl.vault.permission.Permission;
+
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.adamki11s.commands.QuestXCommands;
@@ -18,7 +22,6 @@ import com.adamki11s.npcs.NPCHandler;
 import com.adamki11s.npcs.loading.FixedLoadingTable;
 import com.adamki11s.npcs.population.WorldConfigData;
 import com.adamki11s.threads.ThreadController;
-
 
 public class QuestX extends JavaPlugin {
 
@@ -34,35 +37,64 @@ public class QuestX extends JavaPlugin {
 	EntityDeathMonitor entityDeathMonitorEvent;
 
 	public static Plugin p;
-		
-	public static synchronized void logMSG(String msg){
+
+	public static synchronized void logMSG(String msg) {
 		log.info("[QuestX] " + msg);
 	}
-	
-	public static final void logChat(Player p, String message){
+
+	public static final void logChat(Player p, String message) {
 		p.sendMessage(ChatColor.AQUA + "[QuestX] " + ChatColor.RESET + message);
 	}
 
 	public NPCHandler getNPCHandler() {
 		return this.handle;
 	}
+
+	public static Permission permission = null;
+	public static Economy economy = null;
+
+	private boolean setupPermissions() {
+		RegisteredServiceProvider<Permission> permissionProvider = getServer().getServicesManager().getRegistration(net.milkbowl.vault.permission.Permission.class);
+		if (permissionProvider != null) {
+			permission = permissionProvider.getProvider();
+		}
+		return (permission != null);
+	}
 	
 
+    private boolean setupEconomy()
+    {
+        RegisteredServiceProvider<Economy> economyProvider = getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
+        if (economyProvider != null) {
+            economy = economyProvider.getProvider();
+        }
+
+        return (economy != null);
+    }
 
 	@Override
 	public void onEnable() {
 
+		boolean perms = this.setupPermissions();
+		if (perms) {
+			QuestX.logMSG("Hooked into Vault permissions successfully.");
+		} else {
+			QuestX.logMSG("There was an error hooking into Vault permissions!");
+		}
 		
-		
+		boolean econ = this.setupEconomy();
+		if (econ) {
+			QuestX.logMSG("Hooked into Vault Economy successfully.");
+		} else {
+			QuestX.logMSG("There was an error hooking into Vault economy!");
+		}
 
 		InitialSetup.run();
-		
+
 		handle = new NPCHandler(this, WorldConfigData.getWorlds());
-		
-		
+
 		FixedLoadingTable.spawnFixedNPCS(handle);
 
-		
 		p = this;
 		this.getCommand("QuestX").setExecutor(new QuestXCommands(this));
 		this.tControl = new ThreadController(handle);
@@ -77,22 +109,26 @@ public class QuestX extends JavaPlugin {
 		entityDeathMonitorEvent = new EntityDeathMonitor(this);
 		// register events
 
-		/*String name = "Adam";
+		/*
+		 * String name = "Adam";
+		 * 
+		 * boolean unique = CreateNPC.isNameUnique(name);
+		 */
 
-		boolean unique = CreateNPC.isNameUnique(name);*/
-
-		/*if (unique) {
-
-			CreateNPC create = new CreateNPC(name, ChatColor.RED);
-
-			// Format id:data:quantity:chance(out of 10,000)/
-			String invDrops = "1,0,5,6000#2,0,3,3000", gear = "0,0,0,0,0";
-			create.setProperties(true, true, false, true, (20 * 5), (20 * 20), 15, (20 * 30), 30, 2, 2, invDrops, gear);
-			create.createNPCFiles();
-
-		} else {
-			System.out.println("[QuestX] An NPC with this name already exists!");
-		}*/
+		/*
+		 * if (unique) {
+		 * 
+		 * CreateNPC create = new CreateNPC(name, ChatColor.RED);
+		 * 
+		 * // Format id:data:quantity:chance(out of 10,000)/ String invDrops =
+		 * "1,0,5,6000#2,0,3,3000", gear = "0,0,0,0,0";
+		 * create.setProperties(true, true, false, true, (20 * 5), (20 * 20),
+		 * 15, (20 * 30), 30, 2, 2, invDrops, gear); create.createNPCFiles();
+		 * 
+		 * } else {
+		 * System.out.println("[QuestX] An NPC with this name already exists!");
+		 * }
+		 */
 
 		// Updater updater = new Updater(this, "bukkitdev_slug", this.getFile(),
 		// Updater.UpdateType.DEFAULT, false);//Final boolean = show dl progress
