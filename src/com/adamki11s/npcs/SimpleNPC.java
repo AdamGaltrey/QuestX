@@ -280,7 +280,12 @@ public class SimpleNPC {
 					if (QuestManager.getCurrentQuestName(p.getName()).equalsIgnoreCase(this.getQuestName())) {
 						QuestLoader ql = QuestManager.getQuestLoader(this.getQuestName());
 						QuestTask t = QuestManager.getCurrentQuestTask(p.getName());
-
+						if(t == null){
+							QuestX.logMSG("QuetTask loaded null! ###########");
+							return;
+						} else {
+							QuestX.logMSG("QuestTask was NOT NULL #######");
+						}
 						if (!ql.isQuestComplete(p.getName())) {
 							// run checks
 							if (this.canNPCCompleteQuestNode(p.getName())) {

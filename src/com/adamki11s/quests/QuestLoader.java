@@ -101,28 +101,28 @@ public class QuestLoader {
 
 		QuestX.logMSG("QUEST LOAD COMPLETE");
 	}
-	
-	public boolean isAwardingAddPerms(){
+
+	public boolean isAwardingAddPerms() {
 		return this.apAdd;
 	}
-	
-	public boolean isAwardingRemPerms(){
+
+	public boolean isAwardingRemPerms() {
 		return this.apRem;
 	}
-	
-	public boolean isAwardingItems(){
+
+	public boolean isAwardingItems() {
 		return (this.rewardItems != null);
 	}
-	
-	public String[] getAddPerms(){
+
+	public String[] getAddPerms() {
 		return this.addPerms;
 	}
-	
-	public String[] getRemPerms(){
+
+	public String[] getRemPerms() {
 		return this.remPerms;
 	}
-	
-	public boolean isAwardGold(){
+
+	public boolean isAwardGold() {
 		return (this.rewardGold > 0);
 	}
 
@@ -155,28 +155,28 @@ public class QuestLoader {
 																	// change
 																	// anything
 	}
-	
-	public int getRewardExp(){
+
+	public int getRewardExp() {
 		return this.rewardExp;
 	}
-	
-	public int getRewardRep(){
+
+	public int getRewardRep() {
 		return this.rewardRep;
 	}
-	
-	public int getRewardGold(){
+
+	public int getRewardGold() {
 		return this.rewardGold;
 	}
-	
-	public boolean isAwardExp(){
+
+	public boolean isAwardExp() {
 		return (this.rewardExp > 0);
 	}
-	
-	public boolean isAwardRep(){
+
+	public boolean isAwardRep() {
 		return (this.rewardRep != 0);
 	}
-	
-	public void awardPlayerOnQuestComplete(Player p){
+
+	public void awardPlayerOnQuestComplete(Player p) {
 		if (this.isAwardingItems()) {
 			ItemStack[] rewardItems = this.rewardItems;
 			for (ItemStack i : rewardItems) {
@@ -216,10 +216,10 @@ public class QuestLoader {
 				QuestX.permission.playerAdd(p, perm);
 			}
 		}
-		
+
 		if (this.isAwardingRemPerms()) {
 			for (String perm : this.getRemPerms()) {
-				if(QuestX.permission.has(p, perm)){
+				if (QuestX.permission.has(p, perm)) {
 					QuestX.permission.playerRemove(p, perm);
 				}
 			}
@@ -270,12 +270,15 @@ public class QuestLoader {
 	}
 
 	public void incrementTaskProgress(Player p) {
-		QuestTask qt = this.currentTask.get(p);
-		qt.removeItems(p);
+		QuestTask qt = this.currentTask.get(p.getName());
 
-		int current = this.playerProgress.get(p) + 1;
+		if (qt.isItemStacks()) {
+			qt.removeItems(p);
+		}
+
+		int current = this.playerProgress.get(p.getName()) + 1;
 		this.playerProgress.put(p.getName(), current);
-		if (current < +this.nodes) {
+		if (current <= +this.nodes) {
 			this.currentTask.put(p.getName(), this.tasks[current - 1].getClonedInstance());
 		} else {
 			this.awardPlayerOnQuestComplete(p);
