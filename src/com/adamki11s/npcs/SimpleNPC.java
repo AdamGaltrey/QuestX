@@ -222,7 +222,7 @@ public class SimpleNPC {
 	}
 
 	public void damageNPC(Player p, int damage) {
-		if(this.isSpawnFixed){
+		if (this.isSpawnFixed) {
 			return;
 		}
 		health -= damage;
@@ -280,41 +280,47 @@ public class SimpleNPC {
 					if (QuestManager.getCurrentQuestName(p.getName()).equalsIgnoreCase(this.getQuestName())) {
 						QuestLoader ql = QuestManager.getQuestLoader(this.getQuestName());
 						QuestTask t = QuestManager.getCurrentQuestTask(p.getName());
-						// run checks
-						if (this.canNPCCompleteQuestNode(p.getName())) {
-							// do complete check
-							if (t.isTaskComplete(p)) {
-								ql.incrementTaskProgress(p.getName());
-								p.sendMessage(t.getCompleteTaskText());
-								if(ql.isQuestComplete(p.getName())){
-									p.sendMessage(ql.getEndText());
-									Fireworks f = new Fireworks(p.getLocation(), 6, 60);
-									f.circularDisplay();
-									QuestManager.removeCurrentPlayerQuest(ql.getName(), p.getName());
+
+						if (!ql.isQuestComplete(p.getName())) {
+							// run checks
+							if (this.canNPCCompleteQuestNode(p.getName())) {
+								// do complete check
+								if (t.isTaskComplete(p)) {
+									ql.incrementTaskProgress(p.getName());
+									p.sendMessage(t.getCompleteTaskText());
+									if (ql.isQuestComplete(p.getName())) {
+										p.sendMessage(ql.getEndText());
+										Fireworks f = new Fireworks(p.getLocation(), 6, 60);
+										f.circularDisplay();
+										QuestManager.removeCurrentPlayerQuest(ql.getName(), p.getName());
+									}
+								} else {
+									t.sendWhatIsLeftToDo(p);
 								}
+								return;
 							} else {
-								t.sendWhatIsLeftToDo(p);
+								p.sendMessage("Sorry You need to see " + t.getNPCToCompleteName() + " to complete this part of the quest");
+								return;
 							}
-							return;
+
 						} else {
-							p.sendMessage("Sorry You need to see " + t.getNPCToCompleteName() + " to complete this part of the quest");
-							return;
+							
 						}
 					} else {
 						// doing a different quest
 					}
 				}
 
-				/*QuestTask qt = QuestManager.getCurrentQuestTask(p.getName());
-				if (qt.isTalkNPC()) {
-					String s = qt.getData().toString();
-					if (s.equalsIgnoreCase(this.getName())) {
-						QuestLoader ql = QuestManager.getQuestLoader(QuestManager.getCurrentQuestName(p.getName()));
-						ql.setTaskComplete(p.getName());
-					}
-				}*/
+				/*
+				 * QuestTask qt = QuestManager.getCurrentQuestTask(p.getName());
+				 * if (qt.isTalkNPC()) { String s = qt.getData().toString(); if
+				 * (s.equalsIgnoreCase(this.getName())) { QuestLoader ql =
+				 * QuestManager
+				 * .getQuestLoader(QuestManager.getCurrentQuestName(p
+				 * .getName())); ql.setTaskComplete(p.getName()); } }
+				 */
 			} else {
-				
+
 			}
 
 			if (TaskRegister.doesPlayerHaveTask(p.getName())) {

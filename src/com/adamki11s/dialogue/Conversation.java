@@ -149,12 +149,13 @@ public class Conversation {
 							QuestManager.loadQuest(qName);
 						}
 						QuestX.logMSG("QUEST LOADED ############");
-						QuestManager.setCurrentPlayerQuest(p.getName(), qName);
+						
 						QuestLoader ql = QuestManager.getQuestLoader(qName);
 						ql.loadPlayerProgress(p.getName());
 						if (ql.isQuestComplete(p.getName())) {
 							QuestX.logChat(p, "You have already completed this quest!");
 						} else {
+							QuestManager.setCurrentPlayerQuest(p.getName(), qName);
 							QuestX.logMSG(ql.getStartText() + "<<<<<< START TEXT");
 							p.sendMessage(ql.getStartText());
 							QuestTask t = QuestManager.getCurrentQuestTask(p.getName());
@@ -167,6 +168,7 @@ public class Conversation {
 						}
 						this.endConversation();
 					} else {
+						QuestX.logMSG("Player has quest!");
 						// player already has quest
 					}
 				} else {
