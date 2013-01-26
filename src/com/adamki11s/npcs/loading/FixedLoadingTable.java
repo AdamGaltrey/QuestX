@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 
 import com.adamki11s.io.FileLocator;
 import com.adamki11s.npcs.NPCHandler;
+import com.adamki11s.npcs.SimpleNPC;
 import com.adamki11s.npcs.io.LoadNPCTemplate;
 import com.adamki11s.npcs.io.NPCTemplate;
 import com.adamki11s.questx.QuestX;
@@ -45,7 +46,7 @@ public class FixedLoadingTable {
 		}
 	}
 
-	public static boolean addFixedNPCSpawn(Player p, String npcName, Location l) {
+	public static boolean addFixedNPCSpawn(Player p, String npcName, Location l, NPCHandler handle) {
 		if (!FileLocator.doesNPCNameExist(npcName)) {
 			QuestX.logChat(p, ChatColor.RED + "There is no NPC created with this name!");
 			return false;
@@ -53,6 +54,10 @@ public class FixedLoadingTable {
 			if (fixedSpawns.containsKey(npcName)) {
 				QuestX.logChat(p, "A fixed spawn location for this NPC already exists");
 				return false;
+			}
+			SimpleNPC remove = handle.getSimpleNPCByName(npcName);
+			if(remove != null){
+				remove.destroyNPCObject();
 			}
 			loader.read();
 			for (SyncWrapper wrap : loader.getReadableData()) {
