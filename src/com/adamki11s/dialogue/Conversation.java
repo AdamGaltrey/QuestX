@@ -92,9 +92,12 @@ public class Conversation {
 		if (selected.doesPlayerHaveRequiredRepLevel(p.getName())) {
 			Trigger selTrigger = selected.getTrigger();
 
-			DialogueResponse dr = d.getResponse();
-			String response = dr.getResponses()[index - 1];
-			p.sendMessage("[" + this.convoData.getSimpleNpc().getName() + "] " + response);
+			if(selTrigger.getTriggerType() != TriggerType.QUEST){
+				DialogueResponse dr = d.getResponse();
+				String response = dr.getResponses()[index - 1];
+				p.sendMessage("[" + this.convoData.getSimpleNpc().getName() + "] " + response);
+			}
+			
 			System.out.println("Current node = " + this.currentNode);
 			this.currentNode = this.currentNode + index;
 			System.out.println("Current node = " + this.currentNode);
