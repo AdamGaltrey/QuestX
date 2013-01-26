@@ -25,6 +25,11 @@ public class QuestManager {
 		return false;
 	}
 	
+	public static boolean hasPlayerCompletedQuest(String qName, String player){
+		QuestLoader ql = getQuestLoader(qName);
+		return ql.isQuestComplete(player);
+	}
+	
 	public static boolean doesPlayerHaveQuest(String pName){
 		return currentQuest.containsKey(pName);
 	}

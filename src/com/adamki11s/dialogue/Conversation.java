@@ -139,26 +139,30 @@ public class Conversation {
 					QuestX.logMSG("NPC links to quest = " + npc.getQuestName());
 					String qName = npc.getQuestName();
 					if (!QuestManager.doesPlayerHaveQuest(p.getName())) {
-							// start a quest
-							QuestX.logMSG("Player does not have quest!");
-							if (!QuestManager.isQuestLoaded(qName)) {
-								QuestManager.loadQuest(qName);
-							}
-							QuestX.logMSG("QUEST LOADED ############");
-							QuestManager.setCurrentPlayerQuest(p.getName(), qName);
-							QuestLoader ql = QuestManager.getQuestLoader(qName);
+						// start a quest
+						QuestX.logMSG("Player does not have quest!");
+						if (!QuestManager.isQuestLoaded(qName)) {
+							QuestManager.loadQuest(qName);
+						}
+						QuestX.logMSG("QUEST LOADED ############");
+						QuestManager.setCurrentPlayerQuest(p.getName(), qName);
+						QuestLoader ql = QuestManager.getQuestLoader(qName);
+						if (ql.isQuestComplete(p.getName())) {
+							QuestX.logChat(p, "You have already completed this quest!");
+						} else {
 							QuestX.logMSG(ql.getStartText() + "<<<<<< START TEXT");
 							p.sendMessage(ql.getStartText());
 							QuestTask t = QuestManager.getCurrentQuestTask(p.getName());
 							if (t != null) {
 								QuestX.logMSG("Task in non-null");
-								//t.sendWhatIsLeftToDo(p);
+								// t.sendWhatIsLeftToDo(p);
 							} else {
 								QuestX.logMSG("Task is null!");
 							}
-							this.endConversation();
+						}
+						this.endConversation();
 					} else {
-						//player already has quest
+						// player already has quest
 					}
 				} else {
 					QuestX.logMSG("NPC has no link to a quest");

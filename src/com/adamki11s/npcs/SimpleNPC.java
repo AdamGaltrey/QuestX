@@ -18,6 +18,7 @@ import com.adamki11s.data.ItemStackDrop;
 import com.adamki11s.dialogue.Conversation;
 import com.adamki11s.events.ConversationRegister;
 import com.adamki11s.io.FileLocator;
+import com.adamki11s.npcs.tasks.Fireworks;
 import com.adamki11s.npcs.tasks.TaskManager;
 import com.adamki11s.npcs.tasks.TaskRegister;
 import com.adamki11s.quests.QuestLoader;
@@ -282,11 +283,18 @@ public class SimpleNPC {
 							if (t.isTaskComplete(p)) {
 								ql.incrementTaskProgress(p.getName());
 								p.sendMessage(t.getCompleteTaskText());
+								if(ql.isQuestComplete(p.getName())){
+									p.sendMessage(ql.getEndText());
+									Fireworks f = new Fireworks(p.getLocation(), 6, 60);
+									f.circularDisplay();
+								}
 							} else {
 								t.sendWhatIsLeftToDo(p);
 							}
+							return;
 						} else {
 							p.sendMessage("Sorry You need to see " + t.getNPCToCompleteName() + " to complete this part of the quest");
+							return;
 						}
 					} else {
 						// doing a different quest

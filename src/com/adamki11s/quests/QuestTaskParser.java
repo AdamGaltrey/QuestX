@@ -17,8 +17,8 @@ public class QuestTaskParser {
 		QuestX.logMSG("SWITCHING CHECKS = " + type);
 		
 		int lio = input.lastIndexOf(":");
-		String completeNodeText = input.substring(lio);
-		String npcName = input.substring((input.substring(0, lio).lastIndexOf(":")), lio);
+		String completeNodeText = input.substring(lio + 1);
+		String npcName = input.substring((input.substring(0, lio).lastIndexOf(":") + 1), lio);
 		String inputData = input.substring(0, (input.substring(0, lio).lastIndexOf(":")));
 		QuestX.logMSG("CNT = " + completeNodeText + ", npcn = " + npcName + " inputData = " + inputData);
 		
