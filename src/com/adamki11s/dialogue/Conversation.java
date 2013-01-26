@@ -136,8 +136,10 @@ public class Conversation {
 					return;
 				}
 			} else if (selTrigger.getTriggerType() == TriggerType.QUEST) {
+				QuestX.logMSG("Inside quest code");
 				SimpleNPC npc = this.getConvoData().getSimpleNpc();
 				if(npc.doesLinkToQuest()){
+					QuestX.logMSG("NPC links to quest = " + npc.getQuestName());
 					String qName = npc.getQuestName();
 					if(QuestManager.doesPlayerHaveQuest(p.getName())){
 						if(QuestManager.getCurrentQuestName(p.getName()).equalsIgnoreCase(qName)){
@@ -152,6 +154,7 @@ public class Conversation {
 						}
 					} else {
 						//start a quest
+						QuestX.logMSG("Player does not have quest!");
 						if(!QuestManager.isQuestLoaded(qName)){
 							QuestManager.loadQuest(qName);
 						}
@@ -160,7 +163,10 @@ public class Conversation {
 						p.sendMessage(ql.getStartText());
 						QuestManager.getCurrentQuestTask(p.getName()).sendWhatIsLeftToDo(p);
 					}
+				} else {
+					QuestX.logMSG("NPC has no link to a quest");
 				}
+				this.endConversation();
 			} else {
 				this.displaySpeechOptions();
 			}

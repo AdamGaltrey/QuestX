@@ -39,14 +39,14 @@ public class DLGParser {
 				continue;
 			}
 			nodes++;
-			System.out.println("Reading line " + nodes + " content = " + line);
+			//System.out.println("Reading line " + nodes + " content = " + line);
 			int firstHashIndex = line.indexOf("#") + 1;
 			int secondHashIndex = line.indexOf("#", firstHashIndex + 1);
 			String responseType = (line.substring(firstHashIndex, secondHashIndex));
-			System.out.println("RESPONSE TYPE = " + responseType);
+			//System.out.println("RESPONSE TYPE = " + responseType);
 			if (responseType.equalsIgnoreCase("reply")) {
 				
-				System.out.println("Line " + nodes + " is a reply, skip");
+				//System.out.println("Line " + nodes + " is a reply, skip");
 				continue;
 			} else {
 				// SingleDialogueItem Create
@@ -56,7 +56,7 @@ public class DLGParser {
 				String[] speechOptions = new String[options];
 				String[] gTagIds = new String[options];
 				String[] trigIds = new String[options];
-				QuestX.logMSG(options + " dialogue options scanned");
+				//QuestX.logMSG(options + " dialogue options scanned");
 				for(int i = 1; i <= options; i++){
 					speechOptions[i - 1] = parts[2 + i];
 					gTagIds[i - 1] = parts[2 + (options) + i];

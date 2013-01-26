@@ -87,6 +87,8 @@ public class SimpleNPC {
 				this.completeQuestNodes.add(Integer.parseInt(num));
 			}
 		}
+		QuestX.logMSG("qName = " + this.questName);
+		QuestX.logMSG("nodes = " + cfg.getString("NODES"));
 
 		handle.registerNPC(this);
 	}
@@ -100,7 +102,7 @@ public class SimpleNPC {
 	}
 
 	public boolean doesLinkToQuest() {
-		return (this.questName == null || this.questName.equalsIgnoreCase("null") || this.questName.equalsIgnoreCase("0"));
+		return (this.questName != null && !this.questName.equalsIgnoreCase("null") && !this.questName.equalsIgnoreCase("0"));
 	}
 
 	public boolean isMovementScheduled() {

@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import com.adamki11s.io.FileLocator;
+import com.adamki11s.questx.QuestX;
 
 public class QuestManager {
 
@@ -11,6 +12,7 @@ public class QuestManager {
 	public static volatile HashMap<String, String> currentQuest = new HashMap<String, String>();
 
 	public static void loadQuest(String name) {
+		QuestX.logMSG("Loading quest '" + name + "'");
 		quests.add(new QuestLoader(FileLocator.getQuestFile(name)));
 	}
 
