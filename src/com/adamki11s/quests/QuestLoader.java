@@ -4,11 +4,16 @@ import java.io.File;
 import java.util.HashMap;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import com.adamki11s.io.FileLocator;
+import com.adamki11s.npcs.tasks.EntityKillTracker;
+import com.adamki11s.npcs.tasks.Fireworks;
 import com.adamki11s.npcs.tasks.ISAParser;
+import com.adamki11s.npcs.tasks.NPCKillTracker;
 import com.adamki11s.questx.QuestX;
 import com.adamki11s.sync.io.configuration.SyncConfiguration;
 
@@ -19,12 +24,17 @@ public class QuestLoader {
 	volatile QuestTask[] tasks;
 
 	String questName, startText, endText;
-	int nodes, rewardExp, rewardRep;
+	int nodes, rewardExp, rewardRep, rewardGold;
 	ItemStack[] rewardItems;
 
 	volatile HashMap<String, Integer> playerProgress = new HashMap<String, Integer>();
 	volatile HashMap<Integer, String> nodeCompleteText = new HashMap<Integer, String>();
 	volatile HashMap<String, QuestTask> currentTask = new HashMap<String, QuestTask>();
+
+	String[] addPerms, remPerms;
+	EntityKillTracker ekt;
+	NPCKillTracker nkt;
+	boolean apAdd, apRem;
 
 	public QuestLoader(File f) {
 		this.config = new SyncConfiguration(f);
@@ -48,6 +58,22 @@ public class QuestLoader {
 		this.rewardRep = this.config.getInt("REWARD_REP");
 		this.startText = this.config.getString("START_TEXT");
 		this.endText = this.config.getString("END_TEXT");
+
+		this.rewardGold = config.getInt("REWARD_GOLD");
+
+		if (!config.getString("REWARD_PERMISSIONS_ADD").equalsIgnoreCase("0")) {
+			this.addPerms = config.getString("REWARD_PERMISSIONS_ADD").split(",");
+			this.apAdd = true;
+		} else {
+			this.apAdd = false;
+		}
+
+		if (!config.getString("REWARD_PERMISSIONS_REMOVE").equalsIgnoreCase("0")) {
+			this.remPerms = config.getString("REWARD_PERMISSIONS_REMOVE").split(",");
+			this.apRem = true;
+		} else {
+			this.apRem = false;
+		}
 
 		this.tasks = new QuestTask[i];
 		QuestX.logMSG("Loading Quest " + questName + " with " + this.nodes + " objectives.");
@@ -74,6 +100,30 @@ public class QuestLoader {
 		}
 
 		QuestX.logMSG("QUEST LOAD COMPLETE");
+	}
+	
+	public boolean isAwardingAddPerms(){
+		return this.apAdd;
+	}
+	
+	public boolean isAwardingRemPerms(){
+		return this.apRem;
+	}
+	
+	public boolean isAwardingItems(){
+		return (this.rewardItems != null);
+	}
+	
+	public String[] getAddPerms(){
+		return this.addPerms;
+	}
+	
+	public String[] getRemPerms(){
+		return this.remPerms;
+	}
+	
+	public boolean isAwardGold(){
+		return (this.rewardGold > 0);
 	}
 
 	public String getName() {
@@ -104,6 +154,80 @@ public class QuestLoader {
 																	// want to
 																	// change
 																	// anything
+	}
+	
+	public int getRewardExp(){
+		return this.rewardExp;
+	}
+	
+	public int getRewardRep(){
+		return this.rewardRep;
+	}
+	
+	public int getRewardGold(){
+		return this.rewardGold;
+	}
+	
+	public boolean isAwardExp(){
+		return (this.rewardExp > 0);
+	}
+	
+	public boolean isAwardRep(){
+		return (this.rewardRep != 0);
+	}
+	
+	public void awardPlayerOnQuestComplete(Player p){
+		if (this.isAwardingItems()) {
+			ItemStack[] rewardItems = this.rewardItems;
+			for (ItemStack i : rewardItems) {
+				if (i != null) {
+					int empty = -1;
+					if ((empty = p.getInventory().firstEmpty()) != -1) {
+						p.getInventory().addItem(i);
+					} else {
+						p.getWorld().dropItemNaturally(p.getLocation(), i);
+					}
+				}
+			}
+		}
+
+		if (this.isAwardExp()) {
+			for (int exp = 1; exp <= this.getRewardExp(); exp++) {
+				ExperienceOrb orb = p.getWorld().spawn(p.getLocation().add(0.5, 10, 0.5), ExperienceOrb.class);
+				orb.setExperience(1);
+			}
+		}
+
+		if (this.isAwardRep()) {
+			int awardRep = this.getRewardRep();
+			// adjust rep
+		}
+
+		if (this.isAwardGold()) {
+			if (QuestX.economy.hasAccount(p.getName())) {
+				QuestX.economy.bankDeposit(p.getName(), this.getRewardGold());
+			} else {
+				// can't award, no account
+			}
+		}
+
+		if (this.isAwardingAddPerms()) {
+			for (String perm : this.getAddPerms()) {
+				QuestX.permission.playerAdd(p, perm);
+			}
+		}
+		
+		if (this.isAwardingRemPerms()) {
+			for (String perm : this.getRemPerms()) {
+				if(QuestX.permission.has(p, perm)){
+					QuestX.permission.playerRemove(p, perm);
+				}
+			}
+		}
+
+		Location pL = p.getLocation();
+		Fireworks display = new Fireworks(pL, 10, 20);
+		display.circularDisplay();
 	}
 
 	public void loadAndCheckPlayerProgress(String p) {
@@ -156,7 +280,7 @@ public class QuestLoader {
 	public void incrementTaskProgress(String p) {
 		QuestTask qt = this.currentTask.get(p);
 		qt.removeItems(Bukkit.getServer().getPlayer(p));
-		
+
 		int current = this.playerProgress.get(p) + 1;
 		this.playerProgress.put(p, current);
 		if (current < +this.nodes) {
