@@ -11,7 +11,9 @@ import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
+import com.adamki11s.io.FileLocator;
 import com.adamki11s.questx.QuestX;
+import com.adamki11s.questx.sql.SQLTables;
 import com.adamki11s.sync.sql.SyncSQL;
 
 public class PopulationDensityThread implements Runnable {
@@ -23,8 +25,9 @@ public class PopulationDensityThread implements Runnable {
 
 	HashMap<String, PreparedStatement[]> preparedStatements = new HashMap<String, PreparedStatement[]>();
 
-	public PopulationDensityThread(SyncSQL sql) {
-		this.sql = sql;
+	public PopulationDensityThread() {
+		this.sql = new SyncSQL(FileLocator.getPopDensityDatabase());
+		SQLTables.initiateSQLite(sql);
 		this.worlds = WorldConfigData.getWorlds();
 		this.loadPreparedStatements();
 		GlobalDensityCache.updateGlobalDensity(this.sql, worlds);
@@ -68,6 +71,10 @@ public class PopulationDensityThread implements Runnable {
 		return false;
 	}
 
+	public void terminateSQL(){
+		this.sql.closeConnection();
+	}
+	
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
@@ -150,10 +157,6 @@ public class PopulationDensityThread implements Runnable {
 		// updateTotal.setInt(1, e.getValue().intValue());
 		// updateTotal.setString(2, e.getKey());
 		// updateTotal.executeUpdate();
-	}
-
-	public void closeSQL() {
-		this.sql.closeConnection();
 	}
 
 }

@@ -150,7 +150,7 @@ public class Conversation {
 						}
 						QuestX.logMSG("QUEST LOADED ############");
 						QuestLoader ql = QuestManager.getQuestLoader(qName);
-						ql.loadPlayerProgress(p.getName());
+						ql.loadAndCheckPlayerProgress(p.getName());
 						if (ql.isQuestComplete(p.getName())) {
 							QuestX.logChat(p, "You have already completed this quest!");
 						} else {

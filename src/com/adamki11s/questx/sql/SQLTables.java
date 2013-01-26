@@ -18,7 +18,7 @@ public class SQLTables {
 			QuestX.logMSG("Something went wrong!");
 		}
 
-		try {
+		/*try {
 			if (!sql.doesTableExist("reputation")) {
 				String createRepTable = "CREATE TABLE reputation ('id' INTEGER PRIMARY KEY AUTOINCREMENT, 'player' VARCHAR(16), 'reputation' INTEGER NOT NULL)";
 				String insertRep = "INSERT INTO reputation (player,reputation) VALUES ('default',0)";
@@ -28,7 +28,7 @@ public class SQLTables {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-		}
+		}*/
 
 		for (World w : Bukkit.getServer().getWorlds()) {
 			try {

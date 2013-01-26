@@ -21,12 +21,12 @@ public class AsyncThread implements Runnable {
 		mControl = new MovementController(handle);
 		rControl = new RespawnController(handle);
 		aControl = new AttackController(handle);
-		pdThread = new PopulationDensityThread(handle.getSQL());
+		pdThread = new PopulationDensityThread();
 		this.tickRate = tickRate;
 	}
 	
 	public void onShutdown(){
-		pdThread.closeSQL();
+		this.pdThread.terminateSQL();
 	}
 
 	int tickOver = 0, denstiyCalculationTickOver = 0;

@@ -254,13 +254,6 @@ public class QuestLoader {
 		return this.playerProgress.get(p);
 	}
 
-	public void loadPlayerProgress(String p) {
-		File progression = FileLocator.getQuestProgressionPlayerFile(questName, p);
-		SyncConfiguration load = new SyncConfiguration(progression);
-		load.read();
-		this.playerProgress.put(p, load.getInt("P"));
-	}
-
 	void setPlayerTask(String p) {
 		this.currentTask.put(p, this.tasks[this.playerProgress.get(p) - 1].getClonedInstance());
 	}

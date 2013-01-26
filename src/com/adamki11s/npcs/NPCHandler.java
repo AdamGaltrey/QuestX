@@ -25,7 +25,6 @@ import com.topcat.npclib.entity.HumanNPC;
 
 public class NPCHandler {
 
-	final SyncSQL sql;
 	final NPCManager npc;
 	final String[] worlds;
 
@@ -38,10 +37,6 @@ public class NPCHandler {
 	HashMap<String, SpawnLocationDispatcher> spawnDispatchers = new HashMap<String, SpawnLocationDispatcher>();
 
 	HashMap<String, HashSet<NPCChunkData>> npcChunkData = new HashMap<String, HashSet<NPCChunkData>>();
-
-	public SyncSQL getSQL(){
-		return this.sql;
-	}
 	
 	public void addToWaitingList(SimpleNPC npc) {
 
@@ -72,8 +67,6 @@ public class NPCHandler {
 	}
 
 	public NPCHandler(JavaPlugin main, String worlds[]) {
-		this.sql = new SyncSQL(FileLocator.getQuestXDatabase());
-		SQLTables.initiateSQLite(sql);
 		this.worlds = worlds;
 		npc = new NPCManager(main);
 		QuestX.logMSG("Checking worlds NPCHandler constructor");
@@ -90,8 +83,6 @@ public class NPCHandler {
 
 		}
 	}
-	
-	
 
 	public SpawnLocationDispatcher getDispatcher(String world) {
 		return this.spawnDispatchers.get(world);
