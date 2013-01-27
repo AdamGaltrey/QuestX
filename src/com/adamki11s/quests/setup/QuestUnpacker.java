@@ -29,7 +29,6 @@ public class QuestUnpacker {
 
 	public boolean unpackQuest() {
 		canQuestBeUnpacked = (!FileLocator.doesQuestNameExist(name));
-		
 
 		// check for duplicate quest
 		if (!canQuestBeUnpacked) {
@@ -38,13 +37,12 @@ public class QuestUnpacker {
 		}
 
 		canQuestBeUnpacked = (new File(zipFile).exists());
-		
+
 		if (!canQuestBeUnpacked) {
 			QuestX.logMSG("UNPACKER ERROR--- Packed quest does not exist");
 			return false;
 		}
 
-		
 		this.extractFolder(zipFile, tempExtract);
 
 		// check for duplicate NPC names
@@ -60,26 +58,26 @@ public class QuestUnpacker {
 				return false;
 			}
 		}
-		
-		if(!new File(finalLoc).exists()){
+
+		if (!new File(finalLoc).exists()) {
 			new File(finalLoc).mkdirs();
 		}
 
 		File srcFolder = new File(tempExtract + File.separator + "NPCs"), destFolder = new File(FileLocator.npc_data_root), srcQFolder = new File(tempExtract + File.separator + "Quest"), destQFolder = new File(
 				finalLoc);
 
-		//copy temp content to respective directories
+		// copy temp content to respective directories
 		try {
 			copyFolder(srcFolder, destFolder);
 			copyFolder(srcQFolder, destQFolder);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-		//copy zip file into quest folder as a backup
+
+		// copy zip file into quest folder as a backup
 		this.copyFile(new File(zipFile), new File(FileLocator.quest_data_root + File.separator + name + File.separator + name + ".zip"), true);
-		
-		//delete temporary folder and zip file
+
+		// delete temporary folder and zip file
 		try {
 			this.deleteDirectory(new File(tempExtract));
 		} catch (IOException e) {
@@ -137,7 +135,7 @@ public class QuestUnpacker {
 				}
 
 			}
-			
+
 			zip.close();
 
 			QuestX.logMSG("Files unpacked successfully.");
@@ -194,8 +192,8 @@ public class QuestUnpacker {
 		OutputStream outStream = null;
 
 		try {
-			
-			if(!dest.exists()){
+
+			if (!dest.exists()) {
 				dest.createNewFile();
 			}
 
@@ -215,7 +213,7 @@ public class QuestUnpacker {
 			inStream.close();
 			outStream.close();
 
-			if(deleteOnCopy){
+			if (deleteOnCopy) {
 				source.delete();
 			}
 
@@ -224,44 +222,41 @@ public class QuestUnpacker {
 		}
 	}
 
-	 private void deleteDirectory(File file)
- 	throws IOException{
+	private void deleteDirectory(File file) throws IOException {
 
- 	if(file.isDirectory()){
+		if (file.isDirectory()) {
 
- 		//directory is empty, then delete it
- 		if(file.list().length==0){
+			// directory is empty, then delete it
+			if (file.list().length == 0) {
 
- 		   file.delete();
- 		   System.out.println("Directory is deleted : " 
-                                              + file.getAbsolutePath());
+				file.delete();
+				System.out.println("Directory is deleted : " + file.getAbsolutePath());
 
- 		}else{
+			} else {
 
- 		   //list all the directory contents
-     	   String files[] = file.list();
+				// list all the directory contents
+				String files[] = file.list();
 
-     	   for (String temp : files) {
-     	      //construct the file structure
-     	      File fileDelete = new File(file, temp);
+				for (String temp : files) {
+					// construct the file structure
+					File fileDelete = new File(file, temp);
 
-     	      //recursive delete
-     	     deleteDirectory(fileDelete);
-     	   }
+					// recursive delete
+					deleteDirectory(fileDelete);
+				}
 
-     	   //check the directory again, if empty then delete it
-     	   if(file.list().length==0){
-        	     file.delete();
-     	     System.out.println("Directory is deleted : " 
-                                               + file.getAbsolutePath());
-     	   }
- 		}
+				// check the directory again, if empty then delete it
+				if (file.list().length == 0) {
+					file.delete();
+					System.out.println("Directory is deleted : " + file.getAbsolutePath());
+				}
+			}
 
- 	}else{
- 		//if file, then delete it
- 		file.delete();
- 		System.out.println("File is deleted : " + file.getAbsolutePath());
- 	}
- }
-	
+		} else {
+			// if file, then delete it
+			file.delete();
+			System.out.println("File is deleted : " + file.getAbsolutePath());
+		}
+	}
+
 }
