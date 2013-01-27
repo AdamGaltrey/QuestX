@@ -3,6 +3,8 @@ package com.adamki11s.io;
 import java.io.File;
 import java.io.IOException;
 
+import com.adamki11s.questx.QuestX;
+
 public class FileLocator {
 	
 	public static final String root = "plugins" + File.separator + "QuestX",
@@ -71,6 +73,17 @@ public class FileLocator {
 	
 	public static File getNPCFixedSpawnsFile(){
 		return new File(data_root + File.separator + "fixed_spawns.qxs");
+	}
+	
+	public static boolean doesQuestNameExist(String name){
+		for(File f : new File(quest_data_root).listFiles()){
+			QuestX.logMSG("Checking f name = " + f.getName());
+			QuestX.logMSG(f.getName() + " = provided name -> " + name);
+			if(f.getName().equalsIgnoreCase(name)){
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	public static boolean doesNPCNameExist(String npcName){

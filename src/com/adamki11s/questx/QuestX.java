@@ -17,6 +17,7 @@ import com.adamki11s.events.EntityDeathMonitor;
 import com.adamki11s.events.MovementMonitor;
 import com.adamki11s.events.NPCDamageEvent;
 import com.adamki11s.events.NPCInteractEvent;
+import com.adamki11s.io.FileLocator;
 import com.adamki11s.io.InitialSetup;
 import com.adamki11s.npcs.NPCHandler;
 import com.adamki11s.npcs.loading.FixedLoadingTable;
@@ -75,6 +76,8 @@ public class QuestX extends JavaPlugin {
 	@Override
 	public void onEnable() {
 
+		
+		
 		boolean perms = this.setupPermissions();
 		if (perms) {
 			QuestX.logMSG("Hooked into Vault permissions successfully.");

@@ -18,6 +18,7 @@ import com.adamki11s.npcs.UniqueNameRegister;
 import com.adamki11s.npcs.io.CreateNPC;
 import com.adamki11s.npcs.loading.FixedLoadingTable;
 import com.adamki11s.npcs.tasks.Fireworks;
+import com.adamki11s.quests.setup.QuestUnpacker;
 import com.adamki11s.questx.QuestX;
 import com.topcat.npclib.entity.HumanNPC;
 
@@ -38,7 +39,7 @@ public class QuestXCommands implements CommandExecutor {
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-		if (label.equalsIgnoreCase("questx")) {
+		if (label.equalsIgnoreCase("questx") || label.equalsIgnoreCase("q")) {
 			if (!(sender instanceof Player)) {
 				System.out.println("QuestX Commands must be issued in-game.");
 				return true;
@@ -47,6 +48,18 @@ public class QuestXCommands implements CommandExecutor {
 
 				ItemStack[] gear = new ItemStack[] { null, null, null, null, new ItemStack(Material.WOOD_AXE) };
 
+				if(args.length == 2 && args[0].equalsIgnoreCase("unpack")){
+					String qName = args[1];
+					QuestUnpacker upack = new QuestUnpacker(qName);
+					boolean suc = upack.unpackQuest();
+					if(suc){
+						p.sendMessage("Unpack successfull");
+					} else {
+						p.sendMessage("Error while unpacking");
+					}
+					return true;
+				}
+				
 				if (args.length == 2 && args[0].equalsIgnoreCase("create")) {
 					if (UniqueNameRegister.isNameUnique(args[1])) {
 						CreateNPC create = new CreateNPC(args[1], ChatColor.RED);
