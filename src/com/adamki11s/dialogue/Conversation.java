@@ -92,12 +92,12 @@ public class Conversation {
 		if (selected.doesPlayerHaveRequiredRepLevel(p.getName())) {
 			Trigger selTrigger = selected.getTrigger();
 
-			if(selTrigger.getTriggerType() != TriggerType.QUEST){
+			if (selTrigger.getTriggerType() != TriggerType.QUEST) {
 				DialogueResponse dr = d.getResponse();
 				String response = dr.getResponses()[index - 1];
 				p.sendMessage("[" + this.convoData.getSimpleNpc().getName() + "] " + response);
 			}
-			
+
 			System.out.println("Current node = " + this.currentNode);
 			this.currentNode = this.currentNode + index;
 			System.out.println("Current node = " + this.currentNode);
@@ -141,34 +141,41 @@ public class Conversation {
 				if (npc.doesLinkToQuest()) {
 					QuestX.logMSG("NPC links to quest = " + npc.getQuestName());
 					String qName = npc.getQuestName();
-					
-					if (!QuestManager.doesPlayerHaveQuest(p.getName())) {
-						// start a quest
-						QuestX.logMSG("Player does not have quest!");
-						if (!QuestManager.isQuestLoaded(qName)) {
-							QuestManager.loadQuest(qName);
-						}
-						QuestX.logMSG("QUEST LOADED ############");
-						QuestLoader ql = QuestManager.getQuestLoader(qName);
-						ql.loadAndCheckPlayerProgress(p.getName());
-						if (ql.isQuestComplete(p.getName())) {
-							QuestX.logChat(p, "You have already completed this quest!");
-						} else {
-							QuestManager.setCurrentPlayerQuest(p.getName(), qName);
-							QuestX.logMSG(ql.getStartText() + "<<<<<< START TEXT");
-							p.sendMessage(ql.getStartText());
-							QuestTask t = QuestManager.getCurrentQuestTask(p.getName());
-							if (t != null) {
-								QuestX.logMSG("Task in non-null");
-								// t.sendWhatIsLeftToDo(p);
-							} else {
-								QuestX.logMSG("Task is null!");
+
+					if (QuestManager.hasQuestBeenSetup(qName)) {
+
+						if (!QuestManager.doesPlayerHaveQuest(p.getName())) {
+							// start a quest
+							QuestX.logMSG("Player does not have quest!");
+							if (!QuestManager.isQuestLoaded(qName)) {
+								QuestManager.loadQuest(qName);
 							}
+							QuestX.logMSG("QUEST LOADED ############");
+							QuestLoader ql = QuestManager.getQuestLoader(qName);
+							ql.loadAndCheckPlayerProgress(p.getName());
+							if (ql.isQuestComplete(p.getName())) {
+								QuestX.logChat(p, "You have already completed this quest!");
+							} else {
+								QuestManager.setCurrentPlayerQuest(p.getName(), qName);
+								QuestX.logMSG(ql.getStartText() + "<<<<<< START TEXT");
+								p.sendMessage(ql.getStartText());
+								QuestTask t = QuestManager.getCurrentQuestTask(p.getName());
+								if (t != null) {
+									QuestX.logMSG("Task in non-null");
+									// t.sendWhatIsLeftToDo(p);
+								} else {
+									QuestX.logMSG("Task is null!");
+								}
+							}
+							this.endConversation();
+						} else {
+							QuestX.logMSG("Player has quest!");
+							// player already has quest
 						}
-						this.endConversation();
+
 					} else {
-						QuestX.logMSG("Player has quest!");
-						// player already has quest
+						//quest has not been setup
+						QuestX.logChat(p, "This quest has not yet been setup. /q setup " + qName);
 					}
 				} else {
 					QuestX.logMSG("NPC has no link to a quest");

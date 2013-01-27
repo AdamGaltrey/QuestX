@@ -24,7 +24,7 @@ public class FileLocator {
 }
 	
 	public static File getCurrentQuestFile(){
-		return new File(quest_data_root + "Current.qxs");
+		return new File(quest_data_root + File.separator + "Current.qxs");
 	}
 	
 	public static File getNPCRootDir(String npcName){

@@ -35,15 +35,21 @@ public class FixedLoadingTable {
 			SyncLocation sl = (SyncLocation) wrapper.getObject();
 			Location spawnLocation = sl.getBukkitLocation();
 			LoadNPCTemplate tempLoader = new LoadNPCTemplate(npcName);
-			if (tempLoader.wantsToLoad()) {
 				tempLoader.loadProperties();
 				NPCTemplate template = tempLoader.getLoadedNPCTemplate();
 				template.registerSimpleNPCFixedSpawn(handle, spawnLocation);
 				fixedSpawns.put(npcName, spawnLocation);
-			} else {
-				QuestX.logMSG("NPC " + npcName + ", was not loaded because settings define NO load.");
-			}
 		}
+	}
+	
+	public static void spawnFixedNPC(NPCHandler handle, String name) {
+		loader.read();
+		SyncLocation sl = (SyncLocation) loader.getObject(name);
+		Location spawnLocation = sl.getBukkitLocation();
+		LoadNPCTemplate tempLoader = new LoadNPCTemplate(name);
+		tempLoader.loadProperties();
+		NPCTemplate template = tempLoader.getLoadedNPCTemplate();
+		template.registerSimpleNPCFixedSpawn(handle, spawnLocation);
 	}
 
 	public static boolean addFixedNPCSpawn(Player p, String npcName, Location l, NPCHandler handle) {

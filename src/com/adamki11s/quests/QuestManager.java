@@ -1,5 +1,6 @@
 package com.adamki11s.quests;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -45,6 +46,16 @@ public class QuestManager {
 		if(currentQuest.containsKey(pName)){
 			currentQuest.remove(pName);
 		}
+	}
+	
+	public static boolean hasQuestBeenSetup(String quest){
+		File f = new File(FileLocator.quest_data_root + File.separator + quest + File.separator + "setup.qxs");
+		return (!f.exists());
+	}
+	
+	public static boolean doesQuestExist(String quest){
+		File f = new File(FileLocator.quest_data_root + File.separator + quest);
+		return (f.exists());
 	}
 	
 	public static QuestLoader getQuestLoader(String quest){

@@ -3,7 +3,6 @@ package com.adamki11s.quests;
 import java.io.File;
 import java.util.HashMap;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Player;
@@ -309,11 +308,14 @@ public class QuestLoader {
 		return this.playerProgress.get(player) > this.nodes;
 	}
 
+	@SuppressWarnings("deprecation")
 	public void incrementTaskProgress(Player p) {
 		QuestTask qt = this.currentTask.get(p.getName());
 
 		if (qt.isItemStacks()) {
+			QuestX.logMSG("Items do need to be removed...");
 			qt.removeItems(p);
+			p.updateInventory();
 		}
 
 		int current = this.playerProgress.get(p.getName()) + 1;

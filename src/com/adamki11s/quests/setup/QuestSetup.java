@@ -1,10 +1,16 @@
 package com.adamki11s.quests.setup;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
+
+import org.bukkit.entity.Player;
 
 import com.adamki11s.io.FileLocator;
+import com.adamki11s.npcs.NPCHandler;
+import com.adamki11s.npcs.loading.FixedLoadingTable;
+import com.adamki11s.quests.QuestManager;
+import com.adamki11s.questx.QuestX;
 import com.adamki11s.sync.io.configuration.SyncConfiguration;
 
 public class QuestSetup {
@@ -13,14 +19,16 @@ public class QuestSetup {
 
 	String name, failSetupReason;
 	boolean setup;
+	int nodes = 0, currentNode = 0;
 
-	final File setupFile = new File(FileLocator.quest_data_root + File.separator + this.name + File.separator + "setup.qxs");
+	final NPCHandler handle;
 
-	LinkedList<NPCQuestSpawner> setupGuide = new LinkedList<NPCQuestSpawner>();
+	HashMap<Integer, NPCQuestSpawner> setupGuide = new HashMap<Integer, NPCQuestSpawner>();
 
-	public QuestSetup(String name) {
+	public QuestSetup(String name, NPCHandler handle) {
 		this.name = name;
-		if (this.setupFile.exists()) {
+		this.handle = handle;
+		if (!QuestManager.hasQuestBeenSetup(name)) {
 			if (!settingUp.contains(name)) {
 				this.setup = true;
 				settingUp.add(name);
@@ -35,6 +43,35 @@ public class QuestSetup {
 		}
 	}
 
+	public boolean isSetupComplete() {
+		return (this.currentNode >= this.nodes);
+	}
+	
+	public void sendInitialMessage(Player p){
+		String npcName = setupGuide.get(currentNode + 1).getNpcName();
+		QuestX.logChat(p, "Setup progress (" + currentNode + "/" + nodes + ")");
+		QuestX.logChat(p, "Choose spawn location for npc '" + npcName + "'.");
+	}
+
+	public void setupSpawn(Player p) {
+		String npcName = setupGuide.get(currentNode + 1).getNpcName();
+		QuestX.logMSG("Current NPC setup name = " + npcName);
+
+		if (this.currentNode == this.nodes - 1) {
+			QuestX.logChat(p, "Setup complete!");
+		} else {
+			QuestX.logChat(p, "Setup progress (" + currentNode + "/" + nodes + ")");
+			QuestX.logChat(p, "Choose spawn location for npc '" + npcName + "'.");
+		}
+
+		
+		boolean suc = FixedLoadingTable.addFixedNPCSpawn(p, npcName, p.getLocation(), handle);
+		if (suc) {
+			FixedLoadingTable.spawnFixedNPC(handle, npcName);
+		}
+		this.currentNode++;
+	}
+
 	public boolean canSetup() {
 		return this.setup;
 	}
@@ -44,12 +81,44 @@ public class QuestSetup {
 	}
 
 	public void removeFromList() {
+		QuestX.logMSG("~~~~~~ Removing Setup FILE");
 		settingUp.remove(this.name);
+		File f = new File(FileLocator.quest_data_root + File.separator + this.name + File.separator + "setup.qxs");
+		f.delete();
 	}
 
 	void load() {
-		SyncConfiguration cfg = new SyncConfiguration(this.setupFile);
+		File setupFile = new File(FileLocator.quest_data_root + File.separator + name + File.separator + "setup.qxs");
+		SyncConfiguration cfg = new SyncConfiguration(setupFile);
 		cfg.read();
+		String setupName = cfg.getString("Name");
+		if (!setupName.equalsIgnoreCase(this.name)) {
+			this.setup = false;
+			this.failSetupReason = "Quest setup file name does not match the quest name. Expected '" + name + "', got '" + setupName + "'";
+			return;
+		} else {
+			int i = 0;
+			while (cfg.doesKeyExist((i + 1) + "")) {
+				i++;
+			}
+			this.nodes = i;
+
+			for (int c = 1; c <= this.nodes; c++) {
+				String raw = cfg.getString(c + "");
+				String[] splits = raw.split("#");
+				String npcName = splits[0];
+				String desc = splits[1];
+				QuestX.logMSG("Loaded npcName = " + npcName + ", desc = " + desc);
+				setupGuide.put(c, new NPCQuestSpawner(npcName, desc));
+			}
+		}
+		/*
+		 * String npcName = args[1]; boolean suc =
+		 * FixedLoadingTable.addFixedNPCSpawn(p, npcName, p.getLocation(),
+		 * handle); if (suc) {
+		 * this.handle.getSimpleNPCByName(npcName).spawnNPC(); }
+		 */
+
 	}
 
 }

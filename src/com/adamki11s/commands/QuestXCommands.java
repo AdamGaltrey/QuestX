@@ -1,5 +1,7 @@
 package com.adamki11s.commands;
 
+import java.util.HashMap;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -18,6 +20,8 @@ import com.adamki11s.npcs.UniqueNameRegister;
 import com.adamki11s.npcs.io.CreateNPC;
 import com.adamki11s.npcs.loading.FixedLoadingTable;
 import com.adamki11s.npcs.tasks.Fireworks;
+import com.adamki11s.quests.QuestManager;
+import com.adamki11s.quests.setup.QuestSetup;
 import com.adamki11s.quests.setup.QuestUnpacker;
 import com.adamki11s.questx.QuestX;
 import com.topcat.npclib.entity.HumanNPC;
@@ -37,6 +41,8 @@ public class QuestXCommands implements CommandExecutor {
 
 	Reputation r = new Reputation("Adamki11s", 100);
 
+	HashMap<String, QuestSetup> setups = new HashMap<String, QuestSetup>();
+
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if (label.equalsIgnoreCase("questx") || label.equalsIgnoreCase("q")) {
@@ -48,18 +54,63 @@ public class QuestXCommands implements CommandExecutor {
 
 				ItemStack[] gear = new ItemStack[] { null, null, null, null, new ItemStack(Material.WOOD_AXE) };
 
-				if(args.length == 2 && args[0].equalsIgnoreCase("unpack")){
+				if (args.length == 2 && args[0].equalsIgnoreCase("unpack")) {
 					String qName = args[1];
 					QuestUnpacker upack = new QuestUnpacker(qName);
 					boolean suc = upack.unpackQuest();
-					if(suc){
+					if (suc) {
 						p.sendMessage("Unpack successfull");
+						p.sendMessage("/QuestX setup <questname> " + ChatColor.GREEN + " to setup this quest");
 					} else {
 						p.sendMessage("Error while unpacking");
 					}
 					return true;
 				}
-				
+
+				if (args.length == 2 && args[0].equalsIgnoreCase("setup")) {
+					String qName = args[1];
+					if(setups.containsKey(p.getName())){
+						p.sendMessage("You are already setting this quest up!");
+						return true;
+					}
+					if (!setups.containsKey(p.getName())) {
+						if (QuestManager.doesQuestExist(qName)) {
+							if (!QuestManager.hasQuestBeenSetup(qName)) {
+								QuestSetup qs = new QuestSetup(qName, handle);
+								if (!qs.canSetup()) {
+									p.sendMessage("Failed to start setup, reason : " + qs.getFailSetupReason());
+								} else {
+									p.sendMessage("Setup successful! /questx next " + ChatColor.GREEN + "To select the next spawn location");
+									qs.sendInitialMessage(p);
+									this.setups.put(p.getName(), qs);
+								}
+							} else {
+								p.sendMessage("This quest has already been setup");
+							}
+						} else {
+							p.sendMessage("A quest by that name does not exist");
+						}
+					}
+					return true;
+				}
+
+				if (args.length == 1 && args[0].equalsIgnoreCase("next")) {
+					if (setups.containsKey(p.getName())) {
+						QuestSetup qs = this.setups.get(p.getName());
+						if (!qs.isSetupComplete()) {
+							qs.setupSpawn(p);
+							if (qs.isSetupComplete()) {
+								qs.removeFromList();
+								this.setups.remove(p.getName());
+								p.sendMessage("Quest setup successfully!");
+							}
+						}
+					} else {
+						p.sendMessage("You aren't setting up a quest!");
+					}
+					return true;
+				}
+
 				if (args.length == 2 && args[0].equalsIgnoreCase("create")) {
 					if (UniqueNameRegister.isNameUnique(args[1])) {
 						CreateNPC create = new CreateNPC(args[1], ChatColor.RED);
