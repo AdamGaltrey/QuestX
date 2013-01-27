@@ -9,6 +9,7 @@ import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import com.adamki11s.commands.QuestXCMDExecutor;
 import com.adamki11s.io.FileLocator;
 import com.adamki11s.npcs.tasks.EntityKillTracker;
 import com.adamki11s.npcs.tasks.Fireworks;
@@ -24,6 +25,7 @@ public class QuestLoader {
 	volatile QuestTask[] tasks;
 
 	String questName, startText, endText;
+	
 	int nodes, rewardExp, rewardRep, rewardGold;
 	ItemStack[] rewardItems;
 
@@ -31,10 +33,10 @@ public class QuestLoader {
 	volatile HashMap<Integer, String> nodeCompleteText = new HashMap<Integer, String>();
 	volatile HashMap<String, QuestTask> currentTask = new HashMap<String, QuestTask>();
 
-	String[] addPerms, remPerms;
+	String[] addPerms, remPerms, playerCmds, serverCmds;
 	EntityKillTracker ekt;
 	NPCKillTracker nkt;
-	boolean apAdd, apRem;
+	boolean apAdd, apRem, execPlayerCommand, execServerCommand;
 
 	public QuestLoader(File f) {
 		this.config = new SyncConfiguration(f);
@@ -74,6 +76,20 @@ public class QuestLoader {
 		} else {
 			this.apRem = false;
 		}
+		
+		if(!config.getString("EXECUTE_PLAYER_CMD").equalsIgnoreCase("0")){
+			this.playerCmds = config.getString("EXECUTE_PLAYER_CMD").split(",");
+			this.execPlayerCommand = true;
+		} else {
+			this.execPlayerCommand = false;
+		}
+		
+		if(!config.getString("EXECUTE_SERVER_CMD").equalsIgnoreCase("0")){
+			this.serverCmds = config.getString("EXECUTE_SERVER_CMD").split(",");
+			this.execServerCommand = true;
+		} else {
+			this.execServerCommand = false;
+		}
 
 		this.tasks = new QuestTask[i];
 		QuestX.logMSG("Loading Quest " + questName + " with " + this.nodes + " objectives.");
@@ -100,6 +116,22 @@ public class QuestLoader {
 		}
 
 		QuestX.logMSG("QUEST LOAD COMPLETE");
+	}
+	
+	public boolean isExecutingPlayerCmds(){
+		return this.execPlayerCommand;
+	}
+	
+	public boolean isExecutingServerCmds(){
+		return this.execServerCommand;
+	}
+	
+	public String[] getServerCmds(){
+		return this.serverCmds;
+	}
+	
+	public String[] getPlayerCmds(){
+		return this.playerCmds;
 	}
 
 	public boolean isAwardingAddPerms() {
@@ -223,6 +255,14 @@ public class QuestLoader {
 					QuestX.permission.playerRemove(p, perm);
 				}
 			}
+		}
+		
+		if(this.isExecutingPlayerCmds()){
+			QuestXCMDExecutor.executeAsPlayer(p.getName(), this.getPlayerCmds());
+		}
+		
+		if(this.isExecutingServerCmds()){
+			QuestXCMDExecutor.executeAsServer(this.getServerCmds());
 		}
 
 		Location pL = p.getLocation();

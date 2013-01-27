@@ -113,6 +113,9 @@ public class CreateNPC {
 		syncConfig.add("REWARD_GOLD", 0);
 		syncConfig.add("REWARD_PERMISSIONS_ADD", "0");
 		syncConfig.add("REWARD_PERMISSIONS_REMOVE", "0");
+		syncConfig.add("EXECUTE_PLAYER_CMD", "0");
+		syncConfig.add("EXECUTE_SERVER_CMD", "0");
+		
 		syncConfig.write();
 		
 		File fLink = FileLocator.getNPCQuestLinkFile(name);

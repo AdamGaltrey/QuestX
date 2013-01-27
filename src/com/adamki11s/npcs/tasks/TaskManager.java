@@ -8,6 +8,7 @@ import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import com.adamki11s.commands.QuestXCMDExecutor;
 import com.adamki11s.extras.inventory.ExtrasInventory;
 import com.adamki11s.io.FileLocator;
 import com.adamki11s.questx.QuestX;
@@ -210,6 +211,14 @@ public class TaskManager {
 					QuestX.permission.playerRemove(p, perm);
 				}
 			}
+		}
+		
+		if(this.getTaskLoader().isExecutingPlayerCmds()){
+			QuestXCMDExecutor.executeAsPlayer(p.getName(), this.getTaskLoader().getPlayerCmds());
+		}
+		
+		if(this.getTaskLoader().isExecutingServerCmds()){
+			QuestXCMDExecutor.executeAsServer(this.getTaskLoader().getServerCmds());
 		}
 
 		Location pL = p.getLocation();

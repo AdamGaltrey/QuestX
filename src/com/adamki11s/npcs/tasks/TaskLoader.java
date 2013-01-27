@@ -16,12 +16,12 @@ public class TaskLoader {
 
 	final String npcName;
 	String taskName, taskDescription, incompleteTaskSpeech, completeTaskSpeech;
-	String[] addPerms, remPerms;
+	String[] addPerms, remPerms, playerCmds, serverCmds;
 	ItemStack[] retrieveItems, rewardItems;
 	int rewardExp, rewardRep, rewardGold;
 	EntityKillTracker ekt;
 	NPCKillTracker nkt;
-	boolean fetchItems, killEntities, killNPCS, awardItems, apAdd, apRem;
+	boolean fetchItems, killEntities, killNPCS, awardItems, apAdd, apRem, execPlayerCommand, execServerCommand;
 
 	public TaskLoader(File taskFile, String npcName) {
 		this.taskFile = taskFile;
@@ -104,8 +104,39 @@ public class TaskLoader {
 			this.apRem = false;
 		}
 		
+		if(!config.getString("EXECUTE_PLAYER_CMD").equalsIgnoreCase("0")){
+			this.playerCmds = config.getString("EXECUTE_PLAYER_CMD").split(",");
+			this.execPlayerCommand = true;
+		} else {
+			this.execPlayerCommand = false;
+		}
+		
+		if(!config.getString("EXECUTE_SERVER_CMD").equalsIgnoreCase("0")){
+			this.serverCmds = config.getString("EXECUTE_SERVER_CMD").split(",");
+			this.execServerCommand = true;
+		} else {
+			this.execServerCommand = false;
+		}
+		
 		QuestX.logMSG("TaskLoad Operation completed");
 	}
+	
+	public boolean isExecutingPlayerCmds(){
+		return this.execPlayerCommand;
+	}
+	
+	public boolean isExecutingServerCmds(){
+		return this.execServerCommand;
+	}
+	
+	public String[] getServerCmds(){
+		return this.serverCmds;
+	}
+	
+	public String[] getPlayerCmds(){
+		return this.playerCmds;
+	}
+	
 	
 	public boolean isAwardingAddPerms(){
 		return this.apAdd;
