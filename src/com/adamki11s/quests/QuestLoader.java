@@ -130,6 +130,10 @@ public class QuestLoader {
 
 		QuestX.logMSG("QUEST LOAD COMPLETE");
 	}
+	
+	public String getProgress(String player){
+		return ("(" + this.playerProgress.get(player) + "/" + this.nodes + ")");
+	}
 
 	public boolean isExecutingPlayerCmds() {
 		return this.execPlayerCommand;
@@ -187,7 +191,14 @@ public class QuestLoader {
 		return this.playerProgress.containsKey(p);
 	}
 
-	public void playerStartedQuest(String p) {
+	public synchronized void playerStartedQuest(String p) {
+		File cur = FileLocator.getCurrentQuestFile();
+		SyncConfiguration cfg = new SyncConfiguration(cur);
+		cfg.read();
+		cfg.MergeRWArrays();
+		cfg.add(p, this.getName());
+		cfg.write();
+		
 		this.loadAndCheckPlayerProgress(p);
 		this.currentTask.put(p, this.tasks[0].getClonedInstance());// We only
 																	// want to
@@ -221,7 +232,7 @@ public class QuestLoader {
 		return (this.rewardRep != 0);
 	}
 
-	public void awardPlayerOnQuestComplete(Player p) {
+	public synchronized void awardPlayerOnQuestComplete(Player p) {
 		if (this.isAwardingItems()) {
 			ItemStack[] rewardItems = this.rewardItems;
 			for (ItemStack i : rewardItems) {
@@ -283,6 +294,13 @@ public class QuestLoader {
 			Fireworks display = new Fireworks(pL, fwRadius, fwSectors);
 			display.circularDisplay();
 		}
+		
+		File cur = FileLocator.getCurrentQuestFile();
+		SyncConfiguration cfg = new SyncConfiguration(cur);
+		cfg.read();
+		cfg.MergeRWArrays();
+		cfg.getWriteableData().remove(p.getName());
+		cfg.write();
 	}
 
 	public void loadAndCheckPlayerProgress(String p) {

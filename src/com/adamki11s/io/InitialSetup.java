@@ -16,6 +16,7 @@ public class InitialSetup {
 		folderSetup(new File(FileLocator.data_root));
 		folderSetup(new File(FileLocator.npc_data_root));
 		folderSetup(new File(FileLocator.quest_data_root));
+		folderSetup(new File(FileLocator.rep_data_root));
 		File f = FileLocator.getNPCFixedSpawnsFile();
 		if (!f.exists()) {
 			fileSetup(f);

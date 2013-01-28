@@ -13,6 +13,7 @@ import org.bukkit.inventory.ItemStack;
 import com.adamki11s.ai.RandomMovement;
 import com.adamki11s.data.ItemStackDrop;
 import com.adamki11s.data.ItemStackProbability;
+import com.adamki11s.display.QuestDisplay;
 import com.adamki11s.npcs.NPCHandler;
 import com.adamki11s.npcs.SimpleNPC;
 import com.adamki11s.npcs.UniqueNameRegister;
@@ -54,6 +55,13 @@ public class QuestXCommands implements CommandExecutor {
 
 				ItemStack[] gear = new ItemStack[] { null, null, null, null, new ItemStack(Material.WOOD_AXE) };
 
+				if(args.length == 2 && args[0].equalsIgnoreCase("qinfo")){
+					if(args[1].equalsIgnoreCase("current")){
+						QuestDisplay.displayCurrentQuestInfo(p);
+					}
+					return true;
+				}
+				
 				if (args.length == 2 && args[0].equalsIgnoreCase("unpack")) {
 					String qName = args[1];
 					QuestUnpacker upack = new QuestUnpacker(qName);
