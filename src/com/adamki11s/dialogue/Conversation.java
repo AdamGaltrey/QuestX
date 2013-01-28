@@ -53,9 +53,9 @@ public class Conversation {
 			parseSuccess = false;
 			QuestX.logError("-----REASON-----");
 			e.printErrorReason();
-			QuestX.logError("-----STACK-----");
+			/*QuestX.logError("-----STACK-----");
 			e.printStackTrace();
-			QuestX.logError("-----STACK END-----");
+			QuestX.logError("-----STACK END-----");*/
 		}
 	}
 	
