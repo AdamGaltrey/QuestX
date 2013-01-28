@@ -1,6 +1,7 @@
 package com.adamki11s.threads;
 
 import com.adamki11s.ai.AttackController;
+import com.adamki11s.ai.DespawnController;
 import com.adamki11s.ai.MovementController;
 import com.adamki11s.ai.RespawnController;
 import com.adamki11s.npcs.NPCHandler;
@@ -14,6 +15,7 @@ public class AsyncThread implements Runnable {
 	final RespawnController rControl;
 	final AttackController aControl;
 	final PopulationDensityThread pdThread;
+	final DespawnController dControl;
 	final int tickRate;
 
 	AsyncThread(NPCHandler handle, int tickRate) {
@@ -22,6 +24,7 @@ public class AsyncThread implements Runnable {
 		rControl = new RespawnController(handle);
 		aControl = new AttackController(handle);
 		pdThread = new PopulationDensityThread();
+		dControl = new DespawnController(handle);
 		this.tickRate = tickRate;
 	}
 	
@@ -40,9 +43,11 @@ public class AsyncThread implements Runnable {
 			this.denstiyCalculationTickOver = 0;
 			this.pdThread.run();
 		}
-		if (tickOver % tickRate == 0) {
+		//run every second
+		if (tickOver % 20 == 0) {
 			this.mControl.run();
 			this.rControl.run(tickRate);
+			this.dControl.run(tickRate);
 			tickOver = 0;
 		}
 		aControl.run();

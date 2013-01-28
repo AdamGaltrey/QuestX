@@ -18,6 +18,7 @@ import com.adamki11s.data.ItemStackDrop;
 import com.adamki11s.dialogue.Conversation;
 import com.adamki11s.events.ConversationRegister;
 import com.adamki11s.io.FileLocator;
+import com.adamki11s.npcs.population.WorldConfigData;
 import com.adamki11s.npcs.tasks.Fireworks;
 import com.adamki11s.npcs.tasks.TaskManager;
 import com.adamki11s.npcs.tasks.TaskRegister;
@@ -39,7 +40,7 @@ public class SimpleNPC {
 	final double retalliationMultiplier;
 	final ItemStackDrop inventory;
 
-	int waitedSpawnTicks = 0;
+	int waitedSpawnTicks = 0, health = 20, untouchedTicks = 0;
 
 	RandomMovement randMovement;
 
@@ -56,8 +57,6 @@ public class SimpleNPC {
 	boolean isSpawned = false, underAttack = false;
 
 	final ItemStack[] gear;// boots 1, legs 2, chest 3, head 4, arm 5
-
-	int health;
 
 	public SimpleNPC(NPCHandler handle, String name, ChatColor nameColour, boolean moveable, boolean attackable, boolean aggressive, int minPauseTicks, int maxPauseTicks, int maxVariation,
 			int health, int respawnTicks, ItemStackDrop inventory, ItemStack[] gear, int damageMod, double retalliationMultiplier) {
@@ -119,6 +118,21 @@ public class SimpleNPC {
 		// QuestX.logMSG("Setting new spawn location");
 		// QuestX.logMSG(l.toString());
 		this.spawnedLocation = l;
+	}
+
+	public void setTouched() {
+		this.untouchedTicks = 0;
+	}
+
+	public void updateUntouchedTicks(int ticks) {
+		if (this.isSpawned && !this.isSpawnFixed) {
+			this.untouchedTicks += ticks;
+		}
+	}
+
+	public boolean shouldBeDespawned() {
+		int despawnUTicks = WorldConfigData.getUntouchedDespawnMinutes() * (20 * 60);
+		return (this.untouchedTicks >= despawnUTicks);
 	}
 
 	public Location getFixedLocation() {
@@ -225,6 +239,9 @@ public class SimpleNPC {
 		if (this.isSpawnFixed) {
 			return;
 		}
+
+		this.setTouched();
+
 		health -= damage;
 		this.aggressor = p;
 		this.underAttack = true;
@@ -273,6 +290,9 @@ public class SimpleNPC {
 	}
 
 	public void interact(Player p) {
+
+		this.setTouched();
+
 		if (!this.isConversing() && !this.isUnderAttack()) {
 
 			if (this.doesLinkToQuest()) {
@@ -280,7 +300,7 @@ public class SimpleNPC {
 					if (QuestManager.getCurrentQuestName(p.getName()).equalsIgnoreCase(this.getQuestName())) {
 						QuestLoader ql = QuestManager.getQuestLoader(this.getQuestName());
 						QuestTask t = QuestManager.getCurrentQuestTask(p.getName());
-						if(t == null){
+						if (t == null) {
 							QuestX.logMSG("QuetTask loaded null! ###########");
 							return;
 						} else {
@@ -309,7 +329,7 @@ public class SimpleNPC {
 							}
 
 						} else {
-							
+
 						}
 					} else {
 						// doing a different quest
@@ -367,6 +387,8 @@ public class SimpleNPC {
 	public synchronized void spawnNPC() {
 		if (!isSpawned) {
 
+			this.setTouched();
+
 			this.health = this.maxHealth;
 			this.waitedSpawnTicks = 0;
 			Location toSpawn;
@@ -414,7 +436,7 @@ public class SimpleNPC {
 			this.handle.getNPCManager().despawnHumanByName(this.name);
 			this.randMovement = null;
 			if (!this.isSpawnFixed()) {
-				this.handle.removeNPC(this);
+				this.destroyNPCObject();
 			}
 		}
 	}
