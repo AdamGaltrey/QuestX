@@ -220,10 +220,12 @@ public class TaskManager {
 		if(this.getTaskLoader().isExecutingServerCmds()){
 			QuestXCMDExecutor.executeAsServer(this.getTaskLoader().getServerCmds());
 		}
-
-		Location pL = p.getLocation();
-		Fireworks display = new Fireworks(pL, 10, 20);
-		display.circularDisplay();
+		
+		if (this.getTaskLoader().fireWorks) {
+			Location pL = p.getLocation();
+			Fireworks display = new Fireworks(pL, this.getTaskLoader().fwRadius, this.getTaskLoader().fwSectors);
+			display.circularDisplay();
+		}
 
 		TaskRegister.unRegisterTask(this);
 

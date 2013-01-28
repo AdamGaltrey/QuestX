@@ -18,10 +18,10 @@ public class TaskLoader {
 	String taskName, taskDescription, incompleteTaskSpeech, completeTaskSpeech;
 	String[] addPerms, remPerms, playerCmds, serverCmds;
 	ItemStack[] retrieveItems, rewardItems;
-	int rewardExp, rewardRep, rewardGold;
+	int rewardExp, rewardRep, rewardGold, fwRadius, fwSectors;
 	EntityKillTracker ekt;
 	NPCKillTracker nkt;
-	boolean fetchItems, killEntities, killNPCS, awardItems, apAdd, apRem, execPlayerCommand, execServerCommand;
+	boolean fetchItems, killEntities, killNPCS, awardItems, apAdd, apRem, execPlayerCommand, execServerCommand, fireWorks;
 
 	public TaskLoader(File taskFile, String npcName) {
 		this.taskFile = taskFile;
@@ -84,6 +84,19 @@ public class TaskLoader {
 		} else {
 			QuestX.logMSG("Not loading NPC's to kill");
 			this.killNPCS = false;
+		}
+		
+		if (!config.getString("FIREWORKS").equalsIgnoreCase("0")) {
+			this.fireWorks = true;
+			String parts[] = config.getString("FIREWORKS").split(",");
+			int rad, sect;
+			rad = Integer.parseInt(parts[0]);
+			sect = Integer.parseInt(parts[1]);
+			
+			fwRadius = rad;
+			fwSectors = sect;
+		} else {
+			this.fireWorks = false;
 		}
 
 		this.rewardExp = config.getInt("REWARD_EXP");

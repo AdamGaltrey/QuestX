@@ -24,8 +24,8 @@ public class QuestLoader {
 	volatile QuestTask[] tasks;
 
 	String questName, startText, endText;
-	
-	int nodes, rewardExp, rewardRep, rewardGold;
+
+	int nodes, rewardExp, rewardRep, rewardGold, fwRadius, fwSectors;
 	ItemStack[] rewardItems;
 
 	volatile HashMap<String, Integer> playerProgress = new HashMap<String, Integer>();
@@ -35,7 +35,7 @@ public class QuestLoader {
 	String[] addPerms, remPerms, playerCmds, serverCmds;
 	EntityKillTracker ekt;
 	NPCKillTracker nkt;
-	boolean apAdd, apRem, execPlayerCommand, execServerCommand;
+	boolean apAdd, apRem, execPlayerCommand, execServerCommand, fireWorks;
 
 	public QuestLoader(File f) {
 		this.config = new SyncConfiguration(f);
@@ -75,19 +75,32 @@ public class QuestLoader {
 		} else {
 			this.apRem = false;
 		}
-		
-		if(!config.getString("EXECUTE_PLAYER_CMD").equalsIgnoreCase("0")){
+
+		if (!config.getString("EXECUTE_PLAYER_CMD").equalsIgnoreCase("0")) {
 			this.playerCmds = config.getString("EXECUTE_PLAYER_CMD").split(",");
 			this.execPlayerCommand = true;
 		} else {
 			this.execPlayerCommand = false;
 		}
-		
-		if(!config.getString("EXECUTE_SERVER_CMD").equalsIgnoreCase("0")){
+
+		if (!config.getString("EXECUTE_SERVER_CMD").equalsIgnoreCase("0")) {
 			this.serverCmds = config.getString("EXECUTE_SERVER_CMD").split(",");
 			this.execServerCommand = true;
 		} else {
 			this.execServerCommand = false;
+		}
+
+		if (!config.getString("FIREWORKS").equalsIgnoreCase("0")) {
+			this.fireWorks = true;
+			String parts[] = config.getString("FIREWORKS").split(",");
+			int rad, sect;
+			rad = Integer.parseInt(parts[0]);
+			sect = Integer.parseInt(parts[1]);
+			
+			fwRadius = rad;
+			fwSectors = sect;
+		} else {
+			this.fireWorks = false;
 		}
 
 		this.tasks = new QuestTask[i];
@@ -116,20 +129,20 @@ public class QuestLoader {
 
 		QuestX.logMSG("QUEST LOAD COMPLETE");
 	}
-	
-	public boolean isExecutingPlayerCmds(){
+
+	public boolean isExecutingPlayerCmds() {
 		return this.execPlayerCommand;
 	}
-	
-	public boolean isExecutingServerCmds(){
+
+	public boolean isExecutingServerCmds() {
 		return this.execServerCommand;
 	}
-	
-	public String[] getServerCmds(){
+
+	public String[] getServerCmds() {
 		return this.serverCmds;
 	}
-	
-	public String[] getPlayerCmds(){
+
+	public String[] getPlayerCmds() {
 		return this.playerCmds;
 	}
 
@@ -255,18 +268,20 @@ public class QuestLoader {
 				}
 			}
 		}
-		
-		if(this.isExecutingPlayerCmds()){
+
+		if (this.isExecutingPlayerCmds()) {
 			QuestXCMDExecutor.executeAsPlayer(p.getName(), this.getPlayerCmds());
 		}
-		
-		if(this.isExecutingServerCmds()){
+
+		if (this.isExecutingServerCmds()) {
 			QuestXCMDExecutor.executeAsServer(this.getServerCmds());
 		}
 
-		Location pL = p.getLocation();
-		Fireworks display = new Fireworks(pL, 10, 20);
-		display.circularDisplay();
+		if (this.fireWorks) {
+			Location pL = p.getLocation();
+			Fireworks display = new Fireworks(pL, fwRadius, fwSectors);
+			display.circularDisplay();
+		}
 	}
 
 	public void loadAndCheckPlayerProgress(String p) {
