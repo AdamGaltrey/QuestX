@@ -5,5 +5,6 @@
 	<classpathentry kind="lib" path="C:/Java/Resources &amp; Libraries/Bukkit/1.4.6 R0.3/bukkit-1.4.6-R0.3.jar"/>
 	<classpathentry kind="lib" path="C:/Java/Resources &amp; Libraries/Bukkit/1.4.6 R0.3/craftbukkit-1.4.6-R0.3.jar"/>
 	<classpathentry kind="lib" path="C:/Java/Resources &amp; Libraries/Bukkit/TagAPI.jar"/>
+	<classpathentry kind="lib" path="C:/Java/Resources &amp; Libraries/Bukkit/Vault.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

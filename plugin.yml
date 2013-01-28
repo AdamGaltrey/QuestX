@@ -1,8 +1,9 @@
 name: QuestX
-main: couk.adamki11s.questx.QuestX
+main: com.adamki11s.questx.QuestX
 version: 1.0.0
 author: Adamki11s
 commands:
   questx:
+    aliases: q
     description: QuestX
     usage: /QuestX [args]
