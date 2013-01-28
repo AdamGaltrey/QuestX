@@ -22,7 +22,6 @@ public class QuestDisplay {
 			qt.sendWhatIsLeftToDo(p);
 		}
 	}
-	
-	
+		
 
 }

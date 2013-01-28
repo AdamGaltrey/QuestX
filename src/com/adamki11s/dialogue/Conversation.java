@@ -7,6 +7,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.adamki11s.dialogue.triggers.Trigger;
 import com.adamki11s.dialogue.triggers.TriggerType;
 import com.adamki11s.events.ConversationRegister;
+import com.adamki11s.exceptions.InvalidDialogueException;
 import com.adamki11s.io.FileLocator;
 import com.adamki11s.npcs.NPCHandler;
 import com.adamki11s.npcs.SimpleNPC;
@@ -23,7 +24,7 @@ public class Conversation {
 	ConversationData convoData;
 	DialogueSet[] dialogue;
 	String currentNode = "1";
-	boolean conversing = false, indexSelected = false;
+	boolean conversing = false, indexSelected = false, parseSuccess = false;;
 
 	final NPCHandler handle = new NPCHandler((JavaPlugin) QuestX.p, null);
 
@@ -44,8 +45,22 @@ public class Conversation {
 	public void loadConversation() {
 		// Find file
 		// Invoke DLG Parser
-		DLGParser parse = new DLGParser(this, FileLocator.getNPCDlgFile(this.convoData.getSimpleNpc().getName()));
-		this.dialogue = parse.parse();
+		DLGParser parse = new DLGParser(this, FileLocator.getNPCDlgFile(this.convoData.getSimpleNpc().getName()), this.convoData.getSimpleNpc().getName());
+		try {
+			this.dialogue = parse.parse();
+			parseSuccess = true;
+		} catch (InvalidDialogueException e) {
+			parseSuccess = false;
+			QuestX.logError("-----REASON-----");
+			e.printErrorReason();
+			QuestX.logError("-----STACK-----");
+			e.printStackTrace();
+			QuestX.logError("-----STACK END-----");
+		}
+	}
+	
+	public boolean wasParseSuccessful(){
+		return this.parseSuccess;
 	}
 
 	public void startConversation() {

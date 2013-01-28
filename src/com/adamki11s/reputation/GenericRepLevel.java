@@ -44,8 +44,10 @@ public enum GenericRepLevel {
 			return ORDINARY;
 		} else if(s.equalsIgnoreCase("g")){
 			return GOOD;
-		} else {
+		} else if(s.equalsIgnoreCase("h")){
 			return HERO;
+		} else {
+			return null;
 		}
 	}
 

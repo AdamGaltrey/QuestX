@@ -14,8 +14,10 @@ public enum TriggerType {
 			return END;
 		} else if(s.equalsIgnoreCase("t")){
 			return TASK;
-		} else {
+		} else if(s.equalsIgnoreCase("q")){
 			return QUEST;
+		} else {
+			return null;
 		}
 	}
 
