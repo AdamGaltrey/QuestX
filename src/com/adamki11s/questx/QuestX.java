@@ -17,6 +17,7 @@ import com.adamki11s.events.EntityDeathMonitor;
 import com.adamki11s.events.MovementMonitor;
 import com.adamki11s.events.NPCDamageEvent;
 import com.adamki11s.events.NPCInteractEvent;
+import com.adamki11s.events.PlayerJoinLeaveEvents;
 import com.adamki11s.io.FileLocator;
 import com.adamki11s.io.InitialSetup;
 import com.adamki11s.npcs.NPCHandler;
@@ -36,6 +37,7 @@ public class QuestX extends JavaPlugin {
 	ConversationRegister playerChatEvent;
 	MovementMonitor playerMoveEvent;
 	EntityDeathMonitor entityDeathMonitorEvent;
+	PlayerJoinLeaveEvents playerJLEvent;
 
 	public static Plugin p;
 
@@ -110,6 +112,7 @@ public class QuestX extends JavaPlugin {
 		playerChatEvent = new ConversationRegister(this, handle);
 		playerMoveEvent = new MovementMonitor(this, handle);
 		entityDeathMonitorEvent = new EntityDeathMonitor(this);
+		playerJLEvent = new PlayerJoinLeaveEvents(this);
 		// register events
 
 		/*

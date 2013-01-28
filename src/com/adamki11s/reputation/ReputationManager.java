@@ -19,6 +19,11 @@ public class ReputationManager {
 			}
 		}
 	}
+	
+	public static void updateReputation(String name, int amount){
+		io.updatePlayerRep(name, amount);
+		rep.get(name).addRep(amount);
+	}
 
 	public static void unloadPlayerReputation(String name) {
 		if (rep.containsKey(name)) {

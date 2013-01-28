@@ -15,6 +15,7 @@ import com.adamki11s.npcs.tasks.Fireworks;
 import com.adamki11s.npcs.tasks.ISAParser;
 import com.adamki11s.npcs.tasks.NPCKillTracker;
 import com.adamki11s.questx.QuestX;
+import com.adamki11s.reputation.ReputationManager;
 import com.adamki11s.sync.io.configuration.SyncConfiguration;
 
 public class QuestLoader {
@@ -96,7 +97,7 @@ public class QuestLoader {
 			int rad, sect;
 			rad = Integer.parseInt(parts[0]);
 			sect = Integer.parseInt(parts[1]);
-			
+
 			fwRadius = rad;
 			fwSectors = sect;
 		} else {
@@ -244,6 +245,7 @@ public class QuestLoader {
 
 		if (this.isAwardRep()) {
 			int awardRep = this.getRewardRep();
+			ReputationManager.updateReputation(p.getName(), awardRep);
 			// adjust rep
 		}
 

@@ -12,6 +12,7 @@ import com.adamki11s.commands.QuestXCMDExecutor;
 import com.adamki11s.extras.inventory.ExtrasInventory;
 import com.adamki11s.io.FileLocator;
 import com.adamki11s.questx.QuestX;
+import com.adamki11s.reputation.ReputationManager;
 
 public class TaskManager {
 
@@ -188,6 +189,7 @@ public class TaskManager {
 
 		if (this.getTaskLoader().isAwardRep()) {
 			int awardRep = this.getTaskLoader().getRewardRep();
+			ReputationManager.updateReputation(pName, awardRep);
 			// adjust rep
 		}
 
