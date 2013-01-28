@@ -1,21 +1,13 @@
-package com.adamki11s.ai.dataset;
+package com.adamki11s.reputation;
 
 import java.io.Serializable;
 import java.util.HashMap;
 
-public class Reputation implements Serializable {
-
-	private static final long serialVersionUID = -554972234451350229L;
-	
-	static HashMap<String, Reputation> playerRep = new HashMap<String, Reputation>();
-	
-	public static Reputation getPlayerReputation(String playerName){
-		return playerRep.get(playerName);
-	}
+public class Reputation {
 	
 	final String playerName;
 	
-	protected RepLevel repLevel = RepLevel.NEUTRAL;
+	protected RepLevel repLevel;
 	
 	protected int rep = 0;
 	
@@ -23,14 +15,14 @@ public class Reputation implements Serializable {
 	
 	public Reputation(String playerName){
 		this.playerName = playerName;
-		playerRep.put(playerName, this);
+		this.rep = 0;
+		this.repLevel = RepLevel.getRepLevel(this.rep);
 	}
 	
 	public Reputation(String playerName, int currentRep){
 		this.playerName = playerName;
 		this.rep = currentRep;
 		this.repLevel = RepLevel.getRepLevel(this.rep);
-		playerRep.put(playerName, this);
 	}
 	
 	public void addRep(int rep){

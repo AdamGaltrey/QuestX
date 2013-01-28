@@ -5,9 +5,9 @@ import java.util.HashMap;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-import com.adamki11s.ai.dataset.Reputation;
 import com.adamki11s.npcs.NPCHandler;
 import com.adamki11s.npcs.SimpleNPC;
+import com.adamki11s.reputation.Reputation;
 import com.topcat.npclib.entity.HumanNPC;
 
 

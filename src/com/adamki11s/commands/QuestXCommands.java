@@ -11,7 +11,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import com.adamki11s.ai.RandomMovement;
-import com.adamki11s.ai.dataset.Reputation;
 import com.adamki11s.data.ItemStackDrop;
 import com.adamki11s.data.ItemStackProbability;
 import com.adamki11s.npcs.NPCHandler;
@@ -24,6 +23,7 @@ import com.adamki11s.quests.QuestManager;
 import com.adamki11s.quests.setup.QuestSetup;
 import com.adamki11s.quests.setup.QuestUnpacker;
 import com.adamki11s.questx.QuestX;
+import com.adamki11s.reputation.Reputation;
 import com.topcat.npclib.entity.HumanNPC;
 
 public class QuestXCommands implements CommandExecutor {

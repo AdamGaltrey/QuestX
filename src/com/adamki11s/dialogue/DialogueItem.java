@@ -3,9 +3,10 @@ package com.adamki11s.dialogue;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.adamki11s.ai.dataset.GenericRepLevel;
-import com.adamki11s.ai.dataset.Reputation;
 import com.adamki11s.dialogue.triggers.Trigger;
+import com.adamki11s.reputation.GenericRepLevel;
+import com.adamki11s.reputation.Reputation;
+import com.adamki11s.reputation.ReputationManager;
 
 
 public class DialogueItem {
@@ -38,7 +39,7 @@ public class DialogueItem {
 		if(this.requriedRep == GenericRepLevel.ANY){
 			return true;
 		}
-		Reputation r = Reputation.getPlayerReputation(pName);
+		Reputation r = ReputationManager.getPlayerReputation(pName);
 		int repPoints = r.getRep();
 		boolean isNegRep = (repPoints < 0);
 		ArrayList<GenericRepLevel> repList = new ArrayList<GenericRepLevel>(3);

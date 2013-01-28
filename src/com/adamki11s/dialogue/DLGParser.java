@@ -3,7 +3,6 @@ package com.adamki11s.dialogue;
 import java.io.File;
 import java.util.ArrayList;
 
-import com.adamki11s.ai.dataset.GenericRepLevel;
 import com.adamki11s.dialogue.triggers.EndTrigger;
 import com.adamki11s.dialogue.triggers.NoTrigger;
 import com.adamki11s.dialogue.triggers.QuestTrigger;
@@ -12,6 +11,7 @@ import com.adamki11s.dialogue.triggers.Trigger;
 import com.adamki11s.dialogue.triggers.TriggerType;
 import com.adamki11s.io.FileLocator;
 import com.adamki11s.questx.QuestX;
+import com.adamki11s.reputation.GenericRepLevel;
 import com.adamki11s.sync.io.writer.SyncWriter;
 
 

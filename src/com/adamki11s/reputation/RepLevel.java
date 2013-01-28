@@ -1,4 +1,4 @@
-package com.adamki11s.ai.dataset;
+package com.adamki11s.reputation;
 
 import org.bukkit.ChatColor;
 
