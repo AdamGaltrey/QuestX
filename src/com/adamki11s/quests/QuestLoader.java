@@ -226,8 +226,7 @@ public class QuestLoader {
 			ItemStack[] rewardItems = this.rewardItems;
 			for (ItemStack i : rewardItems) {
 				if (i != null) {
-					int empty = -1;
-					if ((empty = p.getInventory().firstEmpty()) != -1) {
+					if ((p.getInventory().firstEmpty()) != -1) {
 						p.getInventory().addItem(i);
 					} else {
 						p.getWorld().dropItemNaturally(p.getLocation(), i);
