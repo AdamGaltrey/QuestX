@@ -23,6 +23,7 @@ import com.adamki11s.io.InitialSetup;
 import com.adamki11s.npcs.NPCHandler;
 import com.adamki11s.npcs.loading.FixedLoadingTable;
 import com.adamki11s.npcs.population.WorldConfigData;
+import com.adamki11s.payload.ExtractPayload;
 import com.adamki11s.threads.ThreadController;
 
 public class QuestX extends JavaPlugin {
@@ -103,6 +104,8 @@ public class QuestX extends JavaPlugin {
 		}
 
 		InitialSetup.run();
+		
+		ExtractPayload.extractPayload();
 
 		handle = new NPCHandler(this, WorldConfigData.getWorlds());
 
