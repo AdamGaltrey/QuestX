@@ -32,16 +32,20 @@ public class FixedLoadingTable {
 			}
 			System.out.println("Wrapper tag = " + wrapper.getTag());
 			String npcName = wrapper.getTag();
-			SyncLocation sl = (SyncLocation) wrapper.getObject();
-			Location spawnLocation = sl.getBukkitLocation();
-			LoadNPCTemplate tempLoader = new LoadNPCTemplate(npcName);
+			if (FileLocator.doesNPCNameExist(npcName)) {
+				SyncLocation sl = (SyncLocation) wrapper.getObject();
+				Location spawnLocation = sl.getBukkitLocation();
+				LoadNPCTemplate tempLoader = new LoadNPCTemplate(npcName);
 				tempLoader.loadProperties();
 				NPCTemplate template = tempLoader.getLoadedNPCTemplate();
 				template.registerSimpleNPCFixedSpawn(handle, spawnLocation);
 				fixedSpawns.put(npcName, spawnLocation);
+			} else {
+				QuestX.logError("Tried to load NPC '" + npcName + "' but no NPC file was found.");
+			}
 		}
 	}
-	
+
 	public static void spawnFixedNPC(NPCHandler handle, String name) {
 		loader.read();
 		SyncLocation sl = (SyncLocation) loader.getObject(name);
@@ -62,7 +66,7 @@ public class FixedLoadingTable {
 				return false;
 			}
 			SimpleNPC remove = handle.getSimpleNPCByName(npcName);
-			if(remove != null){
+			if (remove != null) {
 				remove.destroyNPCObject();
 			}
 			loader.read();
