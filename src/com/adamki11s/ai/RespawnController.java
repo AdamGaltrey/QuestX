@@ -54,7 +54,7 @@ public class RespawnController {
 				for (File f : new File(FileLocator.npc_data_root).listFiles()) {
 					boolean loaded = false;
 					for (String pre : preloaded) {
-						if (f.getName().equalsIgnoreCase(pre)) {
+						if (f.getName().equalsIgnoreCase(pre) || f.getName().contains(".zip")) {
 							loaded = true;
 						}
 					}
