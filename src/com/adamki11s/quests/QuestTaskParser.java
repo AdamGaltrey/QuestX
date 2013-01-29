@@ -2,6 +2,7 @@ package com.adamki11s.quests;
 
 import org.bukkit.inventory.ItemStack;
 
+import com.adamki11s.exceptions.InvalidISAException;
 import com.adamki11s.npcs.tasks.EntityKillTracker;
 import com.adamki11s.npcs.tasks.ISAParser;
 import com.adamki11s.npcs.tasks.NPCKillTracker;
@@ -10,7 +11,7 @@ import com.adamki11s.questx.QuestX;
 
 public class QuestTaskParser {
 
-	public static synchronized QuestTask getTaskObject(String input, QType type) {
+	public static synchronized QuestTask getTaskObject(String input, QType type, String cause) {
 		Object o = null;
 		QuestX.logMSG("QTYPE = " + type.toString());
 		QuestX.logMSG("ENTERING SWITCH");
@@ -23,7 +24,7 @@ public class QuestTaskParser {
 		QuestX.logMSG("CNT = " + completeNodeText + ", npcn = " + npcName + " inputData = " + inputData);
 		
 		if(type == QType.FETCH_ITEMS){
-			o = getInventoryObject(inputData);
+			o = getInventoryObject(inputData, cause);
 		} else if(type == QType.KILL_ENTITIES){
 			o = getEntityKillObject(inputData);
 		} else if(type == QType.KILL_NPC){
@@ -39,9 +40,14 @@ public class QuestTaskParser {
 		return new QuestTask(type, o, npcName, completeNodeText);
 	}
 
-	static ItemStack[] getInventoryObject(String input) {
+	static ItemStack[] getInventoryObject(String input, String cause) {
 		QuestX.logMSG("Parsing isa array");
-		return ISAParser.parseISA(input);
+		try {
+			return ISAParser.parseISA(input, cause, true);
+		} catch (InvalidISAException e) {
+			e.printErrorReason();
+		}
+		return null;
 	}
 
 	static EntityKillTracker getEntityKillObject(String input) {

@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import com.adamki11s.commands.QuestXCMDExecutor;
+import com.adamki11s.exceptions.InvalidISAException;
 import com.adamki11s.io.FileLocator;
 import com.adamki11s.npcs.tasks.EntityKillTracker;
 import com.adamki11s.npcs.tasks.Fireworks;
@@ -52,10 +53,16 @@ public class QuestLoader {
 		}
 		this.nodes = i;
 		if (!this.config.getString("REWARD_ITEMS").equalsIgnoreCase("0")) {
-			this.rewardItems = ISAParser.parseISA(this.config.getString("REWARD_ITEMS"));
+			try {
+				this.rewardItems = ISAParser.parseISA(this.config.getString("REWARD_ITEMS"), this.questName, true);
+			} catch (InvalidISAException e) {
+				this.rewardItems = null;
+				e.printErrorReason();
+			}
 		} else {
 			this.rewardItems = null;
 		}
+
 		this.rewardExp = this.config.getInt("REWARD_EXP");
 		this.rewardRep = this.config.getInt("REWARD_REP");
 		this.startText = this.config.getString("START_TEXT");
@@ -123,15 +130,15 @@ public class QuestLoader {
 			QuestX.logMSG("qtypeEnum = " + qtypeEnum);
 			QuestX.logMSG("dataString = " + dataString);
 
-			this.tasks[c - 1] = QuestTaskParser.getTaskObject(dataString, qType);
+			this.tasks[c - 1] = QuestTaskParser.getTaskObject(dataString, qType, this.questName);
 			// this.tasks[c - 1] = new
 			QuestX.logMSG("QUEST TASK LOAD LOOOP-----------");
 		}
 
 		QuestX.logMSG("QUEST LOAD COMPLETE");
 	}
-	
-	public String getProgress(String player){
+
+	public String getProgress(String player) {
 		return ("(" + this.playerProgress.get(player) + "/" + this.nodes + ")");
 	}
 
@@ -198,7 +205,7 @@ public class QuestLoader {
 		cfg.MergeRWArrays();
 		cfg.add(p, this.getName());
 		cfg.write();
-		
+
 		this.loadAndCheckPlayerProgress(p);
 		this.currentTask.put(p, this.tasks[0].getClonedInstance());// We only
 																	// want to
@@ -294,7 +301,7 @@ public class QuestLoader {
 			Fireworks display = new Fireworks(pL, fwRadius, fwSectors);
 			display.circularDisplay();
 		}
-		
+
 		File cur = FileLocator.getCurrentQuestFile();
 		SyncConfiguration cfg = new SyncConfiguration(cur);
 		cfg.read();
