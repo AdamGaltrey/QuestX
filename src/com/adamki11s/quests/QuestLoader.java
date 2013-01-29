@@ -261,7 +261,9 @@ public class QuestLoader {
 		}
 
 		if (this.isAwardRep()) {
+			
 			int awardRep = this.getRewardRep();
+			QuestX.logChat(p, "Trying to award rep = " + awardRep);
 			ReputationManager.updateReputation(p.getName(), awardRep);
 			// adjust rep
 		}

@@ -24,7 +24,7 @@ public class PlayerJoinLeaveEvents implements Listener{
 	
 	@EventHandler
 	public void playerQuit(final PlayerQuitEvent evt){
-		ReputationManager.loadPlayerReputation(evt.getPlayer().getName());
+		ReputationManager.unloadPlayerReputation(evt.getPlayer().getName());
 		QuestManager.unloadPlayerQuestData(evt.getPlayer().getName());
 	}
 	
