@@ -3,7 +3,6 @@ package com.adamki11s.sync.io.configuration;
 import java.io.File;
 import java.io.IOException;
 import java.util.LinkedHashMap;
-import java.util.Map.Entry;
 import java.util.UUID;
 
 import com.adamki11s.io.IDENTIFIER;
