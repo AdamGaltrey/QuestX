@@ -4,15 +4,15 @@ import org.bukkit.ChatColor;
 
 public enum RepLevel {
 	
-	GUARDIAN("Guardian", 800, ChatColor.DARK_RED),
-	LAWMAN("Lawman", 600, ChatColor.RED),
-	SHERIFF("Sheriff", 400, ChatColor.GOLD),
-	OFFICER("Officer", 200, ChatColor.DARK_GRAY),
+	GUARDIAN("Guardian", 800, ChatColor.GREEN),
+	LAWMAN("Lawman", 600, ChatColor.DARK_GREEN),
+	SHERIFF("Sheriff", 400, ChatColor.DARK_AQUA),
+	OFFICER("Officer", 200, ChatColor.AQUA),
 	NEUTRAL("Neutral", 0, ChatColor.RESET),
-	THUG("Thug", -200, ChatColor.AQUA),
-	CRIMINAL("Criminal", -400, ChatColor.DARK_AQUA),
-	HITMAN("Hitman", -600, ChatColor.DARK_GREEN),
-	VILLAIN("Villain", -800, ChatColor.GREEN);
+	THUG("Thug", -200, ChatColor.DARK_GRAY),
+	CRIMINAL("Criminal", -400, ChatColor.GOLD),
+	HITMAN("Hitman", -600, ChatColor.RED),
+	VILLAIN("Villain", -800, ChatColor.DARK_RED);
 	
 	
 	final String tag;
