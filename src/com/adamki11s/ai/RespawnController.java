@@ -11,6 +11,7 @@ import com.adamki11s.npcs.NPCHandler;
 import com.adamki11s.npcs.SimpleNPC;
 import com.adamki11s.npcs.io.LoadNPCTemplate;
 import com.adamki11s.npcs.io.NPCTemplate;
+import com.adamki11s.npcs.population.HotspotManager;
 import com.adamki11s.questx.QuestX;
 
 public class RespawnController {
@@ -35,8 +36,8 @@ public class RespawnController {
 			String[] preloaded = this.handle.getLoadedOrWaiting();
 
 			boolean areAllLoaded = true;
-			
-			if(preloaded == null || preloaded.length < 1){
+
+			if (preloaded == null || preloaded.length < 1) {
 				areAllLoaded = false;
 			}
 
@@ -75,7 +76,7 @@ public class RespawnController {
 						// load into waiting list
 					}
 				}
-				
+
 			} else {
 				QuestX.logMSG("All NPC's are loaded, skipping");
 			}
@@ -92,17 +93,29 @@ public class RespawnController {
 				// spawn
 				for (String w : this.handle.getWorlds()) {
 					if (this.handle.canNPCBeSpawned(w)) {
-						
-						//SimpleNPC spawn = this.handle.getNextWaitingToSpawn(w);
-						
+
+						// SimpleNPC spawn =
+						// this.handle.getNextWaitingToSpawn(w);
+
 						QuestX.logMSG("NPC can spawn in world '" + w + "'. Generating location..");
+
+						final Location l;
 						
-						final Location l = this.handle.getDispatcher(w).getSpawnLocation();
+						SimpleNPC front;
+
+						if (!HotspotManager.areHotspotsFull()) {
+							front = this.handle.getNextWaitingToSpawn(HotspotManager.getNextWorldForSpawn().getName());
+							l = HotspotManager.spawnNPC(front.getName());
+						} else {
+							l = this.handle.getDispatcher(w).getSpawnLocation();
+							front = this.handle.getNextWaitingToSpawn(l.getWorld().getName());
+						}
+
 						QuestX.logMSG("Location generated = " + l.toString());
 
-						SimpleNPC front = this.handle.getNextWaitingToSpawn(l.getWorld().getName());
 						
-						//this.waiting.removeFirst();
+
+						// this.waiting.removeFirst();
 						if (front == null) {
 							QuestX.logMSG("NPC aquired from front was nulL! Check it loaded properly");
 						} else {
@@ -113,12 +126,12 @@ public class RespawnController {
 							QuestX.logMSG("Spawning NPC...");
 							front.spawnNPC();
 						}
-						
+
 					} else {
 						QuestX.logMSG("NPC Cannot spawn in world '" + w + "'");
 					}
 				}
-				
+
 			}
 			counterBetweenSpawns = 0;
 		}

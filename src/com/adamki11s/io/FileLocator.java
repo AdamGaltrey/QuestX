@@ -75,6 +75,10 @@ public class FileLocator {
 	public static File getNPCFixedSpawnsFile() {
 		return new File(data_root + File.separator + "fixed_spawns.qxs");
 	}
+	
+	public static File getHotspotFile(){
+		return new File(data_root + File.separator + "hotspots.qxs");
+	}
 
 	public static boolean doesQuestNameExist(String name) {
 		for (File f : new File(quest_data_root).listFiles()) {

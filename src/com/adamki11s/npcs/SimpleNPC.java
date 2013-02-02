@@ -18,6 +18,7 @@ import com.adamki11s.data.ItemStackDrop;
 import com.adamki11s.dialogue.Conversation;
 import com.adamki11s.events.ConversationRegister;
 import com.adamki11s.io.FileLocator;
+import com.adamki11s.npcs.population.HotspotManager;
 import com.adamki11s.npcs.population.WorldConfigData;
 import com.adamki11s.npcs.tasks.Fireworks;
 import com.adamki11s.npcs.tasks.TaskManager;
@@ -448,6 +449,7 @@ public class SimpleNPC {
 		this.despawnNPC();
 		UniqueNameRegister.removeName(name);
 		this.handle.removeNPC(this);
+		HotspotManager.despawnNPC(this.name);
 	}
 
 	public void moveTick() {

@@ -24,6 +24,14 @@ public class InitialSetup {
 			io.add("NPC_COUNT", 0);
 			io.write();
 		}
+		
+		f = FileLocator.getHotspotFile();
+		if (!f.exists()) {
+			fileSetup(f);
+			SyncObjectIO io = new SyncObjectIO(f);
+			io.add("DEFAULT_HOTSPOT", 0);
+			io.write();
+		}
 		File wConfig = FileLocator.getWorldConfig();
 		if(!wConfig.exists()){
 			fileSetup(wConfig);
