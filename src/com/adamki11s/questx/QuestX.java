@@ -19,7 +19,7 @@ import com.adamki11s.events.MovementMonitor;
 import com.adamki11s.events.NPCDamageEvent;
 import com.adamki11s.events.NPCInteractEvent;
 import com.adamki11s.events.PlayerJoinLeaveEvents;
-import com.adamki11s.io.FileLocator;
+import com.adamki11s.events.TagColourEvent;
 import com.adamki11s.io.InitialSetup;
 import com.adamki11s.npcs.NPCHandler;
 import com.adamki11s.npcs.loading.FixedLoadingTable;
@@ -40,6 +40,7 @@ public class QuestX extends JavaPlugin {
 	MovementMonitor playerMoveEvent;
 	EntityDeathMonitor entityDeathMonitorEvent;
 	PlayerJoinLeaveEvents playerJLEvent;
+	TagColourEvent tagColourEvent;
 
 	public static Plugin p;
 
@@ -125,6 +126,8 @@ public class QuestX extends JavaPlugin {
 		playerMoveEvent = new MovementMonitor(this, handle);
 		entityDeathMonitorEvent = new EntityDeathMonitor(this);
 		playerJLEvent = new PlayerJoinLeaveEvents(this);
+		tagColourEvent = new TagColourEvent(this);
+		
 		// register events
 
 		/*

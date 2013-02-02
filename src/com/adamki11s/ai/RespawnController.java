@@ -104,9 +104,11 @@ public class RespawnController {
 						SimpleNPC front;
 
 						if (!HotspotManager.areHotspotsFull()) {
+							QuestX.logMSG("########### Hot spots are not full!");
 							front = this.handle.getNextWaitingToSpawn(HotspotManager.getNextWorldForSpawn().getName());
 							l = HotspotManager.spawnNPC(front.getName());
 						} else {
+							QuestX.logMSG("########### Hot spots are full!");
 							l = this.handle.getDispatcher(w).getSpawnLocation();
 							front = this.handle.getNextWaitingToSpawn(l.getWorld().getName());
 						}

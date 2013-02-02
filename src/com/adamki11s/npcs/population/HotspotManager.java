@@ -11,6 +11,7 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 
 import com.adamki11s.io.FileLocator;
+import com.adamki11s.questx.QuestX;
 import com.adamki11s.sync.io.objects.SyncObjectIO;
 import com.adamki11s.sync.io.objects.SyncWrapper;
 
@@ -35,6 +36,7 @@ public class HotspotManager {
 		for (SyncWrapper wrap : io.getReadableData()) {
 			Object o;
 			if ((o = wrap.getObject()) instanceof Hotspot) {
+				QuestX.logMSG("Loading hotspot " + wrap.getTag());
 				Hotspot h = (Hotspot) o;
 				hotspots.put(h.getTag(), h);
 			}
@@ -44,9 +46,11 @@ public class HotspotManager {
 	public static boolean areHotspotsFull() {
 		for (Entry<String, Hotspot> e : hotspots.entrySet()) {
 			if (e.getValue().canSpawnMore()) {
+				QuestX.logMSG("Hotspots are not full!");
 				return false;
 			}
 		}
+		QuestX.logMSG("Hotspots are full, spawn as normal.");
 		return true;
 	}
 

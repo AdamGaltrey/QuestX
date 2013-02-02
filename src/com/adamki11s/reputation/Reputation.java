@@ -1,7 +1,6 @@
 package com.adamki11s.reputation;
 
-import java.io.Serializable;
-import java.util.HashMap;
+import org.bukkit.ChatColor;
 
 public class Reputation {
 	
@@ -43,6 +42,10 @@ public class Reputation {
 	
 	public void setRep(int rep){
 		this.rep = rep;
+	}
+	
+	public ChatColor getChatColour(){
+		return RepLevel.getRepLevel(this.rep).getColour();
 	}
 	
 	void sanityCheck(){
