@@ -86,7 +86,7 @@ public class LoadNPCTemplate {
 			for (int i = 0; i < inventDropsToParse.length; i++) {
 				ispDrops[i] = this.parseISP(inventDropsToParse[i]);
 			}
-
+			
 			this.itemStackDrop = new ItemStackDrop(ispDrops);
 			this.npcGear = this.parseGear(gear);
 

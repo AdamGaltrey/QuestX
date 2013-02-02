@@ -1,11 +1,8 @@
 package com.adamki11s.npcs.tasks;
 
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 
 import org.bukkit.ChatColor;
-import org.bukkit.entity.EntityType;
 
 import com.adamki11s.questx.QuestX;
 

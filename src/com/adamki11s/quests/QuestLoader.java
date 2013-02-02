@@ -10,6 +10,8 @@ import org.bukkit.inventory.ItemStack;
 
 import com.adamki11s.commands.QuestXCMDExecutor;
 import com.adamki11s.exceptions.InvalidISAException;
+import com.adamki11s.exceptions.InvalidKillTrackerException;
+import com.adamki11s.exceptions.InvalidQuestException;
 import com.adamki11s.io.FileLocator;
 import com.adamki11s.npcs.tasks.EntityKillTracker;
 import com.adamki11s.npcs.tasks.Fireworks;
@@ -41,10 +43,14 @@ public class QuestLoader {
 
 	public QuestLoader(File f) {
 		this.config = new SyncConfiguration(f);
-		this.load();
+		try {
+			this.load();
+		} catch (InvalidQuestException e) {
+			e.printErrorReason();
+		}
 	}
 
-	void load() {
+	void load() throws InvalidQuestException {
 		this.config.read();
 		this.questName = config.getString("NAME");
 		int i = 0;
@@ -102,8 +108,13 @@ public class QuestLoader {
 			this.fireWorks = true;
 			String parts[] = config.getString("FIREWORKS").split(",");
 			int rad, sect;
-			rad = Integer.parseInt(parts[0]);
-			sect = Integer.parseInt(parts[1]);
+
+			try {
+				rad = Integer.parseInt(parts[0]);
+				sect = Integer.parseInt(parts[1]);
+			} catch (NumberFormatException nfe) {
+				throw new InvalidQuestException(config.getString("FIREWORKS"), "Could not parse integer! Make sure it is a whole number and greater or equal to 0.", this.questName);
+			}
 
 			fwRadius = rad;
 			fwSectors = sect;
@@ -121,8 +132,7 @@ public class QuestLoader {
 			QuestX.logMSG("READING---------------");
 			QType qType = QType.parseType(qtypeEnum);
 			if (qType == null) {
-				// throw exception
-				QuestX.logMSG("QUEST TYPE IS NULL!!!!!");
+				throw new InvalidQuestException(raw, "QuestType was invalid! Got '" + qtypeEnum + "', expected (FETCH_ITEMS, KILL_ENTITIES, KILL_NPC OR TALK_NPC)", this.questName);
 			} else {
 				QuestX.logMSG("Quest Type = '" + qType.toString() + "'");
 			}
@@ -130,7 +140,14 @@ public class QuestLoader {
 			QuestX.logMSG("qtypeEnum = " + qtypeEnum);
 			QuestX.logMSG("dataString = " + dataString);
 
-			this.tasks[c - 1] = QuestTaskParser.getTaskObject(dataString, qType, this.questName);
+			try {
+				this.tasks[c - 1] = QuestTaskParser.getTaskObject(dataString, qType, this.questName);
+			} catch (InvalidKillTrackerException e) {
+				e.printCustomErrorReason(true, this.questName);
+			} catch (InvalidISAException e) {
+				e.printErrorReason();
+			}
+
 			// this.tasks[c - 1] = new
 			QuestX.logMSG("QUEST TASK LOAD LOOOP-----------");
 		}
@@ -261,7 +278,7 @@ public class QuestLoader {
 		}
 
 		if (this.isAwardRep()) {
-			
+
 			int awardRep = this.getRewardRep();
 			QuestX.logChat(p, "Trying to award rep = " + awardRep);
 			ReputationManager.updateReputation(p.getName(), awardRep);

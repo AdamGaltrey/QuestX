@@ -6,6 +6,7 @@ import java.io.IOException;
 import org.bukkit.inventory.ItemStack;
 
 import com.adamki11s.exceptions.InvalidISAException;
+import com.adamki11s.exceptions.InvalidKillTrackerException;
 import com.adamki11s.io.FileLocator;
 import com.adamki11s.questx.QuestX;
 import com.adamki11s.sync.io.configuration.SyncConfiguration;
@@ -81,8 +82,13 @@ public class TaskLoader {
 		QuestX.logMSG("Reading kill_entities");
 
 		if (!config.getString("KILL_ENTITIES").trim().equalsIgnoreCase("0")) {
-			this.ekt = new EntityKillTracker(config.getString("KILL_ENTITIES"));
-			this.killEntities = true;
+			try {
+				this.ekt = new EntityKillTracker(config.getString("KILL_ENTITIES"));
+				this.killEntities = true;
+			} catch (InvalidKillTrackerException e) {
+				e.printCustomErrorReason(false, this.npcName);
+				this.killEntities = false;
+			}
 		} else {
 			this.killEntities = false;
 		}
@@ -97,14 +103,19 @@ public class TaskLoader {
 		}
 
 		if (!config.getString("FIREWORKS").equalsIgnoreCase("0")) {
-			this.fireWorks = true;
 			String parts[] = config.getString("FIREWORKS").split(",");
 			int rad, sect;
-			rad = Integer.parseInt(parts[0]);
-			sect = Integer.parseInt(parts[1]);
-
-			fwRadius = rad;
-			fwSectors = sect;
+			try {
+				rad = Integer.parseInt(parts[0]);
+				sect = Integer.parseInt(parts[1]);
+				fwRadius = rad;
+				fwSectors = sect;
+				this.fireWorks = true;
+			} catch (NumberFormatException nfe) {
+				QuestX.logError("Failed to parse integer for FIREWORKS tag, make sure the value is greater than or equal to 0 and is a whole number.");
+				QuestX.logError("Line : " + config.getString("FIREWORKS"));
+				this.fireWorks = false;
+			}		
 		} else {
 			this.fireWorks = false;
 		}
