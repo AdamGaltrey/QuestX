@@ -78,7 +78,6 @@ public class CreateNPC {
 		syncConfig.add(NPCTag.CHAT_COLOUR.toString(), this.nameColour.getChar());
 		syncConfig.add(NPCTag.MOVEABLE.toString(), this.moveable);
 		syncConfig.add(NPCTag.ATTACKABLE.toString(), this.attackable);
-		syncConfig.add(NPCTag.AGGRESSIVE.toString(), this.aggressive);
 		syncConfig.add(NPCTag.MIN_PAUSE_TICKS.toString(), this.minPauseTicks);
 		syncConfig.add(NPCTag.MAX_PAUSE_TICKS.toString(), this.maxPauseTicks);
 		syncConfig.add(NPCTag.MAX_VARIATION.toString(), this.maxVariation);

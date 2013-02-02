@@ -35,7 +35,7 @@ public class LoadNPCTemplate {
 
 	NPCTemplate npcTemplate;
 
-	boolean moveable, attackable, aggressive, load;
+	boolean moveable, attackable, load;
 	int minPauseTicks, maxPauseTicks, maxVariation, respawnTicks, maxHealth, damageMod;
 	double retalliationMultiplier;
 
@@ -65,8 +65,6 @@ public class LoadNPCTemplate {
 			this.moveable = conf.getBoolean(NPCTag.MOVEABLE.toString());
 			this.attackable = conf.getBoolean(NPCTag.ATTACKABLE.toString());
 			System.out.println("Is attackable = " + this.attackable);
-			this.aggressive = conf.getBoolean(NPCTag.AGGRESSIVE.toString());
-
 			this.minPauseTicks = conf.getInt(NPCTag.MIN_PAUSE_TICKS.toString());
 			this.maxPauseTicks = conf.getInt(NPCTag.MAX_PAUSE_TICKS.toString());
 			this.maxVariation = conf.getInt(NPCTag.MAX_VARIATION.toString());
@@ -92,7 +90,7 @@ public class LoadNPCTemplate {
 
 			if (!unload) {
 				// create template npc
-				this.npcTemplate = new NPCTemplate(this.name, nameColour, moveable, attackable, aggressive, minPauseTicks, maxPauseTicks, maxVariation, maxHealth, respawnTicks, itemStackDrop,
+				this.npcTemplate = new NPCTemplate(this.name, nameColour, moveable, attackable, minPauseTicks, maxPauseTicks, maxVariation, maxHealth, respawnTicks, itemStackDrop,
 						npcGear, damageMod, retalliationMultiplier);
 			}
 

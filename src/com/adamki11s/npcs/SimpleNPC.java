@@ -35,7 +35,7 @@ public class SimpleNPC {
 
 	final String name, questName;
 	final ChatColor nameColour;
-	final boolean moveable, attackable, aggressive;
+	final boolean moveable, attackable;
 	final int minPauseTicks, maxPauseTicks, maxVariation, respawnTicks, maxHealth, damageMod;
 	final double retalliationMultiplier;
 	final ItemStackDrop inventory;
@@ -58,14 +58,13 @@ public class SimpleNPC {
 
 	final ItemStack[] gear;// boots 1, legs 2, chest 3, head 4, arm 5
 
-	public SimpleNPC(NPCHandler handle, String name, ChatColor nameColour, boolean moveable, boolean attackable, boolean aggressive, int minPauseTicks, int maxPauseTicks, int maxVariation,
+	public SimpleNPC(NPCHandler handle, String name, ChatColor nameColour, boolean moveable, boolean attackable, int minPauseTicks, int maxPauseTicks, int maxVariation,
 			int health, int respawnTicks, ItemStackDrop inventory, ItemStack[] gear, int damageMod, double retalliationMultiplier) {
 		UniqueNameRegister.addNPCName(name);
 		this.name = name;
 		this.nameColour = nameColour;
 		this.moveable = moveable;
 		this.attackable = attackable;
-		this.aggressive = aggressive;
 		this.minPauseTicks = minPauseTicks;
 		this.maxPauseTicks = maxPauseTicks;
 		this.maxVariation = maxVariation;
@@ -491,10 +490,6 @@ public class SimpleNPC {
 
 	public boolean isAttackable() {
 		return attackable;
-	}
-
-	public boolean isAggressive() {
-		return aggressive;
 	}
 
 	public int getMinPauseTicks() {

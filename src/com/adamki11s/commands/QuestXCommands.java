@@ -171,7 +171,7 @@ public class QuestXCommands implements CommandExecutor {
 				if (args.length == 2 && args[0].equalsIgnoreCase("stressspawn")) {
 					int max = Integer.parseInt(args[1]);
 					for (int i = 0; i < max; i++) { // 1/10 chance of dropping
-						SimpleNPC snpc = new SimpleNPC(this.handle, ("a" + i), ChatColor.BLUE, true, true, false, 60, 200, 20, 100, 200, new ItemStackDrop(
+						SimpleNPC snpc = new SimpleNPC(this.handle, ("a" + i), ChatColor.BLUE, true, true, 60, 200, 20, 100, 200, new ItemStackDrop(
 								new ItemStackProbability[] { new ItemStackProbability(new ItemStack(Material.GOLD_AXE, 1), 6000) }), gear, 1, 1.5);
 						snpc.spawnNPC();
 						// QuestX.logChat(p, "NPC Spawned!");
@@ -185,7 +185,7 @@ public class QuestXCommands implements CommandExecutor {
 						QuestX.logChat(p, ChatColor.RED + "Name is not unique!");
 						return true;
 					} else {
-						SimpleNPC snpc = new SimpleNPC(this.handle, npcName, ChatColor.BLUE, true, true, false, 60, 200, 10, 100, 200, new ItemStackDrop(
+						SimpleNPC snpc = new SimpleNPC(this.handle, npcName, ChatColor.BLUE, true, true, 60, 200, 10, 100, 200, new ItemStackDrop(
 								new ItemStackProbability[] { new ItemStackProbability(new ItemStack(Material.GOLD_AXE, 1), 6000) }), gear, 1, 1.5);
 						snpc.spawnNPC();
 
