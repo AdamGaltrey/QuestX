@@ -58,67 +58,108 @@ public class QuestLoader {
 			i++;
 		}
 		this.nodes = i;
-		if (!this.config.getString("REWARD_ITEMS").equalsIgnoreCase("0")) {
-			try {
-				this.rewardItems = ISAParser.parseISA(this.config.getString("REWARD_ITEMS"), this.questName, true);
-			} catch (InvalidISAException e) {
+		if (config.doesKeyExist("REWARD_ITEMS")) {
+			if (!this.config.getString("REWARD_ITEMS").equalsIgnoreCase("0")) {
+				try {
+					this.rewardItems = ISAParser.parseISA(this.config.getString("REWARD_ITEMS"), this.questName, true);
+				} catch (InvalidISAException e) {
+					this.rewardItems = null;
+					e.printErrorReason();
+				}
+			} else {
 				this.rewardItems = null;
-				e.printErrorReason();
 			}
 		} else {
+			QuestX.logError("Missing property 'REWARD_ITEMS' in quest file for Quest " + this.questName);
 			this.rewardItems = null;
 		}
 
-		this.rewardExp = this.config.getInt("REWARD_EXP");
-		this.rewardRep = this.config.getInt("REWARD_REP");
-		this.startText = this.config.getString("START_TEXT");
-		this.endText = this.config.getString("END_TEXT");
-
-		this.rewardGold = config.getInt("REWARD_GOLD");
-
-		if (!config.getString("REWARD_PERMISSIONS_ADD").equalsIgnoreCase("0")) {
-			this.addPerms = config.getString("REWARD_PERMISSIONS_ADD").split(",");
-			this.apAdd = true;
+		if (config.doesKeyExist("REWARD_EXP")) {
+			this.rewardExp = config.getInt("REWARD_EXP");
 		} else {
+			QuestX.logError("Missing property 'REWARD_EXP' in quest file for Quest " + this.questName);
+		}
+
+		if (config.doesKeyExist("REWARD_REP")) {
+			this.rewardRep = config.getInt("REWARD_REP");
+		} else {
+			QuestX.logError("Missing property 'REWARD_REP' in quest file for Quest " + this.questName);
+		}
+		if (config.doesKeyExist("START_TEXT")) {
+			this.startText = this.config.getString("START_TEXT");
+		} else {
+			QuestX.logError("Missing property 'START_TEXT' in quest file for Quest " + this.questName);
+		}
+
+		if (config.doesKeyExist("END_TEXT")) {
+			this.endText = this.config.getString("END_TEXT");
+		} else {
+			QuestX.logError("Missing property 'END_TEXT' in quest file for Quest " + this.questName);
+		}
+
+		if (config.doesKeyExist("REWARD_GOLD")) {
+			this.rewardGold = config.getInt("REWARD_GOLD");
+		} else {
+			QuestX.logError("Missing property 'REWARD_GOLD' in quest file for Quest " + this.questName);
+		}
+
+		if (config.doesKeyExist("REWARD_PERMISSIONS_ADD")) {
+			if (!config.getString("REWARD_PERMISSIONS_ADD").equalsIgnoreCase("0")) {
+				this.addPerms = config.getString("REWARD_PERMISSIONS_ADD").split(",");
+				this.apAdd = true;
+			} else {
+				this.apAdd = false;
+			}
+		} else {
+			QuestX.logError("Missing property 'REWARD_PERMISSIONS_ADD' in quest file for Quest " + this.questName);
 			this.apAdd = false;
 		}
 
-		if (!config.getString("REWARD_PERMISSIONS_REMOVE").equalsIgnoreCase("0")) {
-			this.remPerms = config.getString("REWARD_PERMISSIONS_REMOVE").split(",");
-			this.apRem = true;
+		if (config.doesKeyExist("REWARD_PERMISSIONS_REMOVE")) {
+			if (!config.getString("REWARD_PERMISSIONS_REMOVE").equalsIgnoreCase("0")) {
+				this.remPerms = config.getString("REWARD_PERMISSIONS_REMOVE").split(",");
+				this.apRem = true;
+			} else {
+				this.apRem = false;
+			}
 		} else {
+			QuestX.logError("Missing property 'REWARD_PERMISSIONS_REMOVE' in quest file for Quest " + this.questName);
 			this.apRem = false;
 		}
 
-		if (!config.getString("EXECUTE_PLAYER_CMD").equalsIgnoreCase("0")) {
-			this.playerCmds = config.getString("EXECUTE_PLAYER_CMD").split(",");
-			this.execPlayerCommand = true;
+		if (config.doesKeyExist("EXECUTE_PLAYER_CMD")) {
+			if (!config.getString("EXECUTE_PLAYER_CMD").equalsIgnoreCase("0")) {
+				this.playerCmds = config.getString("EXECUTE_PLAYER_CMD").split(",");
+				this.execPlayerCommand = true;
+			} else {
+				this.execPlayerCommand = false;
+			}
 		} else {
+			QuestX.logError("Missing property 'EXECUTE_PLAYER_CMD' in quest file for Quest " + this.questName);
 			this.execPlayerCommand = false;
 		}
 
-		if (!config.getString("EXECUTE_SERVER_CMD").equalsIgnoreCase("0")) {
-			this.serverCmds = config.getString("EXECUTE_SERVER_CMD").split(",");
-			this.execServerCommand = true;
-		} else {
-			this.execServerCommand = false;
-		}
+		if (config.doesKeyExist("FIREWORKS")) {
+			if (!config.getString("FIREWORKS").equalsIgnoreCase("0")) {
+				this.fireWorks = true;
+				String parts[] = config.getString("FIREWORKS").split(",");
+				int rad, sect;
 
-		if (!config.getString("FIREWORKS").equalsIgnoreCase("0")) {
-			this.fireWorks = true;
-			String parts[] = config.getString("FIREWORKS").split(",");
-			int rad, sect;
+				try {
+					rad = Integer.parseInt(parts[0]);
+					sect = Integer.parseInt(parts[1]);
+				} catch (NumberFormatException nfe) {
+					this.fireWorks = false;
+					throw new InvalidQuestException(config.getString("FIREWORKS"), "Could not parse integer! Make sure it is a whole number and greater or equal to 0.", this.questName);
+				}
 
-			try {
-				rad = Integer.parseInt(parts[0]);
-				sect = Integer.parseInt(parts[1]);
-			} catch (NumberFormatException nfe) {
-				throw new InvalidQuestException(config.getString("FIREWORKS"), "Could not parse integer! Make sure it is a whole number and greater or equal to 0.", this.questName);
+				fwRadius = rad;
+				fwSectors = sect;
+			} else {
+				this.fireWorks = false;
 			}
-
-			fwRadius = rad;
-			fwSectors = sect;
 		} else {
+			QuestX.logError("Missing property 'FIREWORKS' in quest file for Quest " + this.questName);
 			this.fireWorks = false;
 		}
 
