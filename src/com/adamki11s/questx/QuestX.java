@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -30,6 +31,8 @@ import com.adamki11s.threads.ThreadController;
 public class QuestX extends JavaPlugin {
 
 	static final Logger log = Logger.getLogger("QuestX");
+	
+	public static boolean tagAPIEnabled;
 
 	NPCHandler handle;
 	ThreadController tControl;
@@ -103,6 +106,13 @@ public class QuestX extends JavaPlugin {
 			QuestX.logMSG("Hooked into Vault Economy successfully.");
 		} else {
 			QuestX.logMSG("There was an error hooking into Vault economy!");
+		}
+		
+		Plugin p = Bukkit.getPluginManager().getPlugin("TagAPI");
+		if(p != null){
+			tagAPIEnabled = true;
+		} else {
+			tagAPIEnabled = false;
 		}
 
 		InitialSetup.run();

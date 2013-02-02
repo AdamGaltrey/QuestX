@@ -44,9 +44,11 @@ public class ReputationManager {
 	}
 
 	private static void updateColourCache(String name) {
-		ChatColor c = rep.get(name).getChatColour();
-		if (c != ChatColor.RESET) {
-			colours.put(name, c);
+		if (QuestX.tagAPIEnabled) {
+			ChatColor c = rep.get(name).getChatColour();
+			if (c != ChatColor.RESET) {
+				colours.put(name, c);
+			}
 		}
 	}
 

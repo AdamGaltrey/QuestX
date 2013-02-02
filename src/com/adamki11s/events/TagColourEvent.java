@@ -16,8 +16,10 @@ public class TagColourEvent implements Listener {
 
 	@EventHandler
 	public void onNameTag(PlayerReceiveNameTagEvent event) {
-		if(ReputationManager.getNamesToColour().containsKey(event.getPlayer().getName())){
-			event.setTag(ReputationManager.getNamesToColour().get(event.getPlayer().getName()) + event.getPlayer().getName());
+		if (QuestX.tagAPIEnabled) {
+			if (ReputationManager.getNamesToColour().containsKey(event.getPlayer().getName())) {
+				event.setTag(ReputationManager.getNamesToColour().get(event.getPlayer().getName()) + event.getPlayer().getName());
+			}
 		}
 	}
 
