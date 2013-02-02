@@ -360,7 +360,7 @@ public class QuestLoader {
 	public synchronized void setTaskComplete(Player player) {
 		this.incrementTaskProgress(player);
 		if (player != null) {
-			player.sendMessage("Quest task completed!");
+			QuestX.logChat(player, "Quest task completed!");
 		}
 	}
 

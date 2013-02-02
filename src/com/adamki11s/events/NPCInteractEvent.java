@@ -11,6 +11,7 @@ import org.bukkit.plugin.Plugin;
 
 import com.adamki11s.npcs.NPCHandler;
 import com.adamki11s.npcs.SimpleNPC;
+import com.adamki11s.questx.QuestX;
 
 
 public class NPCInteractEvent implements Listener{
@@ -32,7 +33,7 @@ final NPCHandler handle;
 			 if(npc != null){
 			 npc.interact(p);
 			 } else {
-				 p.sendMessage("Could not match entity to NPC");
+				 QuestX.logChat(p, "Could not match entity to NPC");
 			 }
 		 }
 	}

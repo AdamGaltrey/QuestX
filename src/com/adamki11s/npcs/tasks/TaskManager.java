@@ -116,13 +116,13 @@ public class TaskManager {
 			npcKills = this.areNPCKillsCompleted();
 		}
 		if (!kills) {
-			p.sendMessage(this.getTaskLoader().getEKT().sendEntitiesToKill());
+			QuestX.logChat(p, this.getTaskLoader().getEKT().sendEntitiesToKill());
 		}
 		if (!items) {
-			p.sendMessage(this.sendItemsToGather());
+			QuestX.logChat(p, this.sendItemsToGather());
 		}
 		if (!npcKills) {
-			p.sendMessage(this.getTaskLoader().nkt.sendNPCSToKill());
+			QuestX.logChat(p, this.getTaskLoader().nkt.sendNPCSToKill());
 		}
 	}
 

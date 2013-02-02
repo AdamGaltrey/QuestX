@@ -250,9 +250,9 @@ public class SimpleNPC {
 		}
 		if (health <= 0) {
 			if (this.isSpawnFixed()) {
-				p.sendMessage("You killed NPC '" + this.getName() + "'. NPC will respawn in " + this.respawnTicks / 20 + " seconds.");
+				QuestX.logChat(p, "You killed NPC '" + this.getName() + "'. NPC will respawn in " + this.respawnTicks / 20 + " seconds.");
 			} else {
-				p.sendMessage("You killed NPC '" + this.getName() + "'. This NPC may respawn elsewhere now.");
+				QuestX.logChat(p, "You killed NPC '" + this.getName() + "'. This NPC may respawn elsewhere now.");
 			}
 			for (ItemStack i : this.inventory.getDrops()) {
 				p.getWorld().dropItemNaturally(this.npc.getBukkitEntity().getLocation(), i);
@@ -312,9 +312,9 @@ public class SimpleNPC {
 								// do complete check
 								if (t.isTaskComplete(p)) {
 									ql.incrementTaskProgress(p);
-									p.sendMessage(t.getCompleteTaskText());
+									QuestX.logChat(p, t.getCompleteTaskText());
 									if (ql.isQuestComplete(p.getName())) {
-										p.sendMessage(ql.getEndText());
+										QuestX.logChat(p, ql.getEndText());
 										Fireworks f = new Fireworks(p.getLocation(), 6, 60);
 										f.circularDisplay();
 										QuestManager.removeCurrentPlayerQuest(ql.getName(), p.getName());
@@ -324,7 +324,7 @@ public class SimpleNPC {
 								}
 								return;
 							} else {
-								p.sendMessage("Sorry You need to see " + t.getNPCToCompleteName() + " to complete this part of the quest");
+								QuestX.logChat(p, "Sorry You need to see " + t.getNPCToCompleteName() + " to complete this part of the quest");
 								return;
 							}
 
@@ -367,7 +367,7 @@ public class SimpleNPC {
 				}
 			}
 			if (!FileLocator.doesNPCDlgFileExist(this.getName())) {
-				p.sendMessage(ChatColor.AQUA + "[QuestX] " + ChatColor.RED + "No dialogue.dlg file found or it is empty!");
+				QuestX.logChat(p, ChatColor.AQUA + "[QuestX] " + ChatColor.RED + "No dialogue.dlg file found or it is empty!");
 			} else {
 				c = new Conversation(p.getName(), this);
 				c.loadConversation();

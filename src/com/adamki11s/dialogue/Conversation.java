@@ -34,7 +34,7 @@ public class Conversation {
 			i = Integer.parseInt(s);
 			this.selectSpeechOption(i);
 		} catch (NumberFormatException ex) {
-			this.convoData.getPlayer().sendMessage("Invalid option! Select an index. Number only. Eg '1'");
+			QuestX.logChat(this.convoData.getPlayer(), "Invalid option! Select an index. Number only. Eg '1'");
 		}
 	}
 
@@ -85,9 +85,9 @@ public class Conversation {
 		int count = 1;
 		for (DialogueItem di : items) {
 			if (di.doesPlayerHaveRequiredRepLevel(p.getName())) {
-				p.sendMessage("[#" + count + "] " + di.getSay());
+				QuestX.logChat(p, "[#" + count + "] " + di.getSay());
 			} else {
-				p.sendMessage("[#" + count + "] Unavailable");
+				QuestX.logChat(p, "[#" + count + "] Unavailable");
 			}
 			count += 1;
 		}
@@ -110,7 +110,7 @@ public class Conversation {
 			if (selTrigger.getTriggerType() != TriggerType.QUEST) {
 				DialogueResponse dr = d.getResponse();
 				String response = dr.getResponses()[index - 1];
-				p.sendMessage("[" + this.convoData.getSimpleNpc().getName() + "] " + response);
+				QuestX.logChat(p, "[" + this.convoData.getSimpleNpc().getName() + "] " + response);
 			}
 
 			System.out.println("Current node = " + this.currentNode);
@@ -145,7 +145,7 @@ public class Conversation {
 					TaskRegister.registerTask(manage);
 					QuestX.logChat(p, ChatColor.ITALIC + tl.getTaskName() + ChatColor.RESET + ChatColor.GREEN + " task started!");
 					QuestX.logChat(p, "Task description : " + tl.getTaskDescription());
-					p.sendMessage("Not recieving messages?");
+					QuestX.logChat(p, "Not recieving messages?");
 					QuestX.logMSG("Not recieving msgs?");
 					this.endConversation();
 					return;
@@ -173,7 +173,7 @@ public class Conversation {
 							} else {
 								QuestManager.setCurrentPlayerQuest(p.getName(), qName);
 								QuestX.logMSG(ql.getStartText() + "<<<<<< START TEXT");
-								p.sendMessage(ql.getStartText());
+								QuestX.logChat(p, ql.getStartText());
 								QuestTask t = QuestManager.getCurrentQuestTask(p.getName());
 								if (t != null) {
 									QuestX.logMSG("Task in non-null");
@@ -200,7 +200,7 @@ public class Conversation {
 				this.displaySpeechOptions();
 			}
 		} else {
-			p.sendMessage("You must have at least " + items[index - 1].getRequriedRep().getMinRep() + " reputation.");
+			QuestX.logChat(p, "You must have at least " + items[index - 1].getRequriedRep().getMinRep() + " reputation.");
 		}
 	}
 

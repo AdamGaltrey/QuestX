@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 
 import com.adamki11s.npcs.NPCHandler;
 import com.adamki11s.npcs.SimpleNPC;
+import com.adamki11s.questx.QuestX;
 import com.adamki11s.reputation.Reputation;
 import com.topcat.npclib.entity.HumanNPC;
 
@@ -41,20 +42,20 @@ public class AttackController {
 		if (loc.getBlockX() > bl.getBlockX() && loc.getBlockY() > bl.getBlockY() && loc.getBlockZ() > bl.getBlockZ() && loc.getBlockX() < tr.getBlockX()
 				&& loc.getBlockY() < tr.getBlockY() && loc.getBlockZ() < tr.getBlockZ()) {
 
-			p.sendMessage("In attack zone! Size = " + npc.getRetalliationMultiplier() + ", var = " + var);
+			QuestX.logChat(p, "In attack zone! Size = " + npc.getRetalliationMultiplier() + ", var = " + var);
 			
 			npc.moveTo(p.getLocation());
 			npc.lookAt(p.getLocation());
 
 			if (npc.getHumanNPC().getBukkitEntity().getLocation().distance(p.getLocation()) < 2) {
-				p.sendMessage("NPC HIT YOU");
+				QuestX.logChat(p, "NPC HIT YOU");
 				npc.getHumanNPC().animateArmSwing();
 				p.damage(npc.getDamageMod());
 				System.out.println(p.getHealth());
 			}
 
 		} else {
-			p.sendMessage("Left attack zone NPC aggro lost!");
+			QuestX.logChat(p, "Left attack zone NPC aggro lost!");
 			npc.unAggro();
 			npc.moveTick();
 		}

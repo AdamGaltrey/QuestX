@@ -14,7 +14,7 @@ import org.bukkit.plugin.Plugin;
 
 import com.adamki11s.dialogue.Conversation;
 import com.adamki11s.npcs.NPCHandler;
-import com.adamki11s.npcs.SimpleNPC;
+import com.adamki11s.questx.QuestX;
 
 
 public class ConversationRegister implements Listener {
@@ -57,7 +57,7 @@ public class ConversationRegister implements Listener {
 		for (Conversation c : playersConversing) {
 			if (c != null) {
 				if (c.getConvoData().getPlayer().getName().equalsIgnoreCase(p.getName())) {
-					p.sendMessage(ChatColor.AQUA + "[QuestX] " + ChatColor.RED + " Conversation ended.");
+					QuestX.logChat(p, ChatColor.AQUA + "[QuestX] " + ChatColor.RED + " Conversation ended.");
 					c.endConversation();
 					return;
 				}
@@ -72,7 +72,8 @@ public class ConversationRegister implements Listener {
 				if (c.getConvoData().getPlayer().getName().equalsIgnoreCase(evt.getPlayer().getName())) {
 					String s = evt.getMessage();
 					if (s.equalsIgnoreCase("exit") || s.equalsIgnoreCase("end") || s.equalsIgnoreCase("stop") || s.equalsIgnoreCase("quit") || s.equalsIgnoreCase("close")) {
-						evt.getPlayer().sendMessage(ChatColor.AQUA + "[QuestX] " + ChatColor.RED + " Conversation ended.");
+						Player p = evt.getPlayer();
+						QuestX.logChat(p, ChatColor.AQUA + "[QuestX] " + ChatColor.RED + " Conversation ended.");
 						c.endConversation();
 						evt.setCancelled(true);
 						return;

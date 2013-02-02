@@ -67,10 +67,10 @@ public class QuestXCommands implements CommandExecutor {
 					QuestUnpacker upack = new QuestUnpacker(qName);
 					boolean suc = upack.unpackQuest();
 					if (suc) {
-						p.sendMessage("Unpack successfull");
-						p.sendMessage("/QuestX setup <questname> " + ChatColor.GREEN + " to setup this quest");
+						QuestX.logChat(p, "Unpack successfull");
+						QuestX.logChat(p, "/QuestX setup <questname> " + ChatColor.GREEN + " to setup this quest");
 					} else {
-						p.sendMessage("Error while unpacking");
+						QuestX.logChat(p, "Error while unpacking");
 					}
 					return true;
 				}
@@ -78,7 +78,7 @@ public class QuestXCommands implements CommandExecutor {
 				if (args.length == 2 && args[0].equalsIgnoreCase("setup")) {
 					String qName = args[1];
 					if(setups.containsKey(p.getName())){
-						p.sendMessage("You are already setting this quest up!");
+						QuestX.logChat(p, "You are already setting this quest up!");
 						return true;
 					}
 					if (!setups.containsKey(p.getName())) {
@@ -86,17 +86,17 @@ public class QuestXCommands implements CommandExecutor {
 							if (!QuestManager.hasQuestBeenSetup(qName)) {
 								QuestSetup qs = new QuestSetup(qName, handle);
 								if (!qs.canSetup()) {
-									p.sendMessage("Failed to start setup, reason : " + qs.getFailSetupReason());
+									QuestX.logChat(p, "Failed to start setup, reason : " + qs.getFailSetupReason());
 								} else {
-									p.sendMessage("Setup successful! /questx next " + ChatColor.GREEN + "To select the next spawn location");
+									QuestX.logChat(p, "Setup successful! /questx next " + ChatColor.GREEN + "To select the next spawn location");
 									qs.sendInitialMessage(p);
 									this.setups.put(p.getName(), qs);
 								}
 							} else {
-								p.sendMessage("This quest has already been setup");
+								QuestX.logChat(p, "This quest has already been setup");
 							}
 						} else {
-							p.sendMessage("A quest by that name does not exist");
+							QuestX.logChat(p, "A quest by that name does not exist");
 						}
 					}
 					return true;
@@ -110,11 +110,11 @@ public class QuestXCommands implements CommandExecutor {
 							if (qs.isSetupComplete()) {
 								qs.removeFromList();
 								this.setups.remove(p.getName());
-								p.sendMessage("Quest setup successfully!");
+								QuestX.logChat(p, "Quest setup successfully!");
 							}
 						}
 					} else {
-						p.sendMessage("You aren't setting up a quest!");
+						QuestX.logChat(p, "You aren't setting up a quest!");
 					}
 					return true;
 				}
@@ -128,7 +128,7 @@ public class QuestXCommands implements CommandExecutor {
 						create.setProperties(true, true, false, true, (20 * 5), (20 * 20), 15, (20 * 30), 30, 2, 2, invDrops, gr);
 						create.createNPCFiles();
 					} else {
-						p.sendMessage("NPC with this name already exists");
+						QuestX.logChat(p, "NPC with this name already exists");
 					}
 					return true;
 				}
@@ -137,12 +137,12 @@ public class QuestXCommands implements CommandExecutor {
 					String npcName = args[1];
 					SimpleNPC npc = this.handle.getSimpleNPCByName(npcName);
 					if (npc == null) {
-						p.sendMessage("NPC with this name is not spawned");
+						QuestX.logChat(p, "NPC with this name is not spawned");
 						return true;
 					} else {
 						Fireworks f = new Fireworks(npc.getHumanNPC().getBukkitEntity().getLocation(), 6, 20);
 						f.fireLocatorBeacons();
-						p.sendMessage("Launching locator beacons!");
+						QuestX.logChat(p, "Launching locator beacons!");
 						return true;
 					}
 				}
@@ -151,7 +151,7 @@ public class QuestXCommands implements CommandExecutor {
 					String npcName = args[1];
 					SimpleNPC npc = this.handle.getSimpleNPCByName(npcName);
 					if (npc == null) {
-						p.sendMessage("NPC with this name is not spawned");
+						QuestX.logChat(p, "NPC with this name is not spawned");
 						return true;
 					} else {
 						p.teleport(npc.getHumanNPC().getBukkitEntity().getLocation());
@@ -174,7 +174,7 @@ public class QuestXCommands implements CommandExecutor {
 						SimpleNPC snpc = new SimpleNPC(this.handle, ("a" + i), ChatColor.BLUE, true, true, false, 60, 200, 20, 100, 200, new ItemStackDrop(
 								new ItemStackProbability[] { new ItemStackProbability(new ItemStack(Material.GOLD_AXE, 1), 6000) }), gear, 1, 1.5);
 						snpc.spawnNPC();
-						// p.sendMessage("NPC Spawned!");
+						// QuestX.logChat(p, "NPC Spawned!");
 					}
 					return true;
 				}
@@ -182,14 +182,14 @@ public class QuestXCommands implements CommandExecutor {
 				if (args.length == 2 && args[0].equalsIgnoreCase("spawn")) {
 					String npcName = args[1];
 					if (!UniqueNameRegister.isNameUnique(npcName)) {
-						p.sendMessage(ChatColor.RED + "Name is not unique!");
+						QuestX.logChat(p, ChatColor.RED + "Name is not unique!");
 						return true;
 					} else {
 						SimpleNPC snpc = new SimpleNPC(this.handle, npcName, ChatColor.BLUE, true, true, false, 60, 200, 10, 100, 200, new ItemStackDrop(
 								new ItemStackProbability[] { new ItemStackProbability(new ItemStack(Material.GOLD_AXE, 1), 6000) }), gear, 1, 1.5);
 						snpc.spawnNPC();
 
-						p.sendMessage("NPC Spawned!");
+						QuestX.logChat(p, "NPC Spawned!");
 						return true;
 					}
 

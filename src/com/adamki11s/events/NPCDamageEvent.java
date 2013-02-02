@@ -12,6 +12,7 @@ import org.bukkit.plugin.Plugin;
 import com.adamki11s.npcs.NPCHandler;
 import com.adamki11s.npcs.SimpleNPC;
 import com.adamki11s.npcs.tasks.TaskRegister;
+import com.adamki11s.questx.QuestX;
 
 
 public class NPCDamageEvent implements Listener{
@@ -30,11 +31,11 @@ public class NPCDamageEvent implements Listener{
 			Player damager = (Player) evt.getDamager();
 			SimpleNPC attacked = handle.getSimpleNPCByEntity(evt.getEntity());
 			if(attacked != null && attacked.isAttackable()){
-				damager.sendMessage("You did " + evt.getDamage() + " damage to NPC " + attacked.getName());
+				QuestX.logChat(damager, "You did " + evt.getDamage() + " damage to NPC " + attacked.getName());
 				attacked.getHumanNPC().actAsHurt();
 				attacked.damageNPC(damager, evt.getDamage());
 			} else {
-				damager.sendMessage(attacked.getName() + " can not be harmed.");
+				QuestX.logChat(damager, attacked.getName() + " can not be harmed.");
 				evt.setCancelled(true);
 			}
 		}

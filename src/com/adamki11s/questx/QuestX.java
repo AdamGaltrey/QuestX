@@ -12,6 +12,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.adamki11s.commands.QuestXCommands;
+import com.adamki11s.dialogue.dynamic.DynamicStrings;
 import com.adamki11s.events.ConversationRegister;
 import com.adamki11s.events.EntityDeathMonitor;
 import com.adamki11s.events.MovementMonitor;
@@ -51,11 +52,11 @@ public class QuestX extends JavaPlugin {
 	}
 
 	public static final void logChat(Player p, String message) {
-		p.sendMessage(ChatColor.AQUA + "[QuestX] " + ChatColor.RESET + message);
+		p.sendMessage(ChatColor.AQUA + "[QuestX] " + ChatColor.RESET + DynamicStrings.getDynamicReplacement(message, p.getName()));
 	}
 	
 	public static final void logChatError(Player p, String message) {
-		p.sendMessage(ChatColor.AQUA + "[QuestX]" + ChatColor.RED + "[ERROR] " + ChatColor.RESET + message);
+		p.sendMessage(ChatColor.AQUA + "[QuestX]" + ChatColor.RED + "[ERROR] " + ChatColor.RESET + DynamicStrings.getDynamicReplacement(message, p.getName()));
 	}
 
 	public NPCHandler getNPCHandler() {

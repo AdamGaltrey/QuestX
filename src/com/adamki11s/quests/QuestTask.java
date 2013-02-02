@@ -5,11 +5,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import com.adamki11s.extras.inventory.ExtrasInventory;
-import com.adamki11s.io.FileLocator;
 import com.adamki11s.npcs.tasks.EntityKillTracker;
 import com.adamki11s.npcs.tasks.NPCKillTracker;
 import com.adamki11s.npcs.tasks.NPCTalkTracker;
-import com.adamki11s.sync.io.configuration.SyncConfiguration;
+import com.adamki11s.questx.QuestX;
 
 public class QuestTask {
 
@@ -100,19 +99,19 @@ public class QuestTask {
 
 	public void sendWhatIsLeftToDo(Player p) {
 		if (this.isItemStacks()) {
-			p.sendMessage(this.sendItemsToGather(p));
+			QuestX.logChat(p, this.sendItemsToGather(p));
 			return;
 		} else if (this.isKillEntities()) {
-			p.sendMessage(((EntityKillTracker) this.taskData).sendEntitiesToKill());
+			QuestX.logChat(p, ((EntityKillTracker) this.taskData).sendEntitiesToKill());
 			return;
 		} else if (this.isKillNPC()) {
-			p.sendMessage(((NPCKillTracker) this.taskData).sendNPCSToKill());
+			QuestX.logChat(p, ((NPCKillTracker) this.taskData).sendNPCSToKill());
 			return;
 		} else if (this.isTalkNPC()) {
-			p.sendMessage(((NPCTalkTracker) this.taskData).sendWhoToTalkTo());
+			QuestX.logChat(p, ((NPCTalkTracker) this.taskData).sendWhoToTalkTo());
 			return;
 		}
-		p.sendMessage("Looks like there was an error? You have no task.");
+		QuestX.logChat(p, "Looks like there was an error? You have no task.");
 	}
 	
 	public void removeItems(Player p){
