@@ -108,8 +108,8 @@ public class QuestX extends JavaPlugin {
 			QuestX.logMSG("There was an error hooking into Vault economy!");
 		}
 		
-		Plugin p = Bukkit.getPluginManager().getPlugin("TagAPI");
-		if(p != null){
+		Plugin plug = Bukkit.getPluginManager().getPlugin("TagAPI");
+		if(plug != null){
 			tagAPIEnabled = true;
 		} else {
 			tagAPIEnabled = false;

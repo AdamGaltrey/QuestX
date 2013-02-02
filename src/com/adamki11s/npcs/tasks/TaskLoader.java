@@ -45,110 +45,185 @@ public class TaskLoader {
 		config.read();
 		QuestX.logMSG("Config read to memory");
 
-		this.taskName = config.getString("TASK_NAME");
-		this.taskDescription = config.getString("TASK_DESCRIPTION");
-
-		this.incompleteTaskSpeech = config.getString("INCOMPLETE_TASK_SPEECH");
-		this.completeTaskSpeech = config.getString("COMPLETE_TASK_SPEECH");
+		if (config.doesKeyExist("TASK_NAME")) {
+			this.taskName = config.getString("TASK_NAME");
+		} else {
+			QuestX.logError("Missing property 'TASK_NAME' in task file for NPC " + this.npcName);
+		}
+		
+		if (config.doesKeyExist("TASK_DESCRIPTION")) {
+			this.taskDescription = config.getString("TASK_DESCRIPTION");
+		} else {
+			QuestX.logError("Missing property 'TASK_DESCRIPTION' in task file for NPC " + this.npcName);
+		}
+		
+		if (config.doesKeyExist("INCOMPLETE_TASK_SPEECH")) {
+			this.incompleteTaskSpeech = config.getString("INCOMPLETE_TASK_SPEECH");
+		} else {
+			QuestX.logError("Missing property 'INCOMPLETE_TASK_SPEECH' in task file for NPC " + this.npcName);
+		}
+		
+		if (config.doesKeyExist("COMPLETE_TASK_SPEECH")) {
+			this.completeTaskSpeech = config.getString("COMPLETE_TASK_SPEECH");
+		} else {
+			QuestX.logError("Missing property 'COMPLETE_TASK_SPEECH' in task file for NPC " + this.npcName);
+		}
 
 		QuestX.logMSG("Reading fetch_items");
 
-		if (!config.getString("FETCH_ITEMS").trim().equalsIgnoreCase("0")) {
-			try {
-				this.retrieveItems = ISAParser.parseISA(config.getString("FETCH_ITEMS"), this.npcName, false);
-				this.fetchItems = true;
-			} catch (InvalidISAException e) {
-				e.printErrorReason();
+		if (config.doesKeyExist("FETCH_ITEMS")) {
+			if (!config.getString("FETCH_ITEMS").trim().equalsIgnoreCase("0")) {
+				try {
+					this.retrieveItems = ISAParser.parseISA(config.getString("FETCH_ITEMS"), this.npcName, false);
+					this.fetchItems = true;
+				} catch (InvalidISAException e) {
+					e.printErrorReason();
+					this.fetchItems = false;
+				}
+			} else {
 				this.fetchItems = false;
 			}
 		} else {
+			QuestX.logError("Missing property 'FETCH_ITEMS' in task file for NPC " + this.npcName);
 			this.fetchItems = false;
 		}
 
 		QuestX.logMSG("Reading reward_items");
 
-		if (!config.getString("REWARD_ITEMS").trim().equalsIgnoreCase("0")) {
-			try {
-				this.rewardItems = ISAParser.parseISA(config.getString("REWARD_ITEMS"), this.npcName, false);
-				this.awardItems = true;
-			} catch (InvalidISAException e) {
-				e.printErrorReason();
+		if (config.doesKeyExist("REWARD_ITEMS")) {
+			if (!config.getString("REWARD_ITEMS").trim().equalsIgnoreCase("0")) {
+				try {
+					this.rewardItems = ISAParser.parseISA(config.getString("REWARD_ITEMS"), this.npcName, false);
+					this.awardItems = true;
+				} catch (InvalidISAException e) {
+					e.printErrorReason();
+					this.awardItems = false;
+				}
+			} else {
 				this.awardItems = false;
 			}
 		} else {
+			QuestX.logError("Missing property 'REWARD_ITEMS' in task file for NPC " + this.npcName);
 			this.awardItems = false;
 		}
 
 		QuestX.logMSG("Reading kill_entities");
 
-		if (!config.getString("KILL_ENTITIES").trim().equalsIgnoreCase("0")) {
-			try {
-				this.ekt = new EntityKillTracker(config.getString("KILL_ENTITIES"));
-				this.killEntities = true;
-			} catch (InvalidKillTrackerException e) {
-				e.printCustomErrorReason(false, this.npcName);
+		if (config.doesKeyExist("KILL_ENTITIES")) {
+			if (!config.getString("KILL_ENTITIES").trim().equalsIgnoreCase("0")) {
+				try {
+					this.ekt = new EntityKillTracker(config.getString("KILL_ENTITIES"));
+					this.killEntities = true;
+				} catch (InvalidKillTrackerException e) {
+					e.printCustomErrorReason(false, this.npcName);
+					this.killEntities = false;
+				}
+			} else {
 				this.killEntities = false;
 			}
 		} else {
+			QuestX.logError("Missing property 'KILL_ENTITIES' in task file for NPC " + this.npcName);
 			this.killEntities = false;
 		}
 
-		if (!config.getString("KILL_NPCS").trim().equalsIgnoreCase("0")) {
-			QuestX.logMSG("Loading NPC's to kill");
-			this.nkt = new NPCKillTracker(config.getString("KILL_NPCS"));
-			this.killNPCS = true;
+		if (config.doesKeyExist("KILL_NPCS")) {
+			if (!config.getString("KILL_NPCS").trim().equalsIgnoreCase("0")) {
+				QuestX.logMSG("Loading NPC's to kill");
+				this.nkt = new NPCKillTracker(config.getString("KILL_NPCS"));
+				this.killNPCS = true;
+			} else {
+				QuestX.logMSG("Not loading NPC's to kill");
+				this.killNPCS = false;
+			}
 		} else {
-			QuestX.logMSG("Not loading NPC's to kill");
+			QuestX.logError("Missing property 'KILL_NPCS' in task file for NPC " + this.npcName);
 			this.killNPCS = false;
 		}
 
-		if (!config.getString("FIREWORKS").equalsIgnoreCase("0")) {
-			String parts[] = config.getString("FIREWORKS").split(",");
-			int rad, sect;
-			try {
-				rad = Integer.parseInt(parts[0]);
-				sect = Integer.parseInt(parts[1]);
-				fwRadius = rad;
-				fwSectors = sect;
-				this.fireWorks = true;
-			} catch (NumberFormatException nfe) {
-				QuestX.logError("Failed to parse integer for FIREWORKS tag, make sure the value is greater than or equal to 0 and is a whole number.");
-				QuestX.logError("Line : " + config.getString("FIREWORKS"));
+		if (config.doesKeyExist("FIREWORKS")) {
+			if (!config.getString("FIREWORKS").equalsIgnoreCase("0")) {
+				String parts[] = config.getString("FIREWORKS").split(",");
+				int rad, sect;
+				try {
+					rad = Integer.parseInt(parts[0]);
+					sect = Integer.parseInt(parts[1]);
+					fwRadius = rad;
+					fwSectors = sect;
+					this.fireWorks = true;
+				} catch (NumberFormatException nfe) {
+					QuestX.logError("Failed to parse integer for FIREWORKS tag, make sure the value is greater than or equal to 0 and is a whole number.");
+					QuestX.logError("Line : " + config.getString("FIREWORKS"));
+					this.fireWorks = false;
+				}
+			} else {
 				this.fireWorks = false;
-			}		
+			}
 		} else {
+			QuestX.logError("Missing property 'FIREWORKS' in task file for NPC " + this.npcName);
 			this.fireWorks = false;
 		}
 
-		this.rewardExp = config.getInt("REWARD_EXP");
-		this.rewardRep = config.getInt("REWARD_REP");
-		this.rewardGold = config.getInt("REWARD_GOLD");
-
-		if (!config.getString("REWARD_PERMISSIONS_ADD").equalsIgnoreCase("0")) {
-			this.addPerms = config.getString("REWARD_PERMISSIONS_ADD").split(",");
-			this.apAdd = true;
+		if (config.doesKeyExist("REWARD_EXP")) {
+			this.rewardExp = config.getInt("REWARD_EXP");
 		} else {
+			QuestX.logError("Missing property 'REWARD_EXP' in task file for NPC " + this.npcName);
+		}
+		if (config.doesKeyExist("REWARD_REP")) {
+			this.rewardRep = config.getInt("REWARD_REP");
+		} else {
+			QuestX.logError("Missing property 'REWARD_REP' in task file for NPC " + this.npcName);
+		}
+		if (config.doesKeyExist("REWARD_GOLD")) {
+			this.rewardGold = config.getInt("REWARD_GOLD");
+		} else {
+			QuestX.logError("Missing property 'REWARD_GOLD' in task file for NPC " + this.npcName);
+		}
+
+		if (config.doesKeyExist("REWARD_PERMISSIONS_ADD")) {
+			if (!config.getString("REWARD_PERMISSIONS_ADD").equalsIgnoreCase("0")) {
+				this.addPerms = config.getString("REWARD_PERMISSIONS_ADD").split(",");
+				this.apAdd = true;
+			} else {
+				this.apAdd = false;
+			}
+		} else {
+			QuestX.logError("Missing property 'REWARD_PERMISSIONS_ADD' in task file for NPC " + this.npcName);
 			this.apAdd = false;
 		}
 
-		if (!config.getString("REWARD_PERMISSIONS_REMOVE").equalsIgnoreCase("0")) {
-			this.remPerms = config.getString("REWARD_PERMISSIONS_REMOVE").split(",");
-			this.apRem = true;
+		if (config.doesKeyExist("REWARD_PERMISSIONS_REMOVE")) {
+			if (!config.getString("REWARD_PERMISSIONS_REMOVE").equalsIgnoreCase("0")) {
+				this.remPerms = config.getString("REWARD_PERMISSIONS_REMOVE").split(",");
+				this.apRem = true;
+			} else {
+				this.apRem = false;
+			}
 		} else {
+			QuestX.logError("Missing property 'REWARD_PERMISSIONS_REMOVE' in task file for NPC " + this.npcName);
 			this.apRem = false;
 		}
 
-		if (!config.getString("EXECUTE_PLAYER_CMD").equalsIgnoreCase("0")) {
-			this.playerCmds = config.getString("EXECUTE_PLAYER_CMD").split(",");
-			this.execPlayerCommand = true;
+		if (config.doesKeyExist("EXECUTE_PLAYER_CMD")) {
+			if (!config.getString("EXECUTE_PLAYER_CMD").equalsIgnoreCase("0")) {
+				this.playerCmds = config.getString("EXECUTE_PLAYER_CMD").split(",");
+				this.execPlayerCommand = true;
+			} else {
+				this.execPlayerCommand = false;
+			}
 		} else {
+			QuestX.logError("Missing property 'EXECUTE_PLAYER_CMD' in task file for NPC " + this.npcName);
 			this.execPlayerCommand = false;
 		}
 
-		if (!config.getString("EXECUTE_SERVER_CMD").equalsIgnoreCase("0")) {
-			this.serverCmds = config.getString("EXECUTE_SERVER_CMD").split(",");
-			this.execServerCommand = true;
+		if (config.doesKeyExist("EXECUTE_SERVER_CMD")) {
+			if (!config.getString("EXECUTE_SERVER_CMD").equalsIgnoreCase("0")) {
+				this.serverCmds = config.getString("EXECUTE_SERVER_CMD").split(",");
+				this.execServerCommand = true;
+			} else {
+				this.execServerCommand = false;
+			}
 		} else {
+			QuestX.logError("Missing property 'EXECUTE_SERVER_CMD' in task file for NPC " + this.npcName);
 			this.execServerCommand = false;
 		}
 
