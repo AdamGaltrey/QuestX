@@ -55,7 +55,7 @@ public class QuestSetup {
 
 	public void setupSpawn(Player p) {
 		String npcName = setupGuide.get(currentNode + 1).getNpcName();
-		QuestX.logMSG("Current NPC setup name = " + npcName);
+		QuestX.logDebug("Current NPC setup name = " + npcName);
 
 		if (this.currentNode == this.nodes - 1) {
 			QuestX.logChat(p, "Setup complete!");
@@ -81,7 +81,7 @@ public class QuestSetup {
 	}
 
 	public void removeFromList() {
-		QuestX.logMSG("~~~~~~ Removing Setup FILE");
+		QuestX.logDebug("~~~~~~ Removing Setup FILE");
 		settingUp.remove(this.name);
 		File f = new File(FileLocator.quest_data_root + File.separator + this.name + File.separator + "setup.qxs");
 		f.delete();
@@ -108,7 +108,7 @@ public class QuestSetup {
 				String[] splits = raw.split("#");
 				String npcName = splits[0];
 				String desc = splits[1];
-				QuestX.logMSG("Loaded npcName = " + npcName + ", desc = " + desc);
+				QuestX.logDebug("Loaded npcName = " + npcName + ", desc = " + desc);
 				setupGuide.put(c, new NPCQuestSpawner(npcName, desc));
 			}
 		}

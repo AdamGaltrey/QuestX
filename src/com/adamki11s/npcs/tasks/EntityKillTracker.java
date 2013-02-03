@@ -38,7 +38,7 @@ public class EntityKillTracker {
 			}
 			this.required.put(e, k);
 			this.current.put(e, 0);
-			QuestX.logMSG("Loaded EntityType : " + e.toString() + ", amount = " + k);
+			QuestX.logDebug("Loaded EntityType : " + e.toString() + ", amount = " + k);
 		}
 	}
 

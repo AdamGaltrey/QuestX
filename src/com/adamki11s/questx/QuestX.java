@@ -57,11 +57,19 @@ public class QuestX extends JavaPlugin {
 	public static Plugin p;
 	public static String version;
 	public static File f;
-	
+
 	Metrics metrics;
 
 	public static synchronized void logMSG(String msg) {
 		log.info("[QuestX] " + msg);
+	}
+
+	public static boolean debug = false;
+
+	public static synchronized void logDebug(String msg) {
+		if (debug) {
+			log.info("[QuestX] " + msg);
+		}
 	}
 
 	public static synchronized void logError(String msg) {
@@ -100,13 +108,13 @@ public class QuestX extends JavaPlugin {
 		return (economy != null);
 	}
 
-	static void m(){
-		
+	static void m() {
+
 	}
-	
+
 	@Override
 	public void onEnable() {
-		
+
 		version = this.getDescription().getVersion();
 		f = this.getFile();
 
@@ -132,17 +140,17 @@ public class QuestX extends JavaPlugin {
 		}
 
 		InitialSetup.run();
-		
+
 		try {
-		    metrics = new Metrics(this);
-		    boolean result = metrics.start();
-		    if(result){
-		    	QuestX.logMSG("Plugin Metrics connection was successful!");
-		    } else {
-		    	QuestX.logMSG("Plugin Metrics connection denied, config may be set to opt-out:false");
-		    }
+			metrics = new Metrics(this);
+			boolean result = metrics.start();
+			if (result) {
+				QuestX.logMSG("Plugin Metrics connection was successful!");
+			} else {
+				QuestX.logMSG("Plugin Metrics connection denied, config may be set to opt-out:false");
+			}
 		} catch (IOException e) {
-		    QuestX.logError("Failed to submit statistics!");
+			QuestX.logError("Failed to submit statistics!");
 		}
 
 		if (GeneralConfigData.isCheckingUpdates()) {
@@ -152,7 +160,7 @@ public class QuestX extends JavaPlugin {
 			} else {
 				u = new Updater(this, "questx", this.getFile(), UpdateType.NO_DOWNLOAD, true);
 			}
-			if(GeneralConfigData.isNotifyAdmin()){
+			if (GeneralConfigData.isNotifyAdmin()) {
 				UpdateNotifier.setNotifier(u);
 			}
 			QuestX.logMSG("Update result = " + u.getResult().toString());

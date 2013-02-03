@@ -41,9 +41,9 @@ public class TaskLoader {
 
 	public void load() {
 		SyncConfiguration config = new SyncConfiguration(this.taskFile);
-		QuestX.logMSG("Reading config");
+		QuestX.logDebug("Reading config");
 		config.read();
-		QuestX.logMSG("Config read to memory");
+		QuestX.logDebug("Config read to memory");
 
 		if (config.doesKeyExist("TASK_NAME")) {
 			this.taskName = config.getString("TASK_NAME");

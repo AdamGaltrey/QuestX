@@ -23,14 +23,14 @@ public class WorldConfigData {
 		}
 		worlds = trimmed.toString().split(",");
 		for (String s : worlds) {
-			QuestX.logMSG("World = '" + s + "'");
+			QuestX.logDebug("World = '" + s + "'");
 		}
 		
 		maxSpawnsPerChunk = conf.getInt("MAX_SPAWNS_PER_CHUNK");
 		maxSpawnsPerWorld = conf.getInt("MAX_SPAWNS_PER_WORLD");
 		untouchedDespawnMinutes = conf.getInt("DESPAWN_IFUNTOUCHED_MINUTES");
 		
-		QuestX.logMSG("Max spawns per world = " + maxSpawnsPerWorld);
+		QuestX.logDebug("Max spawns per world = " + maxSpawnsPerWorld);
 	}
 
 	public static String[] getWorlds() {

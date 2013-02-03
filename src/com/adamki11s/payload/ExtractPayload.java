@@ -177,10 +177,10 @@ public class ExtractPayload {
 		} finally {
 			try {
 				if (zip != null) {
-					QuestX.logMSG("Zip closed in FINALLY!");
+					QuestX.logDebug("Zip closed in FINALLY!");
 					zip.close();
 				} else {
-					QuestX.logMSG("Zip was null :(!");
+					QuestX.logDebug("Zip was null :(!");
 				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block

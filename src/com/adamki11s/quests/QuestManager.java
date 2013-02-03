@@ -14,7 +14,7 @@ public class QuestManager {
 	public static volatile HashMap<String, String> currentQuest = new HashMap<String, String>();
 
 	public static void loadQuest(String name) {
-		QuestX.logMSG("Loading quest '" + name + "'");
+		QuestX.logDebug("Loading quest '" + name + "'");
 		quests.add(new QuestLoader(FileLocator.getQuestFile(name)));
 	}
 

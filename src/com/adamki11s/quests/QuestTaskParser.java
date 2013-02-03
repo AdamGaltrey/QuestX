@@ -14,15 +14,15 @@ public class QuestTaskParser {
 
 	public static synchronized QuestTask getTaskObject(String input, QType type, String cause) throws InvalidKillTrackerException, InvalidISAException {
 		Object o = null;
-		QuestX.logMSG("QTYPE = " + type.toString());
-		QuestX.logMSG("ENTERING SWITCH");
-		QuestX.logMSG("SWITCHING CHECKS = " + type);
+		QuestX.logDebug("QTYPE = " + type.toString());
+		QuestX.logDebug("ENTERING SWITCH");
+		QuestX.logDebug("SWITCHING CHECKS = " + type);
 
 		int lio = input.lastIndexOf(":");
 		String completeNodeText = input.substring(lio + 1);
 		String npcName = input.substring((input.substring(0, lio).lastIndexOf(":") + 1), lio);
 		String inputData = input.substring(0, (input.substring(0, lio).lastIndexOf(":")));
-		QuestX.logMSG("CNT = " + completeNodeText + ", npcn = " + npcName + " inputData = " + inputData);
+		QuestX.logDebug("CNT = " + completeNodeText + ", npcn = " + npcName + " inputData = " + inputData);
 
 		if (type == QType.FETCH_ITEMS) {
 			o = getInventoryObject(inputData, cause);
@@ -34,14 +34,14 @@ public class QuestTaskParser {
 			o = new NPCTalkTracker(inputData);
 		}
 
-		QuestX.logMSG("LEFT SWITCH");
-		QuestX.logMSG("Starting task parse***********");
+		QuestX.logDebug("LEFT SWITCH");
+		QuestX.logDebug("Starting task parse***********");
 
 		return new QuestTask(type, o, npcName, completeNodeText);
 	}
 
 	static ItemStack[] getInventoryObject(String input, String cause) throws InvalidISAException {
-		QuestX.logMSG("Parsing isa array");
+		QuestX.logDebug("Parsing isa array");
 		return ISAParser.parseISA(input, cause, true);
 	}
 

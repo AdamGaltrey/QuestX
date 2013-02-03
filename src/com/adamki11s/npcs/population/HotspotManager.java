@@ -36,7 +36,7 @@ public class HotspotManager {
 		for (SyncWrapper wrap : io.getReadableData()) {
 			Object o;
 			if ((o = wrap.getObject()) instanceof Hotspot) {
-				QuestX.logMSG("Loading hotspot " + wrap.getTag());
+				QuestX.logDebug("Loading hotspot " + wrap.getTag());
 				Hotspot h = (Hotspot) o;
 				hotspots.put(h.getTag(), h);
 			}
@@ -46,11 +46,11 @@ public class HotspotManager {
 	public static boolean areHotspotsFull() {
 		for (Entry<String, Hotspot> e : hotspots.entrySet()) {
 			if (e.getValue().canSpawnMore()) {
-				QuestX.logMSG("Hotspots are not full!");
+				QuestX.logDebug("Hotspots are not full!");
 				return false;
 			}
 		}
-		QuestX.logMSG("Hotspots are full, spawn as normal.");
+		QuestX.logDebug("Hotspots are full, spawn as normal.");
 		return true;
 	}
 

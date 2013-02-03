@@ -38,17 +38,17 @@ public class SpawnLocationDispatcher {
 	//boolean isWithinRange
 
 	public Location getSpawnLocation() {
-		QuestX.logMSG("Getting spawn location");
+		QuestX.logDebug("Getting spawn location");
 		this.updateDensity();
 		LinkedHashMap<NPCChunkData, Long> nodes = GlobalDensityCache.getNodes(this.world);
 		NPCChunkData cd = null;
 		boolean canSpawn = false;
 		do {
 			long randLong = this.getRandomLong(0, this.gDensity, r);	
-			QuestX.logMSG("rand long = " + randLong);
+			QuestX.logDebug("rand long = " + randLong);
 			for (Entry<NPCChunkData, Long> set : nodes.entrySet()) {
 				if (set.getValue() > randLong) {
-					QuestX.logMSG("Greater value than random, setting chunk density");
+					QuestX.logDebug("Greater value than random, setting chunk density");
 					//must be prob as values are sorted by density, lowest -> highest
 					cd = set.getKey();
 					if(cd.canSpawnMore()){

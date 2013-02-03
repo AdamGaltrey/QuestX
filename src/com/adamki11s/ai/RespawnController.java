@@ -60,17 +60,17 @@ public class RespawnController {
 						}
 					}
 					if (!loaded) {
-						QuestX.logMSG("Trying to load '" + f.getName());
+						QuestX.logDebug("Trying to load '" + f.getName());
 						npcNameToLoad = f.getName();
 						LoadNPCTemplate tempLoader = new LoadNPCTemplate(npcNameToLoad);
 						tempLoader.loadProperties();
 						if (tempLoader.wantsToLoad()) {
 							NPCTemplate temp = tempLoader.getLoadedNPCTemplate();
 							temp.addSimpleNPCToWaitingList(this.handle);
-							QuestX.logMSG("Added NPC '" + npcNameToLoad + "' to waiting list");
+							QuestX.logDebug("Added NPC '" + npcNameToLoad + "' to waiting list");
 							break;
 						} else {
-							QuestX.logMSG("NPC '" + npcNameToLoad + "' load=false, finding another");
+							QuestX.logDebug("NPC '" + npcNameToLoad + "' load=false, finding another");
 							loaded = true;
 						}
 						// load into waiting list
@@ -78,18 +78,18 @@ public class RespawnController {
 				}
 
 			} else {
-				QuestX.logMSG("All NPC's are loaded, skipping");
+				QuestX.logDebug("All NPC's are loaded, skipping");
 			}
 			this.counterBetweenLoads = 0;
 
 		}
 
 		if (counterBetweenSpawns > this.timeBetweenSpawns) {
-			QuestX.logMSG("Checking to make a new spawn");
+			QuestX.logDebug("Checking to make a new spawn");
 			if (this.handle.isWaitingQueueEmpty()) {
-				QuestX.logMSG("No spawns in line, breaking");
+				QuestX.logDebug("No spawns in line, breaking");
 			} else {
-				QuestX.logMSG("Spawns in line, checking worlds");
+				QuestX.logDebug("Spawns in line, checking worlds");
 				// spawn
 				for (String w : this.handle.getWorlds()) {
 					if (this.handle.canNPCBeSpawned(w)) {
@@ -97,7 +97,7 @@ public class RespawnController {
 						// SimpleNPC spawn =
 						// this.handle.getNextWaitingToSpawn(w);
 
-						QuestX.logMSG("NPC can spawn in world '" + w + "'. Generating location..");
+						QuestX.logDebug("NPC can spawn in world '" + w + "'. Generating location..");
 
 						final Location l;
 						
@@ -106,33 +106,33 @@ public class RespawnController {
 						boolean fullHS = HotspotManager.areHotspotsFull();
 
 						if (!fullHS) {
-							QuestX.logMSG("########### Hot spots are not full!");
+							QuestX.logDebug("########### Hot spots are not full!");
 							front = this.handle.getNextWaitingToSpawn(HotspotManager.getNextWorldForSpawn().getName());
 							l = HotspotManager.spawnNPC(front.getName());
 						} else {
-							QuestX.logMSG("########### Hot spots are full!");
+							QuestX.logDebug("########### Hot spots are full!");
 							l = this.handle.getDispatcher(w).getSpawnLocation();
 							front = this.handle.getNextWaitingToSpawn(l.getWorld().getName());
 						}
 
-						QuestX.logMSG("Location generated = " + l.toString());
+						QuestX.logDebug("Location generated = " + l.toString());
 
 						
 
 						// this.waiting.removeFirst();
 						if (front == null) {
-							QuestX.logMSG("NPC aquired from front was nulL! Check it loaded properly");
+							QuestX.logDebug("NPC aquired from front was nulL! Check it loaded properly");
 						} else {
-							QuestX.logMSG("NPC " + front.getName() + " selected from waiting list!");
-							QuestX.logMSG("Setting spawn location...");
+							QuestX.logDebug("NPC " + front.getName() + " selected from waiting list!");
+							QuestX.logDebug("Setting spawn location...");
 							front.setNewSpawnLocation(l);
-							QuestX.logMSG("Spawn set correctly!");
-							QuestX.logMSG("Spawning NPC...");
+							QuestX.logDebug("Spawn set correctly!");
+							QuestX.logDebug("Spawning NPC...");
 							front.spawnNPC();
 						}
 
 					} else {
-						QuestX.logMSG("NPC Cannot spawn in world '" + w + "'");
+						QuestX.logDebug("NPC Cannot spawn in world '" + w + "'");
 					}
 				}
 

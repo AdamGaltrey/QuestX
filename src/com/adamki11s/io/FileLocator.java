@@ -86,8 +86,8 @@ public class FileLocator {
 
 	public static boolean doesQuestNameExist(String name) {
 		for (File f : new File(quest_data_root).listFiles()) {
-			QuestX.logMSG("Checking f name = " + f.getName());
-			QuestX.logMSG(f.getName() + " = provided name -> " + name);
+			QuestX.logDebug("Checking f name = " + f.getName());
+			QuestX.logDebug(f.getName() + " = provided name -> " + name);
 			if (f.getName().equalsIgnoreCase(name)) {
 				return true;
 			}

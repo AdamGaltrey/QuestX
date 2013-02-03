@@ -13,7 +13,7 @@ public class TaskRegister {
 
 	public static void registerTask(TaskManager tm) {
 		managers.add(tm);
-		QuestX.logMSG("Task added to Register");
+		QuestX.logDebug("Task added to Register");
 	}
 	
 	public static void unRegisterTask(TaskManager tm){

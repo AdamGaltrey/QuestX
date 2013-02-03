@@ -18,7 +18,7 @@ public class MovementData {
 		this.rootPoint = rootPoint;
 		
 		if(this.rootPoint == null){
-			QuestX.logMSG("NULL ROOT POINT PASSED TO MD");
+			QuestX.logDebug("NULL ROOT POINT PASSED TO MD");
 		}
 		
 		this.minPauseTicks = minPauseTicks;
@@ -50,11 +50,11 @@ public class MovementData {
 			dz = r.nextInt(maxVariation * 2) - maxVariation;
 			it++;
 			if (it > this.failsafeIterations) {
-				QuestX.logMSG("ITERATION FAILSAFE TRIGGERED.");
+				QuestX.logDebug("ITERATION FAILSAFE TRIGGERED.");
 				break;
 			}
 			if(it % 1000 == 0){
-				QuestX.logMSG("Delta's = (" + dx + ", " + dy + ", " + dz);
+				QuestX.logDebug("Delta's = (" + dx + ", " + dy + ", " + dz);
 			}
 		} while (!canMoveHere(w, dx, dy, dz, rx, ry, rz));
 

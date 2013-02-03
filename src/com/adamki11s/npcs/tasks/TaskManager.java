@@ -23,7 +23,7 @@ public class TaskManager {
 	public TaskManager(String playerName, TaskLoader task) {
 		this.pName = playerName;
 		this.currentTask = task;
-		QuestX.logMSG("TaskManager instantitated");
+		QuestX.logDebug("TaskManager instantitated");
 	}
 
 	public TaskLoader getTaskLoader() {

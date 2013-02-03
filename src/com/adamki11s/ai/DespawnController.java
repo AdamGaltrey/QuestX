@@ -18,7 +18,7 @@ public class DespawnController {
 	public void run(int tickRate){
 		currentTicks += tickRate;
 		if(currentTicks >= (20 * 60)){
-			QuestX.logMSG("Updating untouched values every min");
+			QuestX.logDebug("Updating untouched values every min");
 			currentTicks = 0;
 			for (SimpleNPC npc : handle.getNPCs()) {
 				npc.updateUntouchedTicks(20 * 60);

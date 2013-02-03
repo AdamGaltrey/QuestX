@@ -45,7 +45,7 @@ public class NPCTemplate {
 	}
 	
 	public void addSimpleNPCToWaitingList(NPCHandler handle){
-		QuestX.logMSG("Adding new simple npc to list");
+		QuestX.logDebug("Adding new simple npc to list");
 		SimpleNPC snpc = new SimpleNPC(handle, name, moveable, attackable, minPauseTicks, maxPauseTicks, maxVariation, maxHealth, respawnTicks, inventory, gear, damageMod, retalliationMultiplier);
 		handle.addToWaitingList(snpc);
 	}

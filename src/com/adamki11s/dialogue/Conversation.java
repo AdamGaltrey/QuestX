@@ -138,53 +138,53 @@ public class Conversation {
 				} else {
 					System.out.println("In has NOT task code");
 					TaskLoader tl = new TaskLoader(FileLocator.getNPCTaskFile(this.getConvoData().getSimpleNpc().getName()), this.getConvoData().getSimpleNpc().getName());
-					QuestX.logMSG("Loading task...");
+					QuestX.logDebug("Loading task...");
 					tl.load();
-					QuestX.logMSG("Task Loaded!");
+					QuestX.logDebug("Task Loaded!");
 					TaskManager manage = new TaskManager(p.getName(), tl);
 					TaskRegister.registerTask(manage);
 					QuestX.logChat(p, ChatColor.ITALIC + tl.getTaskName() + ChatColor.RESET + ChatColor.GREEN + " task started!");
 					QuestX.logChat(p, "Task description : " + tl.getTaskDescription());
 					QuestX.logChat(p, "Not recieving messages?");
-					QuestX.logMSG("Not recieving msgs?");
+					QuestX.logDebug("Not recieving msgs?");
 					this.endConversation();
 					return;
 				}
 			} else if (selTrigger.getTriggerType() == TriggerType.QUEST) {
-				QuestX.logMSG("Inside quest code");
+				QuestX.logDebug("Inside quest code");
 				SimpleNPC npc = this.getConvoData().getSimpleNpc();
 				if (npc.doesLinkToQuest()) {
-					QuestX.logMSG("NPC links to quest = " + npc.getQuestName());
+					QuestX.logDebug("NPC links to quest = " + npc.getQuestName());
 					String qName = npc.getQuestName();
 
 					if (QuestManager.hasQuestBeenSetup(qName)) {
 
 						if (!QuestManager.doesPlayerHaveQuest(p.getName())) {
 							// start a quest
-							QuestX.logMSG("Player does not have quest!");
+							QuestX.logDebug("Player does not have quest!");
 							if (!QuestManager.isQuestLoaded(qName)) {
 								QuestManager.loadQuest(qName);
 							}
-							QuestX.logMSG("QUEST LOADED ############");
+							QuestX.logDebug("QUEST LOADED ############");
 							QuestLoader ql = QuestManager.getQuestLoader(qName);
 							ql.loadAndCheckPlayerProgress(p.getName());
 							if (ql.isQuestComplete(p.getName())) {
 								QuestX.logChat(p, "You have already completed this quest!");
 							} else {
 								QuestManager.setCurrentPlayerQuest(p.getName(), qName);
-								QuestX.logMSG(ql.getStartText() + "<<<<<< START TEXT");
+								QuestX.logDebug(ql.getStartText() + "<<<<<< START TEXT");
 								QuestX.logChat(p, ql.getStartText());
 								QuestTask t = QuestManager.getCurrentQuestTask(p.getName());
 								if (t != null) {
-									QuestX.logMSG("Task in non-null");
+									QuestX.logDebug("Task in non-null");
 									// t.sendWhatIsLeftToDo(p);
 								} else {
-									QuestX.logMSG("Task is null!");
+									QuestX.logDebug("Task is null!");
 								}
 							}
 							this.endConversation();
 						} else {
-							QuestX.logMSG("Player has quest!");
+							QuestX.logDebug("Player has quest!");
 							// player already has quest
 						}
 
@@ -193,7 +193,7 @@ public class Conversation {
 						QuestX.logChat(p, "This quest has not yet been setup. /q setup " + qName);
 					}
 				} else {
-					QuestX.logMSG("NPC has no link to a quest");
+					QuestX.logDebug("NPC has no link to a quest");
 				}
 				this.endConversation();
 			} else {

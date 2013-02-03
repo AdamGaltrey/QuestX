@@ -58,8 +58,8 @@ public class SimpleNPC {
 
 	final ItemStack[] gear;// boots 1, legs 2, chest 3, head 4, arm 5
 
-	public SimpleNPC(NPCHandler handle, String name, boolean moveable, boolean attackable, int minPauseTicks, int maxPauseTicks, int maxVariation,
-			int health, int respawnTicks, ItemStackDrop inventory, ItemStack[] gear, int damageMod, double retalliationMultiplier) {
+	public SimpleNPC(NPCHandler handle, String name, boolean moveable, boolean attackable, int minPauseTicks, int maxPauseTicks, int maxVariation, int health, int respawnTicks,
+			ItemStackDrop inventory, ItemStack[] gear, int damageMod, double retalliationMultiplier) {
 		UniqueNameRegister.addNPCName(name);
 		this.name = name;
 		this.moveable = moveable;
@@ -77,16 +77,20 @@ public class SimpleNPC {
 
 		File fLink = FileLocator.getNPCQuestLinkFile(name);
 		SyncConfiguration cfg = new SyncConfiguration(fLink);
-		cfg.read();
-		this.questName = cfg.getString("QUEST_NAME");
-		String nodes = cfg.getString("NODES");
-		if (nodes != null) {
-			for (String num : nodes.split(",")) {
-				this.completeQuestNodes.add(Integer.parseInt(num));
+		if (fLink.exists()) {
+			cfg.read();
+			this.questName = cfg.getString("QUEST_NAME");
+			String nodes = cfg.getString("NODES");
+			if (nodes != null) {
+				for (String num : nodes.split(",")) {
+					this.completeQuestNodes.add(Integer.parseInt(num));
+				}
 			}
+			QuestX.logDebug("qName = " + this.questName);
+			QuestX.logDebug("nodes = " + cfg.getString("NODES"));
+		} else {
+			this.questName = "null";
 		}
-		QuestX.logMSG("qName = " + this.questName);
-		QuestX.logMSG("nodes = " + cfg.getString("NODES"));
 
 		handle.registerNPC(this);
 	}
@@ -113,8 +117,8 @@ public class SimpleNPC {
 	}
 
 	public void setNewSpawnLocation(Location l) {
-		// QuestX.logMSG("Setting new spawn location");
-		// QuestX.logMSG(l.toString());
+		QuestX.logDebug("Setting new spawn location");
+		QuestX.logDebug(l.toString());
 		this.spawnedLocation = l;
 	}
 
@@ -299,10 +303,10 @@ public class SimpleNPC {
 						QuestLoader ql = QuestManager.getQuestLoader(this.getQuestName());
 						QuestTask t = QuestManager.getCurrentQuestTask(p.getName());
 						if (t == null) {
-							QuestX.logMSG("QuetTask loaded null! ###########");
+							QuestX.logDebug("QuetTask loaded null! ###########");
 							return;
 						} else {
-							QuestX.logMSG("QuestTask was NOT NULL #######");
+							QuestX.logDebug("QuestTask was NOT NULL #######");
 						}
 						if (!ql.isQuestComplete(p.getName())) {
 							// run checks
@@ -399,9 +403,9 @@ public class SimpleNPC {
 				toSpawn = this.getSpawnedLocation();
 			}
 
-			QuestX.logMSG("Spawning NPC " + this.getName());
-			QuestX.logMSG("Log spawn location");
-			QuestX.logMSG(toSpawn.toString());
+			QuestX.logDebug("Spawning NPC " + this.getName());
+			QuestX.logDebug("Log spawn location");
+			QuestX.logDebug(toSpawn.toString());
 
 			this.npc = (HumanNPC) this.handle.getNPCManager().spawnHumanNPC(this.name, toSpawn);
 

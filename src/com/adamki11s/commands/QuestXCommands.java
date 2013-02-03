@@ -194,6 +194,7 @@ public class QuestXCommands implements CommandExecutor {
 					for (int i = 0; i < max; i++) { // 1/10 chance of dropping
 						SimpleNPC snpc = new SimpleNPC(this.handle, ("a" + i), true, true, 60, 200, 20, 100, 200, new ItemStackDrop(
 								new ItemStackProbability[] { new ItemStackProbability(new ItemStack(Material.GOLD_AXE, 1), 6000) }), gear, 1, 1.5);
+						snpc.setNewSpawnLocation(p.getLocation());
 						snpc.spawnNPC();
 						// QuestX.logChat(p, "NPC Spawned!");
 					}

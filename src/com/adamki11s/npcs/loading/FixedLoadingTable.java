@@ -23,9 +23,9 @@ public class FixedLoadingTable {
 	final static SyncObjectIO loader = new SyncObjectIO(FileLocator.getNPCFixedSpawnsFile());
 
 	public static void spawnFixedNPCS(NPCHandler handle) {
-		QuestX.logMSG("registering npc spawns");
+		QuestX.logDebug("registering npc spawns");
 		loader.read();
-		QuestX.logMSG("wrapper length = " + loader.getReadableData().size());
+		QuestX.logDebug("wrapper length = " + loader.getReadableData().size());
 		for (SyncWrapper wrapper : loader.getReadableData()) {
 			if (wrapper.getTag().equalsIgnoreCase("NPC_COUNT")) {
 				continue;

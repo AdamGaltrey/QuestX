@@ -37,7 +37,7 @@ public class RandomMovement {
 
 			if (!this.newMDScheduled) {
 				this.newMDScheduled = true;
-				QuestX.logMSG("Destination reached, scheduling new movement");
+				QuestX.logDebug("Destination reached, scheduling new movement");
 				Bukkit.getServer().getScheduler().runTaskLater(QuestX.p, new Runnable() {
 					public void run() {
 						if (npc.isMoveable() && npc.isNPCSpawned() && !npc.isUnderAttack() && !npc.isConversing()) {
@@ -46,7 +46,7 @@ public class RandomMovement {
 					}
 				}, pauseTicks);
 			} else {
-				QuestX.logMSG("New movement has already been scheduled!");
+				QuestX.logDebug("New movement has already been scheduled!");
 			}
 		}
 	}
@@ -56,7 +56,7 @@ public class RandomMovement {
 	}
 
 	public synchronized void generateNewMovement() {
-		// QuestX.logMSG("Generating MData for '" + this.npc.getName() + "'");
+		QuestX.logDebug("Generating MData for '" + this.npc.getName() + "'");
 		md.generate();
 		this.targetPoint = md.getEndPoint();
 		this.pauseTicks = md.getPauseTicks();

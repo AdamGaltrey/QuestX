@@ -43,7 +43,7 @@ public class PopulationDensityThread implements Runnable {
 			// select 'no record'
 			/*String prepUpdateDensity = "IF EXISTS(SELECT x,z FROM " + worldName + " WHERE x=? AND z=?) THEN UPDATE " + worldName
 					+ " SET density=density+? WHERE x=? AND z=?; ELSE" + " INSERT INTO " + worldName + " (x,z,density) VALUES (?,?,?);";*/
-			QuestX.logMSG("Preparing statements for world '" + worldName + "'");
+			QuestX.logDebug("Preparing statements for world '" + worldName + "'");
 			String selectXZ = "SELECT x,z FROM " + worldName + " WHERE x=? AND z=?";
 			String updateDensity = "UPDATE " + worldName + " SET density=density+? WHERE x=? AND z=?";
 
@@ -52,7 +52,7 @@ public class PopulationDensityThread implements Runnable {
 				prepDensity = this.sql.getConnection().prepareStatement(updateDensity);
 				
 				this.preparedStatements.put(worldName, new PreparedStatement[]{prepXZ, prepDensity});
-				QuestX.logMSG("Statement prepared for world '" + worldName + "'.");
+				//QuestX.logMSG("Statement prepared for world '" + worldName + "'.");
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
@@ -87,7 +87,7 @@ public class PopulationDensityThread implements Runnable {
 			GlobalDensityCache.updateGlobalDensity(this.sql, worlds);
 		}
 		
-		QuestX.logMSG("Updating , time elapsed = 5 minutes");
+		QuestX.logDebug("Updating , time elapsed = 5 minutes");
 		if (Bukkit.getServer().getOnlinePlayers().length < 1) {
 			return;
 		}
@@ -133,18 +133,18 @@ public class PopulationDensityThread implements Runnable {
 		
 		for(ChunkDensity cd : density){
 			try {
-				QuestX.logMSG("Updating data for chunk (" + cd.getX() + ", " + cd.getZ() + ") World - " + worldName);
+				QuestX.logDebug("Updating data for chunk (" + cd.getX() + ", " + cd.getZ() + ") World - " + worldName);
 				preps[0].setInt(1, cd.getX());
 				preps[0].setInt(2, cd.getZ());
 				ResultSet xzCheck = preps[0].executeQuery();
 				if(xzCheck.next()){
-					QuestX.logMSG("Chunk exists, updating...");
+					QuestX.logDebug("Chunk exists, updating...");
 					preps[1].setInt(1, cd.getIncrement());
 					preps[1].setInt(2, cd.getX());
 					preps[1].setInt(3, cd.getZ());
 					preps[1].executeUpdate();
 				} else {
-					QuestX.logMSG("Chunk doesn't exist, creating...");
+					QuestX.logDebug("Chunk doesn't exist, creating...");
 					String insertChunk = "INSERT INTO " + worldName + " (x,z,density) VALUES (" + cd.getX() + "," + cd.getZ() + "," + cd.getIncrement() + ")";
 					this.sql.standardQuery(insertChunk);
 				}

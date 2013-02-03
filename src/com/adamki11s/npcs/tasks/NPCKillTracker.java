@@ -20,7 +20,7 @@ public class NPCKillTracker {
 		String[] ents = in.split("#");
 		for (String parse : ents) {
 			this.required.add(parse);
-			QuestX.logMSG("Loaded NPC : " + parse);
+			QuestX.logDebug("Loaded NPC : " + parse);
 		}
 	}
 

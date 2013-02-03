@@ -41,13 +41,13 @@ public class NPCHandler {
 	public void addToWaitingList(SimpleNPC npc) {
 
 		if (npc == null) {
-			QuestX.logMSG("NULL npc passed into waiting list");
+			QuestX.logDebug("NULL npc passed into waiting list");
 		} else {
-			QuestX.logMSG("NPC " + npc.getName() + " added to waiting list");
+			QuestX.logDebug("NPC " + npc.getName() + " added to waiting list");
 			this.waiting.add(npc);
 
 		}
-		QuestX.logMSG("New list size = " + this.waiting.size());
+		QuestX.logDebug("New list size = " + this.waiting.size());
 	}
 
 	public String[] getLoadedOrWaiting() {
@@ -69,17 +69,17 @@ public class NPCHandler {
 	public NPCHandler(JavaPlugin main, String worlds[]) {
 		this.worlds = worlds;
 		npc = new NPCManager(main);
-		QuestX.logMSG("Checking worlds NPCHandler constructor");
+		QuestX.logDebug("Checking worlds NPCHandler constructor");
 		if (worlds != null) {
-			QuestX.logMSG("worlds[] != null");
+			QuestX.logDebug("worlds[] != null");
 			for (String w : worlds) {
-				QuestX.logMSG("Checking world - '" + w + "'");
+				QuestX.logDebug("Checking world - '" + w + "'");
 				npcWorldData.add(new NPCWorldData(w));
 				npcChunkData.put(w, new HashSet<NPCChunkData>());
 				spawnDispatchers.put(w, new SpawnLocationDispatcher(w, this));
 			}
 		} else {
-			QuestX.logMSG("worlds[] == null");
+			QuestX.logDebug("worlds[] == null");
 
 		}
 	}
@@ -94,7 +94,7 @@ public class NPCHandler {
 
 	public synchronized SimpleNPC getNextWaitingToSpawn(String w) {
 		if (this.waiting.size() < 1) {
-			QuestX.logMSG("0 Elements waiting, breaking...");
+			QuestX.logDebug("0 Elements waiting, breaking...");
 			return null;
 		}
 		

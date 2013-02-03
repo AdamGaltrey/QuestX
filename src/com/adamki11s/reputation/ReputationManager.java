@@ -17,11 +17,11 @@ public class ReputationManager {
 	public static void loadPlayerReputation(String name) {
 		if (!rep.containsKey(name)) {
 			if (!io.doesPlayerHaveRepFile(name)) {
-				QuestX.logMSG("Loaded default(0) rep for player " + name);
+				QuestX.logDebug("Loaded default(0) rep for player " + name);
 				io.createPlayerRepFile(name);
 				rep.put(name, new Reputation(name, 0));
 			} else {
-				QuestX.logMSG("Loaded rep for player " + name);
+				QuestX.logDebug("Loaded rep for player " + name);
 				int r = io.getPlayerRep(name);
 				rep.put(name, new Reputation(name, r));
 			}
@@ -32,10 +32,10 @@ public class ReputationManager {
 	public static void updateReputation(String name, int amount) {
 		io.updatePlayerRep(name, amount);
 		if (rep.containsKey(name)) {
-			QuestX.logMSG("REP CONTAINS PLAYER NAME");
+			QuestX.logDebug("REP CONTAINS PLAYER NAME");
 			rep.get(name).addRep(amount);
 		} else {
-			QuestX.logMSG("REP DOES NOT CONTAIN PLAYER NAME");
+			QuestX.logDebug("REP DOES NOT CONTAIN PLAYER NAME");
 			loadPlayerReputation(name);
 			rep.get(name).addRep(amount);
 		}
