@@ -320,6 +320,7 @@ public class SimpleNPC {
 										QuestManager.removeCurrentPlayerQuest(ql.getName(), p.getName());
 									}
 								} else {
+									QuestX.logChat(p, "[Quest Task]");
 									t.sendWhatIsLeftToDo(p);
 								}
 								return;
@@ -344,8 +345,6 @@ public class SimpleNPC {
 				 * .getQuestLoader(QuestManager.getCurrentQuestName(p
 				 * .getName())); ql.setTaskComplete(p.getName()); } }
 				 */
-			} else {
-
 			}
 
 			if (TaskRegister.doesPlayerHaveTask(p.getName())) {
