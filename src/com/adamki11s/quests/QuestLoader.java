@@ -383,6 +383,7 @@ public class QuestLoader {
 			c.write();
 			this.playerProgress.put(p, 1);
 		}
+		this.setPlayerTask(p);
 	}
 
 	public QuestTask getPlayerQuestTask(String p) {

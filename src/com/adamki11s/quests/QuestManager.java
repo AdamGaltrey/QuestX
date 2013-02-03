@@ -46,6 +46,8 @@ public class QuestManager {
 			if (!isQuestLoaded(q)) {
 				loadQuest(q);
 			}
+			QuestLoader ql = getQuestLoader(q);
+			ql.loadAndCheckPlayerProgress(pName);
 			currentQuest.put(pName, q);
 		}
 	}
