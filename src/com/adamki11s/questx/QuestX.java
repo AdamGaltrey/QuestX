@@ -22,9 +22,9 @@ import com.adamki11s.events.NPCInteractEvent;
 import com.adamki11s.events.PlayerJoinLeaveEvents;
 import com.adamki11s.events.TagColourEvent;
 import com.adamki11s.io.InitialSetup;
+import com.adamki11s.io.WorldConfigData;
 import com.adamki11s.npcs.NPCHandler;
 import com.adamki11s.npcs.loading.FixedLoadingTable;
-import com.adamki11s.npcs.population.WorldConfigData;
 import com.adamki11s.payload.ExtractPayload;
 import com.adamki11s.quests.QuestManager;
 import com.adamki11s.reputation.ReputationManager;
@@ -134,7 +134,7 @@ public class QuestX extends JavaPlugin {
 		playerMoveEvent = new MovementMonitor(this, handle);
 		entityDeathMonitorEvent = new EntityDeathMonitor(this);
 		playerJLEvent = new PlayerJoinLeaveEvents(this);
-		if (tagAPIEnabled) {
+		if (tagAPIEnabled && WorldConfigData.isTagAPISupported()) {
 			tagColourEvent = new TagColourEvent(this);
 		}
 

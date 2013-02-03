@@ -1,8 +1,7 @@
-package com.adamki11s.npcs.population;
+package com.adamki11s.io;
 
 import java.io.File;
 
-import com.adamki11s.io.FileLocator;
 import com.adamki11s.questx.QuestX;
 import com.adamki11s.sync.io.configuration.SyncConfiguration;
 
@@ -10,6 +9,7 @@ public class WorldConfigData {
 
 	static String[] worlds;
 	static int maxSpawnsPerChunk, maxSpawnsPerWorld, untouchedDespawnMinutes;
+	static boolean tagAPISupport;
 
 	public static void loadWorldConfigData() {
 		File f = FileLocator.getWorldConfig();
@@ -26,6 +26,7 @@ public class WorldConfigData {
 			QuestX.logMSG("World = '" + s + "'");
 		}
 		
+		tagAPISupport = conf.getBoolean("TAG_API_SUPPORT");
 		maxSpawnsPerChunk = conf.getInt("MAX_SPAWNS_PER_CHUNK");
 		maxSpawnsPerWorld = conf.getInt("MAX_SPAWNS_PER_WORLD");
 		untouchedDespawnMinutes = conf.getInt("DESPAWN_IFUNTOUCHED_MINUTES");
@@ -35,6 +36,10 @@ public class WorldConfigData {
 
 	public static String[] getWorlds() {
 		return worlds;
+	}
+	
+	public static boolean isTagAPISupported(){
+		return tagAPISupport;
 	}
 
 	public static int getMaxSpawnsPerChunk() {

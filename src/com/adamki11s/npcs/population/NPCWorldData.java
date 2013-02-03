@@ -1,5 +1,7 @@
 package com.adamki11s.npcs.population;
 
+import com.adamki11s.io.WorldConfigData;
+
 public class NPCWorldData {
 	
 	final String world;
