@@ -60,7 +60,6 @@ public class LoadNPCTemplate {
 
 			this.moveable = conf.getBoolean(NPCTag.MOVEABLE.toString());
 			this.attackable = conf.getBoolean(NPCTag.ATTACKABLE.toString());
-			System.out.println("Is attackable = " + this.attackable);
 			this.minPauseTicks = conf.getInt(NPCTag.MIN_PAUSE_TICKS.toString());
 			this.maxPauseTicks = conf.getInt(NPCTag.MAX_PAUSE_TICKS.toString());
 			this.maxVariation = conf.getInt(NPCTag.MAX_VARIATION.toString());
