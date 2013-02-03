@@ -26,6 +26,8 @@ import com.adamki11s.npcs.NPCHandler;
 import com.adamki11s.npcs.loading.FixedLoadingTable;
 import com.adamki11s.npcs.population.WorldConfigData;
 import com.adamki11s.payload.ExtractPayload;
+import com.adamki11s.quests.QuestManager;
+import com.adamki11s.reputation.ReputationManager;
 import com.adamki11s.threads.ThreadController;
 
 public class QuestX extends JavaPlugin {
@@ -161,6 +163,13 @@ public class QuestX extends JavaPlugin {
 
 		// Updater updater = new Updater(this, "bukkitdev_slug", this.getFile(),
 		// Updater.UpdateType.DEFAULT, false);//Final boolean = show dl progress
+		
+		
+		//update on reloads
+		for(Player player : Bukkit.getServer().getOnlinePlayers()){
+			ReputationManager.loadPlayerReputation(player.getName());
+			QuestManager.loadCurrentPlayerQuest(player.getName());
+		}
 	}
 
 	@Override

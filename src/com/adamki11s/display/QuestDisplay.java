@@ -18,10 +18,14 @@ public class QuestDisplay {
 			String qName = QuestManager.getCurrentQuestName(pName);
 			QuestLoader ql = QuestManager.getQuestLoader(qName);
 			QuestTask qt = ql.getPlayerQuestTask(pName);
+			QuestX.logChat(p, "[Quest Info] Name = " + ql.getName());
 			QuestX.logChat(p, ChatColor.ITALIC + qName + ChatColor.RESET + ChatColor.RED + ", progress " + ql.getProgress(pName));
 			qt.sendWhatIsLeftToDo(p);
+			QuestX.logChat(p, "----------");
 		}
 	}
+	
+	
 		
 
 }
