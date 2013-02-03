@@ -31,7 +31,7 @@ import com.adamki11s.threads.ThreadController;
 public class QuestX extends JavaPlugin {
 
 	static final Logger log = Logger.getLogger("QuestX");
-	
+
 	public static boolean tagAPIEnabled;
 
 	NPCHandler handle;
@@ -50,7 +50,7 @@ public class QuestX extends JavaPlugin {
 	public static synchronized void logMSG(String msg) {
 		log.info("[QuestX] " + msg);
 	}
-	
+
 	public static synchronized void logError(String msg) {
 		log.info("[QuestX][ERROR] " + msg);
 	}
@@ -58,7 +58,7 @@ public class QuestX extends JavaPlugin {
 	public static final void logChat(Player p, String message) {
 		p.sendMessage(ChatColor.AQUA + "[QuestX] " + ChatColor.RESET + DynamicStrings.getDynamicReplacement(message, p.getName()));
 	}
-	
+
 	public static final void logChatError(Player p, String message) {
 		p.sendMessage(ChatColor.AQUA + "[QuestX]" + ChatColor.RED + "[ERROR] " + ChatColor.RESET + DynamicStrings.getDynamicReplacement(message, p.getName()));
 	}
@@ -77,46 +77,42 @@ public class QuestX extends JavaPlugin {
 		}
 		return (permission != null);
 	}
-	
 
-    private boolean setupEconomy()
-    {
-        RegisteredServiceProvider<Economy> economyProvider = getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
-        if (economyProvider != null) {
-            economy = economyProvider.getProvider();
-        }
+	private boolean setupEconomy() {
+		RegisteredServiceProvider<Economy> economyProvider = getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
+		if (economyProvider != null) {
+			economy = economyProvider.getProvider();
+		}
 
-        return (economy != null);
-    }
+		return (economy != null);
+	}
 
 	@Override
 	public void onEnable() {
 
-		
-		
 		boolean perms = this.setupPermissions();
 		if (perms) {
 			QuestX.logMSG("Hooked into Vault permissions successfully.");
 		} else {
 			QuestX.logMSG("There was an error hooking into Vault permissions!");
 		}
-		
+
 		boolean econ = this.setupEconomy();
 		if (econ) {
 			QuestX.logMSG("Hooked into Vault Economy successfully.");
 		} else {
 			QuestX.logMSG("There was an error hooking into Vault economy!");
 		}
-		
+
 		Plugin plug = Bukkit.getPluginManager().getPlugin("TagAPI");
-		if(plug != null){
+		if (plug != null) {
 			tagAPIEnabled = true;
 		} else {
 			tagAPIEnabled = false;
 		}
 
 		InitialSetup.run();
-		
+
 		ExtractPayload.extractPayload();
 
 		handle = new NPCHandler(this, WorldConfigData.getWorlds());
@@ -136,8 +132,10 @@ public class QuestX extends JavaPlugin {
 		playerMoveEvent = new MovementMonitor(this, handle);
 		entityDeathMonitorEvent = new EntityDeathMonitor(this);
 		playerJLEvent = new PlayerJoinLeaveEvents(this);
-		tagColourEvent = new TagColourEvent(this);
-		
+		if (tagAPIEnabled) {
+			tagColourEvent = new TagColourEvent(this);
+		}
+
 		// register events
 
 		/*

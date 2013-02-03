@@ -1,6 +1,7 @@
 package com.adamki11s.dialogue.dynamic;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 
 public class DynamicStrings {
 	
@@ -9,7 +10,9 @@ public class DynamicStrings {
 		String rep2 = rep1.replaceAll(DynVar.ONLINE_PLAYERS.getDynVar(), (Bukkit.getServer().getOnlinePlayers().length + ""));
 		String rep3 = rep2.replaceAll(DynVar.MOTD.getDynVar(), Bukkit.getServer().getMotd());
 		String rep4 = rep3.replaceAll(DynVar.SERVER_NAME.getDynVar(), Bukkit.getServerName());
-		return rep4;
+		
+		String finish = ChatColor.translateAlternateColorCodes('&', rep4);
+		return finish;
 	}
 
 }
