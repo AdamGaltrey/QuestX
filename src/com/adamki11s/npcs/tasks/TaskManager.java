@@ -47,7 +47,9 @@ public class TaskManager {
 	}
 
 	public void trackNPCKill(String npcName) {
-		this.getTaskLoader().getNKT().trackKill(npcName);
+		if (this.isTrackingNPCKills()) {
+			this.getTaskLoader().getNKT().trackKill(npcName);
+		}
 	}
 
 	public boolean isTaskCompleted() {
@@ -206,23 +208,23 @@ public class TaskManager {
 				QuestX.permission.playerAdd(p, perm);
 			}
 		}
-		
+
 		if (this.getTaskLoader().isAwardingRemPerms()) {
 			for (String perm : this.getTaskLoader().getRemPerms()) {
-				if(QuestX.permission.has(p, perm)){
+				if (QuestX.permission.has(p, perm)) {
 					QuestX.permission.playerRemove(p, perm);
 				}
 			}
 		}
-		
-		if(this.getTaskLoader().isExecutingPlayerCmds()){
+
+		if (this.getTaskLoader().isExecutingPlayerCmds()) {
 			QuestXCMDExecutor.executeAsPlayer(p.getName(), this.getTaskLoader().getPlayerCmds());
 		}
-		
-		if(this.getTaskLoader().isExecutingServerCmds()){
+
+		if (this.getTaskLoader().isExecutingServerCmds()) {
 			QuestXCMDExecutor.executeAsServer(this.getTaskLoader().getServerCmds());
 		}
-		
+
 		if (this.getTaskLoader().fireWorks) {
 			Location pL = p.getLocation();
 			Fireworks display = new Fireworks(pL, this.getTaskLoader().fwRadius, this.getTaskLoader().fwSectors);
