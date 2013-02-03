@@ -39,6 +39,7 @@ public class InitialSetup {
 			conf.add("TAG_API_SUPPORT", false);
 			conf.add("CHECK_UPDATES", true);
 			conf.add("AUTO_DOWNLOAD_UPDATES", false);
+			conf.add("NOTIFY_ADMIN", true);
 			conf.write();
 		}
 		

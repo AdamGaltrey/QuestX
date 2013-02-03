@@ -26,6 +26,9 @@ import com.adamki11s.quests.setup.QuestSetup;
 import com.adamki11s.quests.setup.QuestUnpacker;
 import com.adamki11s.questx.QuestX;
 import com.adamki11s.reputation.Reputation;
+import com.adamki11s.updates.Updater;
+import com.adamki11s.updates.Updater.UpdateResult;
+import com.adamki11s.updates.Updater.UpdateType;
 import com.topcat.npclib.entity.HumanNPC;
 
 public class QuestXCommands implements CommandExecutor {
@@ -55,6 +58,16 @@ public class QuestXCommands implements CommandExecutor {
 				Player p = (Player) sender;
 
 				ItemStack[] gear = new ItemStack[] { null, null, null, null, new ItemStack(Material.WOOD_AXE) };
+				
+				if(args.length == 1 && args[0].equalsIgnoreCase("force-update")){
+					Updater u = new Updater(QuestX.p, "questx", QuestX.f, UpdateType.DEFAULT, true);
+					if(u.getResult() == UpdateResult.SUCCESS){
+						QuestX.logChat(p, "QuestX version " + u.getLatestVersionString() + " was updated successfully!");
+					} else {
+						QuestX.logChat(p, ChatColor.RED + "Something went wrong downloading the update! Result = " + u.getResult().toString());
+					}
+					return true;
+				}
 
 				if(args.length == 2 && args[0].equalsIgnoreCase("qinfo")){
 					if(args[1].equalsIgnoreCase("current")){

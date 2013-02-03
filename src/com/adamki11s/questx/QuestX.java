@@ -1,5 +1,6 @@
 package com.adamki11s.questx;
 
+import java.io.File;
 import java.util.logging.Logger;
 
 import net.milkbowl.vault.economy.Economy;
@@ -30,6 +31,7 @@ import com.adamki11s.payload.ExtractPayload;
 import com.adamki11s.quests.QuestManager;
 import com.adamki11s.reputation.ReputationManager;
 import com.adamki11s.threads.ThreadController;
+import com.adamki11s.updates.UpdateNotifier;
 import com.adamki11s.updates.Updater;
 import com.adamki11s.updates.Updater.UpdateType;
 
@@ -51,6 +53,8 @@ public class QuestX extends JavaPlugin {
 	TagColourEvent tagColourEvent;
 
 	public static Plugin p;
+	public static String version;
+	public static File f;
 
 	public static synchronized void logMSG(String msg) {
 		log.info("[QuestX] " + msg);
@@ -94,6 +98,9 @@ public class QuestX extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
+		
+		version = this.getDescription().getVersion();
+		f = this.getFile();
 
 		boolean perms = this.setupPermissions();
 		if (perms) {
@@ -124,6 +131,9 @@ public class QuestX extends JavaPlugin {
 				u = new Updater(this, "questx", this.getFile(), UpdateType.DEFAULT, true);
 			} else {
 				u = new Updater(this, "questx", this.getFile(), UpdateType.NO_DOWNLOAD, true);
+			}
+			if(GeneralConfigData.isNotifyAdmin()){
+				UpdateNotifier.setNotifier(u);
 			}
 			QuestX.logMSG("Update result = " + u.getResult().toString());
 		}
