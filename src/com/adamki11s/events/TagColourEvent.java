@@ -5,7 +5,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.kitteh.tag.PlayerReceiveNameTagEvent;
 
-import com.adamki11s.io.WorldConfigData;
+import com.adamki11s.io.GeneralConfigData;
 import com.adamki11s.questx.QuestX;
 import com.adamki11s.reputation.ReputationManager;
 
@@ -17,7 +17,7 @@ public class TagColourEvent implements Listener {
 
 	@EventHandler
 	public void onNameTag(PlayerReceiveNameTagEvent event) {
-		if (QuestX.tagAPIEnabled && WorldConfigData.isTagAPISupported()) {
+		if (QuestX.tagAPIEnabled && GeneralConfigData.isTagAPISupported()) {
 			if (ReputationManager.getNamesToColour().containsKey(event.getPlayer().getName())) {
 				event.setTag(ReputationManager.getNamesToColour().get(event.getPlayer().getName()) + event.getPlayer().getName());
 			}

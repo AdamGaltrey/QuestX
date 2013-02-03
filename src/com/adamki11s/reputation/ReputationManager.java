@@ -1,12 +1,10 @@
 package com.adamki11s.reputation;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map.Entry;
 
 import org.bukkit.ChatColor;
 
-import com.adamki11s.io.WorldConfigData;
+import com.adamki11s.io.GeneralConfigData;
 import com.adamki11s.questx.QuestX;
 
 public class ReputationManager {
@@ -45,7 +43,7 @@ public class ReputationManager {
 	}
 
 	private static void updateColourCache(String name) {
-		if (QuestX.tagAPIEnabled && WorldConfigData.isTagAPISupported()) {
+		if (QuestX.tagAPIEnabled && GeneralConfigData.isTagAPISupported()) {
 			ChatColor c = rep.get(name).getChatColour();
 			if (c != ChatColor.RESET) {
 				colours.put(name, c);

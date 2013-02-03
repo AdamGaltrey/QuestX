@@ -63,6 +63,10 @@ public class FileLocator {
 	public static File getWorldConfig() {
 		return new File(config_root + File.separator + "npc_world_config.txt");
 	}
+	
+	public static File getGeneralConfig(){
+		return new File(config_root + File.separator + "general_config.txt");
+	}
 
 	public static void createPlayerNPCProgressionFile(String npcName, String playerName) {
 		try {

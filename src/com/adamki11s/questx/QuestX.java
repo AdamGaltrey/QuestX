@@ -21,6 +21,7 @@ import com.adamki11s.events.NPCDamageEvent;
 import com.adamki11s.events.NPCInteractEvent;
 import com.adamki11s.events.PlayerJoinLeaveEvents;
 import com.adamki11s.events.TagColourEvent;
+import com.adamki11s.io.GeneralConfigData;
 import com.adamki11s.io.InitialSetup;
 import com.adamki11s.io.WorldConfigData;
 import com.adamki11s.npcs.NPCHandler;
@@ -29,6 +30,8 @@ import com.adamki11s.payload.ExtractPayload;
 import com.adamki11s.quests.QuestManager;
 import com.adamki11s.reputation.ReputationManager;
 import com.adamki11s.threads.ThreadController;
+import com.adamki11s.updates.Updater;
+import com.adamki11s.updates.Updater.UpdateType;
 
 public class QuestX extends JavaPlugin {
 
@@ -115,6 +118,16 @@ public class QuestX extends JavaPlugin {
 
 		InitialSetup.run();
 
+		if (GeneralConfigData.isCheckingUpdates()) {
+			Updater u;
+			if (GeneralConfigData.isAutoDLUpdates()) {
+				u = new Updater(this, "questx", this.getFile(), UpdateType.DEFAULT, true);
+			} else {
+				u = new Updater(this, "questx", this.getFile(), UpdateType.NO_DOWNLOAD, true);
+			}
+			QuestX.logMSG("Update result = " + u.getResult().toString());
+		}
+
 		ExtractPayload.extractPayload();
 
 		handle = new NPCHandler(this, WorldConfigData.getWorlds());
@@ -134,7 +147,7 @@ public class QuestX extends JavaPlugin {
 		playerMoveEvent = new MovementMonitor(this, handle);
 		entityDeathMonitorEvent = new EntityDeathMonitor(this);
 		playerJLEvent = new PlayerJoinLeaveEvents(this);
-		if (tagAPIEnabled && WorldConfigData.isTagAPISupported()) {
+		if (tagAPIEnabled && GeneralConfigData.isTagAPISupported()) {
 			tagColourEvent = new TagColourEvent(this);
 		}
 
@@ -163,10 +176,9 @@ public class QuestX extends JavaPlugin {
 
 		// Updater updater = new Updater(this, "bukkitdev_slug", this.getFile(),
 		// Updater.UpdateType.DEFAULT, false);//Final boolean = show dl progress
-		
-		
-		//update on reloads
-		for(Player player : Bukkit.getServer().getOnlinePlayers()){
+
+		// update on reloads
+		for (Player player : Bukkit.getServer().getOnlinePlayers()) {
 			ReputationManager.loadPlayerReputation(player.getName());
 			QuestManager.loadCurrentPlayerQuest(player.getName());
 		}

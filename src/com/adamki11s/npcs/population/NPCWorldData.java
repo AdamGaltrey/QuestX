@@ -25,7 +25,7 @@ public class NPCWorldData {
 	}
 	
 	public boolean canSpawnMore(){
-		return (this.currentSpawns < WorldConfigData.maxSpawnsPerWorld);
+		return (this.currentSpawns < WorldConfigData.getMaxSpawnsPerWorld());
 	}
 
 }

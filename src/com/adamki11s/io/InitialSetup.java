@@ -31,13 +31,23 @@ public class InitialSetup {
 			io.add("DEFAULT_HOTSPOT", 0);
 			io.write();
 		}
+		File genConfig = FileLocator.getGeneralConfig();
+		
+		if(!genConfig.exists()){
+			fileSetup(genConfig);
+			SyncConfiguration conf = new SyncConfiguration(genConfig);
+			conf.add("TAG_API_SUPPORT", false);
+			conf.add("CHECK_UPDATES", true);
+			conf.add("AUTO_DOWNLOAD_UPDATES", false);
+			conf.write();
+		}
+		
 		File wConfig = FileLocator.getWorldConfig();
 		if(!wConfig.exists()){
 			fileSetup(wConfig);
 			SyncConfiguration conf = new SyncConfiguration(wConfig);
 			conf.add("MAX_SPAWNS_PER_CHUNK", 2);
 			conf.add("MAX_SPAWNS_PER_WORLD", 200);
-			conf.add("TAG_API_SUPPORT", false);
 			conf.addComment("Whether QuestX will colour player name tags depending on their reputation level");
 			conf.add("DESPAWN_IFUNTOUCHED_MINUTES", 45);
 			conf.addComment("After how many minutes this NPC will despawn if no one has interacted with it. Does not apply to fixed spawns");
@@ -51,6 +61,7 @@ public class InitialSetup {
 			fileSetup(currentQ);
 		}
 		WorldConfigData.loadWorldConfigData();
+		GeneralConfigData.load();
 	}
 
 	static void folderSetup(File f) {
