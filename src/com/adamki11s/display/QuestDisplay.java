@@ -32,7 +32,7 @@ public class QuestDisplay {
 			QuestX.logChat(p, "[Quest Info] Name = " + ql.getName() + ", Return to NPC " + qt.getNPCToCompleteName());
 			QuestX.logChat(p, ChatColor.ITALIC + qName + ChatColor.RESET + ChatColor.RED + ", progress " + ql.getProgress(pName));
 			qt.sendWhatIsLeftToDo(p);
-			QuestX.logChat(p, "----------");
+			QuestX.logChat(p, StaticStrings.separator);
 		}
 	}
 	

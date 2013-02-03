@@ -14,6 +14,7 @@ import com.adamki11s.ai.RandomMovement;
 import com.adamki11s.data.ItemStackDrop;
 import com.adamki11s.data.ItemStackProbability;
 import com.adamki11s.display.QuestDisplay;
+import com.adamki11s.display.TaskDisplay;
 import com.adamki11s.npcs.NPCHandler;
 import com.adamki11s.npcs.SimpleNPC;
 import com.adamki11s.npcs.UniqueNameRegister;
@@ -58,6 +59,13 @@ public class QuestXCommands implements CommandExecutor {
 				if(args.length == 2 && args[0].equalsIgnoreCase("qinfo")){
 					if(args[1].equalsIgnoreCase("current")){
 						QuestDisplay.displayCurrentQuestInfo(p);
+					}
+					return true;
+				}
+				
+				if(args.length == 2 && args[0].equalsIgnoreCase("tinfo")){
+					if(args[1].equalsIgnoreCase("current")){
+						TaskDisplay.displayTaskInfo(p);
 					}
 					return true;
 				}
