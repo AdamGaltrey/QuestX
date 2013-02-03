@@ -117,12 +117,12 @@ public class NPCManager {
 			id = name + i;
 			i++;
 		}
-		QuestX.logMSG("Log Name ---");
-		QuestX.logMSG(name);
-		QuestX.logMSG("Log Location ---");
-		QuestX.logMSG(l.toString());
-		QuestX.logMSG("Log ID ---");
-		QuestX.logMSG(id);
+		QuestX.logDebug("Log Name ---");
+		QuestX.logDebug(name);
+		QuestX.logDebug("Log Location ---");
+		QuestX.logDebug(l.toString());
+		QuestX.logDebug("Log ID ---");
+		QuestX.logDebug(id);
 
 		return spawnHumanNPC(name, l, id);
 	}
