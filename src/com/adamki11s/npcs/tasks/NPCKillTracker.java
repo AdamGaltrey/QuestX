@@ -17,7 +17,7 @@ public class NPCKillTracker {
 
 	// format entity_type:kills,
 	void parseInput(String in) {
-		String[] ents = in.split(",");
+		String[] ents = in.split("#");
 		for (String parse : ents) {
 			this.required.add(parse);
 			QuestX.logMSG("Loaded NPC : " + parse);

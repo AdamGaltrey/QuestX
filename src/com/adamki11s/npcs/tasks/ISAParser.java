@@ -9,12 +9,12 @@ public class ISAParser {
 
 	public static synchronized ItemStack[] parseISA(String isaRaw, String cause, boolean quest) throws InvalidISAException {
 		QuestX.logMSG("Beinning ISA parse = " + isaRaw);
-		String[] components = isaRaw.split(",");
+		String[] components = isaRaw.split("#");
 		ItemStack[] isa = new ItemStack[components.length];
 		int count = 0;
 		QuestX.logMSG("Starting split loop");
 		for (String is : components) {
-			String[] dataValues = is.split(":");
+			String[] dataValues = is.split(",");
 			int id, quantity;
 			byte data;
 			try {

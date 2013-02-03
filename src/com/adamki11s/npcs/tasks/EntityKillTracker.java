@@ -22,9 +22,9 @@ public class EntityKillTracker {
 
 	// format entity_type:kills,
 	void parseInput(String in) throws InvalidKillTrackerException {
-		String[] ents = in.split(",");
+		String[] ents = in.split("#");
 		for (String parse : ents) {
-			String[] components = parse.split(":");
+			String[] components = parse.split(",");
 			EntityType e = EntityType.valueOf(components[0]);
 			if (e == null) {
 				throw new InvalidKillTrackerException(in, "Could not parse entity type, check you have entered a valid entity");

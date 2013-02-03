@@ -181,7 +181,7 @@ public class TaskLoader {
 
 		if (config.doesKeyExist("REWARD_PERMISSIONS_ADD")) {
 			if (!config.getString("REWARD_PERMISSIONS_ADD").equalsIgnoreCase("0")) {
-				this.addPerms = config.getString("REWARD_PERMISSIONS_ADD").split(",");
+				this.addPerms = config.getString("REWARD_PERMISSIONS_ADD").split("#");
 				this.apAdd = true;
 			} else {
 				this.apAdd = false;
@@ -193,7 +193,7 @@ public class TaskLoader {
 
 		if (config.doesKeyExist("REWARD_PERMISSIONS_REMOVE")) {
 			if (!config.getString("REWARD_PERMISSIONS_REMOVE").equalsIgnoreCase("0")) {
-				this.remPerms = config.getString("REWARD_PERMISSIONS_REMOVE").split(",");
+				this.remPerms = config.getString("REWARD_PERMISSIONS_REMOVE").split("#");
 				this.apRem = true;
 			} else {
 				this.apRem = false;
@@ -205,7 +205,7 @@ public class TaskLoader {
 
 		if (config.doesKeyExist("EXECUTE_PLAYER_CMD")) {
 			if (!config.getString("EXECUTE_PLAYER_CMD").equalsIgnoreCase("0")) {
-				this.playerCmds = config.getString("EXECUTE_PLAYER_CMD").split(",");
+				this.playerCmds = config.getString("EXECUTE_PLAYER_CMD").split("#");
 				this.execPlayerCommand = true;
 			} else {
 				this.execPlayerCommand = false;
@@ -217,7 +217,7 @@ public class TaskLoader {
 
 		if (config.doesKeyExist("EXECUTE_SERVER_CMD")) {
 			if (!config.getString("EXECUTE_SERVER_CMD").equalsIgnoreCase("0")) {
-				this.serverCmds = config.getString("EXECUTE_SERVER_CMD").split(",");
+				this.serverCmds = config.getString("EXECUTE_SERVER_CMD").split("#");
 				this.execServerCommand = true;
 			} else {
 				this.execServerCommand = false;
