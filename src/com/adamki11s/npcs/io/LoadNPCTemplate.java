@@ -26,8 +26,6 @@ public class LoadNPCTemplate {
 	}
 
 	boolean unload = false;
-
-	ChatColor nameColour;
 	String inventDrops, gear;
 
 	ItemStackDrop itemStackDrop;
@@ -60,8 +58,6 @@ public class LoadNPCTemplate {
 			SyncConfiguration conf = new SyncConfiguration(prop);
 			conf.read();
 
-			this.nameColour = ChatColor.getByChar(conf.getString(NPCTag.CHAT_COLOUR.toString()));
-
 			this.moveable = conf.getBoolean(NPCTag.MOVEABLE.toString());
 			this.attackable = conf.getBoolean(NPCTag.ATTACKABLE.toString());
 			System.out.println("Is attackable = " + this.attackable);
@@ -90,7 +86,7 @@ public class LoadNPCTemplate {
 
 			if (!unload) {
 				// create template npc
-				this.npcTemplate = new NPCTemplate(this.name, nameColour, moveable, attackable, minPauseTicks, maxPauseTicks, maxVariation, maxHealth, respawnTicks, itemStackDrop,
+				this.npcTemplate = new NPCTemplate(this.name, moveable, attackable, minPauseTicks, maxPauseTicks, maxVariation, maxHealth, respawnTicks, itemStackDrop,
 						npcGear, damageMod, retalliationMultiplier);
 			}
 

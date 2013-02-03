@@ -3,7 +3,6 @@ package com.adamki11s.io;
 public enum NPCTag {
 	
 	NAME,
-	CHAT_COLOUR,
 	MOVEABLE,
 	ATTACKABLE,
 	LOAD,
