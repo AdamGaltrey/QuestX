@@ -3,13 +3,13 @@ package com.adamki11s.npcs;
 import java.io.File;
 import java.util.HashSet;
 
-import net.minecraft.server.v1_4_6.Packet;
-import net.minecraft.server.v1_4_6.Packet5EntityEquipment;
-import net.minecraft.server.v1_4_6.WorldServer;
+import net.minecraft.server.v1_4_R1.Packet;
+import net.minecraft.server.v1_4_R1.Packet5EntityEquipment;
+import net.minecraft.server.v1_4_R1.WorldServer;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_4_6.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_4_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -266,7 +266,7 @@ public class SimpleNPC {
 	}
 
 	public void updateArmor(int slot, org.bukkit.inventory.ItemStack itm) {
-		net.minecraft.server.v1_4_6.ItemStack i = CraftItemStack.asNMSCopy(itm);
+		net.minecraft.server.v1_4_R1.ItemStack i = CraftItemStack.asNMSCopy(itm);
 		Packet p = new Packet5EntityEquipment(this.npc.getEntity().id, slot, i);
 		((WorldServer) this.npc.getEntity().world).tracker.a(this.npc.getEntity(), p);
 	}

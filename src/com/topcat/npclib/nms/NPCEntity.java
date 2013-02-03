@@ -1,13 +1,14 @@
 package com.topcat.npclib.nms;
 
-import net.minecraft.server.v1_4_6.Entity;
-import net.minecraft.server.v1_4_6.EntityHuman;
-import net.minecraft.server.v1_4_6.EntityPlayer;
-import net.minecraft.server.v1_4_6.EnumGamemode;
-import net.minecraft.server.v1_4_6.PlayerInteractManager;
-import net.minecraft.server.v1_4_6.WorldServer;
+import net.minecraft.server.v1_4_R1.Entity;
+import net.minecraft.server.v1_4_R1.EntityHuman;
+import net.minecraft.server.v1_4_R1.EntityPlayer;
+import net.minecraft.server.v1_4_R1.EnumGamemode;
+import net.minecraft.server.v1_4_R1.PlayerInteractManager;
+import net.minecraft.server.v1_4_R1.WorldServer;
 
-import org.bukkit.craftbukkit.v1_4_6.CraftServer;
+import org.bukkit.craftbukkit.v1_4_R1.CraftServer;
+import org.bukkit.craftbukkit.v1_4_R1.entity.CraftEntity;
 import org.bukkit.event.entity.EntityTargetEvent;
 
 import com.topcat.npclib.NPCManager;
@@ -36,7 +37,7 @@ public class NPCEntity extends EntityPlayer {
 	}
 
 	public void setBukkitEntity(org.bukkit.entity.Entity entity) {
-		bukkitEntity = entity;
+		super.bukkitEntity = (CraftEntity) entity;
 	}
 
 	@Override

@@ -183,7 +183,7 @@ public class ExtrasInventory {
 
 	
 	public void updateInventory(Player p) {
-		((org.bukkit.craftbukkit.v1_4_6.entity.CraftPlayer)p).getHandle().syncInventory();
+		((org.bukkit.craftbukkit.v1_4_R1.entity.CraftPlayer)p).getHandle().syncInventory();
 	}
 
 }
