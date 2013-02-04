@@ -6,6 +6,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import com.adamki11s.exceptions.MissingPropertyException;
 import com.adamki11s.io.FileLocator;
 import com.adamki11s.npcs.NPCHandler;
 import com.adamki11s.npcs.SimpleNPC;
@@ -36,10 +37,15 @@ public class FixedLoadingTable {
 				SyncLocation sl = (SyncLocation) wrapper.getObject();
 				Location spawnLocation = sl.getBukkitLocation();
 				LoadNPCTemplate tempLoader = new LoadNPCTemplate(npcName);
-				tempLoader.loadProperties();
-				NPCTemplate template = tempLoader.getLoadedNPCTemplate();
-				template.registerSimpleNPCFixedSpawn(handle, spawnLocation);
-				fixedSpawns.put(npcName, spawnLocation);
+				try {
+					tempLoader.loadProperties();
+					NPCTemplate template = tempLoader.getLoadedNPCTemplate();
+					template.registerSimpleNPCFixedSpawn(handle, spawnLocation);
+					fixedSpawns.put(npcName, spawnLocation);
+				} catch (MissingPropertyException e) {
+					e.printErrorReason();
+				}
+				
 			} else {
 				QuestX.logError("Tried to load NPC '" + npcName + "' but no NPC file was found.");
 			}
@@ -51,9 +57,14 @@ public class FixedLoadingTable {
 		SyncLocation sl = (SyncLocation) loader.getObject(name);
 		Location spawnLocation = sl.getBukkitLocation();
 		LoadNPCTemplate tempLoader = new LoadNPCTemplate(name);
-		tempLoader.loadProperties();
-		NPCTemplate template = tempLoader.getLoadedNPCTemplate();
-		template.registerSimpleNPCFixedSpawn(handle, spawnLocation);
+		try {
+			tempLoader.loadProperties();
+			NPCTemplate template = tempLoader.getLoadedNPCTemplate();
+			template.registerSimpleNPCFixedSpawn(handle, spawnLocation);
+		} catch (MissingPropertyException e) {
+			e.printErrorReason();
+		}
+	
 	}
 
 	public static boolean addFixedNPCSpawn(Player p, String npcName, Location l, NPCHandler handle) {

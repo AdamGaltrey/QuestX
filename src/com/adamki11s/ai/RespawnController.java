@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 
+import com.adamki11s.exceptions.MissingPropertyException;
 import com.adamki11s.io.FileLocator;
 import com.adamki11s.npcs.NPCHandler;
 import com.adamki11s.npcs.SimpleNPC;
@@ -63,15 +64,19 @@ public class RespawnController {
 						QuestX.logDebug("Trying to load '" + f.getName());
 						npcNameToLoad = f.getName();
 						LoadNPCTemplate tempLoader = new LoadNPCTemplate(npcNameToLoad);
-						tempLoader.loadProperties();
-						if (tempLoader.wantsToLoad()) {
-							NPCTemplate temp = tempLoader.getLoadedNPCTemplate();
-							temp.addSimpleNPCToWaitingList(this.handle);
-							QuestX.logDebug("Added NPC '" + npcNameToLoad + "' to waiting list");
-							break;
-						} else {
-							QuestX.logDebug("NPC '" + npcNameToLoad + "' load=false, finding another");
-							loaded = true;
+						try {
+							tempLoader.loadProperties();
+							if (tempLoader.wantsToLoad()) {
+								NPCTemplate temp = tempLoader.getLoadedNPCTemplate();
+								temp.addSimpleNPCToWaitingList(this.handle);
+								QuestX.logDebug("Added NPC '" + npcNameToLoad + "' to waiting list");
+								break;
+							} else {
+								QuestX.logDebug("NPC '" + npcNameToLoad + "' load=false, finding another");
+								loaded = true;
+							}
+						} catch (MissingPropertyException e) {
+							e.printErrorReason();
 						}
 						// load into waiting list
 					}
