@@ -42,20 +42,20 @@ public class AttackController {
 		if (loc.getBlockX() > bl.getBlockX() && loc.getBlockY() > bl.getBlockY() && loc.getBlockZ() > bl.getBlockZ() && loc.getBlockX() < tr.getBlockX()
 				&& loc.getBlockY() < tr.getBlockY() && loc.getBlockZ() < tr.getBlockZ()) {
 
-			QuestX.logChat(p, "In attack zone! Size = " + npc.getRetalliationMultiplier() + ", var = " + var);
+			//QuestX.logChat(p, "In attack zone! Size = " + npc.getRetalliationMultiplier() + ", var = " + var);
 			
 			npc.moveTo(p.getLocation());
 			npc.lookAt(p.getLocation());
 
 			if (npc.getHumanNPC().getBukkitEntity().getLocation().distance(p.getLocation()) < 2) {
-				QuestX.logChat(p, "NPC HIT YOU");
+				//QuestX.logChat(p, "NPC HIT YOU");
 				npc.getHumanNPC().animateArmSwing();
 				p.damage(npc.getDamageMod());
-				System.out.println(p.getHealth());
+				//System.out.println(p.getHealth());
 			}
 
 		} else {
-			QuestX.logChat(p, "Left attack zone NPC aggro lost!");
+			//QuestX.logChat(p, "Left attack zone NPC aggro lost!");
 			npc.unAggro();
 			npc.moveTick();
 		}
