@@ -67,6 +67,10 @@ public class FileLocator {
 	public static File getGeneralConfig(){
 		return new File(config_root + File.separator + "general_config.txt");
 	}
+	
+	public static File getDatabaseConfig(){
+		return new File(config_root + File.separator + "sql_logging_config.txt");
+	}
 
 	public static void createPlayerNPCProgressionFile(String npcName, String playerName) {
 		try {

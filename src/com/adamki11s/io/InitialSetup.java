@@ -6,7 +6,6 @@ import java.io.IOException;
 import com.adamki11s.sync.io.configuration.SyncConfiguration;
 import com.adamki11s.sync.io.objects.SyncObjectIO;
 
-
 public class InitialSetup {
 
 	public static void run() {
@@ -23,7 +22,7 @@ public class InitialSetup {
 			io.add("NPC_COUNT", 0);
 			io.write();
 		}
-		
+
 		f = FileLocator.getHotspotFile();
 		if (!f.exists()) {
 			fileSetup(f);
@@ -31,9 +30,21 @@ public class InitialSetup {
 			io.add("DEFAULT_HOTSPOT", 0);
 			io.write();
 		}
+
+		File dbConfig = FileLocator.getDatabaseConfig();
+
+		if (!dbConfig.exists()) {
+			fileSetup(dbConfig);
+			SyncConfiguration cfg = new SyncConfiguration(dbConfig);
+			cfg.add("LOGGING_FREQUENCY_MINUTES", 3);
+			cfg.addComment("After how many minutes the SQLite database will be updated with population density values (This determines where NPC's are more likely to spawn.");
+			cfg.addComment("It is reccommended to keep this value between 3-5 minutes for the first 4-5 days of running this plugin on your server. Then after this time it should have calibrated sufficiently and the rate can be increased to 10-15.");
+			cfg.write();
+		}
+
 		File genConfig = FileLocator.getGeneralConfig();
-		
-		if(!genConfig.exists()){
+
+		if (!genConfig.exists()) {
 			fileSetup(genConfig);
 			SyncConfiguration conf = new SyncConfiguration(genConfig);
 			conf.add("TAG_API_SUPPORT", false);
@@ -42,9 +53,9 @@ public class InitialSetup {
 			conf.add("NOTIFY_ADMIN", true);
 			conf.write();
 		}
-		
+
 		File wConfig = FileLocator.getWorldConfig();
-		if(!wConfig.exists()){
+		if (!wConfig.exists()) {
 			fileSetup(wConfig);
 			SyncConfiguration conf = new SyncConfiguration(wConfig);
 			conf.add("MAX_SPAWNS_PER_CHUNK", 2);
@@ -58,11 +69,12 @@ public class InitialSetup {
 			conf.write();
 		}
 		File currentQ = FileLocator.getCurrentQuestFile();
-		if(!currentQ.exists()){
+		if (!currentQ.exists()) {
 			fileSetup(currentQ);
 		}
 		WorldConfigData.loadWorldConfigData();
 		GeneralConfigData.load();
+		DatabaseConfigData.load();
 	}
 
 	static void folderSetup(File f) {

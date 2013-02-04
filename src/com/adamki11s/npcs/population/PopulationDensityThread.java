@@ -21,7 +21,7 @@ public class PopulationDensityThread implements Runnable {
 
 	final SyncSQL sql;
 	String[] worlds;
-	
+
 	int gdCacheUpdate = 0;
 
 	HashMap<String, PreparedStatement[]> preparedStatements = new HashMap<String, PreparedStatement[]>();
@@ -41,18 +41,22 @@ public class PopulationDensityThread implements Runnable {
 			// select 'already exists'
 			// else
 			// select 'no record'
-			/*String prepUpdateDensity = "IF EXISTS(SELECT x,z FROM " + worldName + " WHERE x=? AND z=?) THEN UPDATE " + worldName
-					+ " SET density=density+? WHERE x=? AND z=?; ELSE" + " INSERT INTO " + worldName + " (x,z,density) VALUES (?,?,?);";*/
+			/*
+			 * String prepUpdateDensity = "IF EXISTS(SELECT x,z FROM " +
+			 * worldName + " WHERE x=? AND z=?) THEN UPDATE " + worldName +
+			 * " SET density=density+? WHERE x=? AND z=?; ELSE" +
+			 * " INSERT INTO " + worldName + " (x,z,density) VALUES (?,?,?);";
+			 */
 			QuestX.logDebug("Preparing statements for world '" + worldName + "'");
 			String selectXZ = "SELECT x,z FROM " + worldName + " WHERE x=? AND z=?";
 			String updateDensity = "UPDATE " + worldName + " SET density=density+? WHERE x=? AND z=?";
 
 			try {
-				PreparedStatement prepXZ = this.sql.getConnection().prepareStatement(selectXZ),
-				prepDensity = this.sql.getConnection().prepareStatement(updateDensity);
-				
-				this.preparedStatements.put(worldName, new PreparedStatement[]{prepXZ, prepDensity});
-				//QuestX.logMSG("Statement prepared for world '" + worldName + "'.");
+				PreparedStatement prepXZ = this.sql.getConnection().prepareStatement(selectXZ), prepDensity = this.sql.getConnection().prepareStatement(updateDensity);
+
+				this.preparedStatements.put(worldName, new PreparedStatement[] { prepXZ, prepDensity });
+				// QuestX.logMSG("Statement prepared for world '" + worldName +
+				// "'.");
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
@@ -72,25 +76,19 @@ public class PopulationDensityThread implements Runnable {
 		return false;
 	}
 
-	public void terminateSQL(){
+	public void terminateSQL() {
 		this.sql.closeConnection();
 	}
-	
+
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
-		
-		if(this.gdCacheUpdate < 25){
-			this.gdCacheUpdate++;
-		} else {
-			this.gdCacheUpdate = 0;
-			GlobalDensityCache.updateGlobalDensity(this.sql, worlds);
-		}
-		
-		QuestX.logDebug("Updating , time elapsed = 5 minutes");
+		GlobalDensityCache.updateGlobalDensity(this.sql, worlds);
+
 		if (Bukkit.getServer().getOnlinePlayers().length < 1) {
 			return;
 		}
+
 		for (World w : Bukkit.getServer().getWorlds()) {
 			if (!this.canSpawnInWorld(w.getName())) {
 				continue;
@@ -126,18 +124,22 @@ public class PopulationDensityThread implements Runnable {
 	void updateSQLTable(String worldName, HashSet<ChunkDensity> density) {
 
 		PreparedStatement[] preps = this.preparedStatements.get(worldName);
-		
-		/*String selectXZ = "SELECT x,z FROM " + worldName + " WHERE x=? AND z=?";
-		String updateDensity = "UPDATE " + worldName + " SET density=density+? WHERE x=? AND z=?";
-		String insertChunk = "INSERT INTO " + worldName + " (x,z,density) VALUES (x=?,z=?,density=?)";*/
-		
-		for(ChunkDensity cd : density){
+
+		/*
+		 * String selectXZ = "SELECT x,z FROM " + worldName +
+		 * " WHERE x=? AND z=?"; String updateDensity = "UPDATE " + worldName +
+		 * " SET density=density+? WHERE x=? AND z=?"; String insertChunk =
+		 * "INSERT INTO " + worldName +
+		 * " (x,z,density) VALUES (x=?,z=?,density=?)";
+		 */
+
+		for (ChunkDensity cd : density) {
 			try {
 				QuestX.logDebug("Updating data for chunk (" + cd.getX() + ", " + cd.getZ() + ") World - " + worldName);
 				preps[0].setInt(1, cd.getX());
 				preps[0].setInt(2, cd.getZ());
 				ResultSet xzCheck = preps[0].executeQuery();
-				if(xzCheck.next()){
+				if (xzCheck.next()) {
 					QuestX.logDebug("Chunk exists, updating...");
 					preps[1].setInt(1, cd.getIncrement());
 					preps[1].setInt(2, cd.getX());
