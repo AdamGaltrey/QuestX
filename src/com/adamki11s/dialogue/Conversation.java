@@ -1,5 +1,6 @@
 package com.adamki11s.dialogue;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -8,6 +9,7 @@ import com.adamki11s.dialogue.triggers.Trigger;
 import com.adamki11s.dialogue.triggers.TriggerType;
 import com.adamki11s.events.ConversationRegister;
 import com.adamki11s.exceptions.InvalidDialogueException;
+import com.adamki11s.exceptions.MissingTaskPropertyException;
 import com.adamki11s.io.FileLocator;
 import com.adamki11s.npcs.NPCHandler;
 import com.adamki11s.npcs.SimpleNPC;
@@ -53,13 +55,14 @@ public class Conversation {
 			parseSuccess = false;
 			QuestX.logError("-----REASON-----");
 			e.printErrorReason();
-			/*QuestX.logError("-----STACK-----");
-			e.printStackTrace();
-			QuestX.logError("-----STACK END-----");*/
+			/*
+			 * QuestX.logError("-----STACK-----"); e.printStackTrace();
+			 * QuestX.logError("-----STACK END-----");
+			 */
 		}
 	}
-	
-	public boolean wasParseSuccessful(){
+
+	public boolean wasParseSuccessful() {
 		return this.parseSuccess;
 	}
 
@@ -70,6 +73,10 @@ public class Conversation {
 	}
 
 	public void endConversation() {
+		Player p = this.getConvoData().getPlayer();
+		if (p != null) {
+			QuestX.logChat(p, ChatColor.AQUA + "[QuestX] " + ChatColor.RED + " Conversation ended.");
+		}
 		this.conversing = false;
 		ConversationRegister.playersConversing.remove(this);
 	}
@@ -139,14 +146,19 @@ public class Conversation {
 					System.out.println("In has NOT task code");
 					TaskLoader tl = new TaskLoader(FileLocator.getNPCTaskFile(this.getConvoData().getSimpleNpc().getName()), this.getConvoData().getSimpleNpc().getName());
 					QuestX.logDebug("Loading task...");
-					tl.load();
-					QuestX.logDebug("Task Loaded!");
-					TaskManager manage = new TaskManager(p.getName(), tl);
-					TaskRegister.registerTask(manage);
-					QuestX.logChat(p, ChatColor.ITALIC + tl.getTaskName() + ChatColor.RESET + ChatColor.GREEN + " task started!");
-					QuestX.logChat(p, "Task description : " + tl.getTaskDescription());
-					QuestX.logChat(p, "Not recieving messages?");
-					QuestX.logDebug("Not recieving msgs?");
+					try {
+						tl.load();
+						QuestX.logDebug("Task Loaded!");
+						TaskManager manage = new TaskManager(p.getName(), tl);
+						TaskRegister.registerTask(manage);
+						QuestX.logChat(p, ChatColor.ITALIC + tl.getTaskName() + ChatColor.RESET + ChatColor.GREEN + " task started!");
+						QuestX.logChat(p, "Task description : " + tl.getTaskDescription());
+						QuestX.logDebug("Not recieving msgs?");
+					} catch (MissingTaskPropertyException e) {
+						e.printErrorReason();
+						QuestX.logChat(p, "Task failed to load, task file is incorrectly formatted. Check the server log for details.");
+					}
+
 					this.endConversation();
 					return;
 				}
@@ -189,7 +201,7 @@ public class Conversation {
 						}
 
 					} else {
-						//quest has not been setup
+						// quest has not been setup
 						QuestX.logChat(p, "This quest has not yet been setup. /q setup " + qName);
 					}
 				} else {
