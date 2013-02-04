@@ -13,7 +13,7 @@ public class SQLTables {
 	public static void initiateSQLite(SyncSQL sql) {
 		QuestX.logMSG("Connecting to SQLite database...");
 		if (sql.initialise()) {
-			QuestX.logMSG("Connection successfull!");
+			QuestX.logMSG("Connection successful!");
 		} else {
 			QuestX.logMSG("Something went wrong!");
 		}
