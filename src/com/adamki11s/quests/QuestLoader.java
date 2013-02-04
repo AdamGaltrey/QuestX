@@ -177,22 +177,22 @@ public class QuestLoader {
 		}
 
 		this.tasks = new QuestTask[i];
-		QuestX.logMSG("Loading Quest " + questName + " with " + this.nodes + " objectives.");
+		QuestX.logDebug("Loading Quest " + questName + " with " + this.nodes + " objectives.");
 		for (int c = 1; c <= this.nodes; c++) {
 			// load and parse string into a QuestTask object
 			String raw = this.config.getString(c + "");
 			String qtypeEnum = raw.substring(0, raw.indexOf(":"));
 			String dataString = raw.substring(raw.indexOf(":") + 1);
-			QuestX.logMSG("READING---------------");
+			QuestX.logDebug("READING---------------");
 			QType qType = QType.parseType(qtypeEnum);
 			if (qType == null) {
 				throw new InvalidQuestException(raw, "QuestType was invalid! Got '" + qtypeEnum + "', expected (FETCH_ITEMS, KILL_ENTITIES, KILL_NPC OR TALK_NPC)", this.questName);
 			} else {
-				QuestX.logMSG("Quest Type = '" + qType.toString() + "'");
+				QuestX.logDebug("Quest Type = '" + qType.toString() + "'");
 			}
-			QuestX.logMSG("raw = " + raw);
-			QuestX.logMSG("qtypeEnum = " + qtypeEnum);
-			QuestX.logMSG("dataString = " + dataString);
+			QuestX.logDebug("raw = " + raw);
+			QuestX.logDebug("qtypeEnum = " + qtypeEnum);
+			QuestX.logDebug("dataString = " + dataString);
 
 			try {
 				this.tasks[c - 1] = QuestTaskParser.getTaskObject(dataString, qType, this.questName);
@@ -203,10 +203,10 @@ public class QuestLoader {
 			}
 
 			// this.tasks[c - 1] = new
-			QuestX.logMSG("QUEST TASK LOAD LOOOP-----------");
+			QuestX.logDebug("QUEST TASK LOAD LOOOP-----------");
 		}
 
-		QuestX.logMSG("QUEST LOAD COMPLETE");
+		QuestX.logDebug("QUEST LOAD COMPLETE");
 	}
 
 	public String getProgress(String player) {
