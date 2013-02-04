@@ -7,11 +7,15 @@ public class Pages {
 	final String[] data;
 	final int itemsPerPage;
 
-/**
- * Constructor
- * @param data The list of information in a String array available to be displayed
- * @param itemsPerPage How many items will be returned per page
- */
+	/**
+	 * Constructor
+	 * 
+	 * @param data
+	 *            The list of information in a String array available to be
+	 *            displayed
+	 * @param itemsPerPage
+	 *            How many items will be returned per page
+	 */
 	public Pages(String[] data, int itemsPerPage) {
 		this.data = data;
 		this.itemsPerPage = Math.abs(itemsPerPage);
@@ -19,7 +23,9 @@ public class Pages {
 
 	/**
 	 * Returns the strings on a given page as a String[] array.
-	 * @param page The page number to show (1 - pageNumbers)
+	 * 
+	 * @param page
+	 *            The page number to show (1 - pageNumbers)
 	 * @return
 	 */
 	public String[] getStringsToSend(int page) {
@@ -37,6 +43,7 @@ public class Pages {
 
 	/**
 	 * Get the number of pages which can be displayed.
+	 * 
 	 * @return
 	 */
 	public int getPages() {
