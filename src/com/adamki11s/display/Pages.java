@@ -29,6 +29,9 @@ public class Pages {
 	 * @return
 	 */
 	public String[] getStringsToSend(int page) {
+		for(String s : data){
+			System.out.println("read data = " + s);
+		}
 		int startIndex = this.itemsPerPage * (Math.abs(page) - 1);
 		LinkedList<String> list = new LinkedList<String>();
 		if (page <= this.getPages()) {
@@ -47,7 +50,7 @@ public class Pages {
 	 * @return
 	 */
 	public int getPages() {
-		return (data.length / this.itemsPerPage);
+		return (int) Math.ceil((double)data.length / (double)this.itemsPerPage);
 	}
 	
 	public int getRawArrayLength(){

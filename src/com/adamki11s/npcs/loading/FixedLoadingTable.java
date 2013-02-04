@@ -9,6 +9,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import com.adamki11s.display.FixedSpawnsDisplay;
 import com.adamki11s.exceptions.MissingPropertyException;
 import com.adamki11s.io.FileLocator;
 import com.adamki11s.npcs.NPCHandler;
@@ -63,6 +64,7 @@ public class FixedLoadingTable {
 				QuestX.logError("Tried to load NPC '" + npcName + "' but no NPC file was found.");
 			}
 		}
+		FixedSpawnsDisplay.updateSoftReference();
 	}
 
 	public static void spawnFixedNPC(NPCHandler handle, String name) {

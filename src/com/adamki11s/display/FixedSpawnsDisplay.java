@@ -23,5 +23,9 @@ public class FixedSpawnsDisplay {
 			QuestX.logChat(player, s);
 		}
 	}
+	
+	public static void updateSoftReference(){
+		pages = new SoftReference<Pages>(new Pages(FixedLoadingTable.getFixedSpawns(), 8));
+	}
 
 }
