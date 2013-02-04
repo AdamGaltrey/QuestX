@@ -7,6 +7,7 @@ import org.bukkit.inventory.ItemStack;
 
 import com.adamki11s.exceptions.InvalidISAException;
 import com.adamki11s.exceptions.InvalidKillTrackerException;
+import com.adamki11s.exceptions.MissingTaskPropertyException;
 import com.adamki11s.io.FileLocator;
 import com.adamki11s.questx.QuestX;
 import com.adamki11s.sync.io.configuration.SyncConfiguration;
@@ -39,7 +40,7 @@ public class TaskLoader {
 		}
 	}
 
-	public void load() {
+	public void load() throws MissingTaskPropertyException {
 		SyncConfiguration config = new SyncConfiguration(this.taskFile);
 		QuestX.logDebug("Reading config");
 		config.read();
@@ -48,25 +49,25 @@ public class TaskLoader {
 		if (config.doesKeyExist("TASK_NAME")) {
 			this.taskName = config.getString("TASK_NAME");
 		} else {
-			QuestX.logError("Missing property 'TASK_NAME' in task file for NPC " + this.npcName);
+			throw new MissingTaskPropertyException(npcName, "TASK_NAME");
 		}
-		
+
 		if (config.doesKeyExist("TASK_DESCRIPTION")) {
 			this.taskDescription = config.getString("TASK_DESCRIPTION");
 		} else {
-			QuestX.logError("Missing property 'TASK_DESCRIPTION' in task file for NPC " + this.npcName);
+			throw new MissingTaskPropertyException(npcName, "TASK_DESCRIPTION");
 		}
-		
+
 		if (config.doesKeyExist("INCOMPLETE_TASK_SPEECH")) {
 			this.incompleteTaskSpeech = config.getString("INCOMPLETE_TASK_SPEECH");
 		} else {
-			QuestX.logError("Missing property 'INCOMPLETE_TASK_SPEECH' in task file for NPC " + this.npcName);
+			throw new MissingTaskPropertyException(npcName, "INCOMPLETE_TASK_SPEECH");
 		}
-		
+
 		if (config.doesKeyExist("COMPLETE_TASK_SPEECH")) {
 			this.completeTaskSpeech = config.getString("COMPLETE_TASK_SPEECH");
 		} else {
-			QuestX.logError("Missing property 'COMPLETE_TASK_SPEECH' in task file for NPC " + this.npcName);
+			throw new MissingTaskPropertyException(npcName, "COMPLETE_TASK_SPEECH");
 		}
 
 		QuestX.logMSG("Reading fetch_items");
@@ -84,8 +85,7 @@ public class TaskLoader {
 				this.fetchItems = false;
 			}
 		} else {
-			QuestX.logError("Missing property 'FETCH_ITEMS' in task file for NPC " + this.npcName);
-			this.fetchItems = false;
+			throw new MissingTaskPropertyException(npcName, "FETCH_ITEMS");
 		}
 
 		QuestX.logMSG("Reading reward_items");
@@ -103,8 +103,7 @@ public class TaskLoader {
 				this.awardItems = false;
 			}
 		} else {
-			QuestX.logError("Missing property 'REWARD_ITEMS' in task file for NPC " + this.npcName);
-			this.awardItems = false;
+			throw new MissingTaskPropertyException(npcName, "REWARD_ITEMS");
 		}
 
 		QuestX.logMSG("Reading kill_entities");
@@ -122,8 +121,7 @@ public class TaskLoader {
 				this.killEntities = false;
 			}
 		} else {
-			QuestX.logError("Missing property 'KILL_ENTITIES' in task file for NPC " + this.npcName);
-			this.killEntities = false;
+			throw new MissingTaskPropertyException(npcName, "KILL_ENTITIES");
 		}
 
 		if (config.doesKeyExist("KILL_NPCS")) {
@@ -136,8 +134,7 @@ public class TaskLoader {
 				this.killNPCS = false;
 			}
 		} else {
-			QuestX.logError("Missing property 'KILL_NPCS' in task file for NPC " + this.npcName);
-			this.killNPCS = false;
+			throw new MissingTaskPropertyException(npcName, "KILL_ENTITIES");
 		}
 
 		if (config.doesKeyExist("FIREWORKS")) {
@@ -159,24 +156,25 @@ public class TaskLoader {
 				this.fireWorks = false;
 			}
 		} else {
-			QuestX.logError("Missing property 'FIREWORKS' in task file for NPC " + this.npcName);
-			this.fireWorks = false;
+			throw new MissingTaskPropertyException(npcName, "FIREWORKS");
 		}
 
 		if (config.doesKeyExist("REWARD_EXP")) {
 			this.rewardExp = config.getInt("REWARD_EXP");
 		} else {
-			QuestX.logError("Missing property 'REWARD_EXP' in task file for NPC " + this.npcName);
+			throw new MissingTaskPropertyException(npcName, "REWARD_EXP");
 		}
+
 		if (config.doesKeyExist("REWARD_REP")) {
 			this.rewardRep = config.getInt("REWARD_REP");
 		} else {
-			QuestX.logError("Missing property 'REWARD_REP' in task file for NPC " + this.npcName);
+			throw new MissingTaskPropertyException(npcName, "REWARD_REP");
 		}
+
 		if (config.doesKeyExist("REWARD_GOLD")) {
 			this.rewardGold = config.getInt("REWARD_GOLD");
 		} else {
-			QuestX.logError("Missing property 'REWARD_GOLD' in task file for NPC " + this.npcName);
+			throw new MissingTaskPropertyException(npcName, "REWARD_GOLD");
 		}
 
 		if (config.doesKeyExist("REWARD_PERMISSIONS_ADD")) {
@@ -187,8 +185,7 @@ public class TaskLoader {
 				this.apAdd = false;
 			}
 		} else {
-			QuestX.logError("Missing property 'REWARD_PERMISSIONS_ADD' in task file for NPC " + this.npcName);
-			this.apAdd = false;
+			throw new MissingTaskPropertyException(npcName, "REWARD_PERMISSIONS_ADD");
 		}
 
 		if (config.doesKeyExist("REWARD_PERMISSIONS_REMOVE")) {
@@ -199,8 +196,7 @@ public class TaskLoader {
 				this.apRem = false;
 			}
 		} else {
-			QuestX.logError("Missing property 'REWARD_PERMISSIONS_REMOVE' in task file for NPC " + this.npcName);
-			this.apRem = false;
+			throw new MissingTaskPropertyException(npcName, "REWARD_PERMISSIONS_REMOVE");
 		}
 
 		if (config.doesKeyExist("EXECUTE_PLAYER_CMD")) {
@@ -211,8 +207,7 @@ public class TaskLoader {
 				this.execPlayerCommand = false;
 			}
 		} else {
-			QuestX.logError("Missing property 'EXECUTE_PLAYER_CMD' in task file for NPC " + this.npcName);
-			this.execPlayerCommand = false;
+			throw new MissingTaskPropertyException(npcName, "EXECUTE_PLAYER_CMD");
 		}
 
 		if (config.doesKeyExist("EXECUTE_SERVER_CMD")) {
@@ -223,8 +218,7 @@ public class TaskLoader {
 				this.execServerCommand = false;
 			}
 		} else {
-			QuestX.logError("Missing property 'EXECUTE_SERVER_CMD' in task file for NPC " + this.npcName);
-			this.execServerCommand = false;
+			throw new MissingTaskPropertyException(npcName, "EXECUTE_SERVER_CMD");
 		}
 
 		QuestX.logMSG("TaskLoad Operation completed");
