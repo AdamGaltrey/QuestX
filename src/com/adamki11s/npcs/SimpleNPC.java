@@ -251,14 +251,24 @@ public class SimpleNPC {
 			ConversationRegister.endPlayerNPCConversation(c.getConvoData().getPlayer());
 		}
 		if (health <= 0) {
-			if (this.isSpawnFixed()) {
+			/*if (this.isSpawnFixed()) {
 				QuestX.logChat(p, "You killed NPC '" + this.getName() + "'. NPC will respawn in " + this.respawnTicks / 20 + " seconds.");
 			} else {
 				QuestX.logChat(p, "You killed NPC '" + this.getName() + "'. This NPC may respawn elsewhere now.");
-			}
+			}*/
+			StringBuilder loot = new StringBuilder();
+			loot.append(this.name).append(" dropped : ");
+			boolean gainedLoot = false;
 			for (ItemStack i : this.inventory.getDrops()) {
+				gainedLoot = true;
+				loot.append(i.getAmount()).append(" ").append(i.getType().toString()).append(",");
 				p.getWorld().dropItemNaturally(this.npc.getBukkitEntity().getLocation(), i);
 			}
+			
+			if(gainedLoot){
+				QuestX.logChat(p, loot.toString().substring(0, loot.toString().length()));
+			}
+			
 			if (TaskRegister.doesPlayerHaveTask(p.getName())) {
 				TaskManager tm = TaskRegister.getTaskManager(p.getName());
 				tm.trackNPCKill(this.getName());
