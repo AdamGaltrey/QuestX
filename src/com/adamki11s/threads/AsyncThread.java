@@ -4,6 +4,7 @@ import com.adamki11s.ai.AttackController;
 import com.adamki11s.ai.DespawnController;
 import com.adamki11s.ai.MovementController;
 import com.adamki11s.ai.RespawnController;
+import com.adamki11s.io.DatabaseConfigData;
 import com.adamki11s.npcs.NPCHandler;
 import com.adamki11s.npcs.population.PopulationDensityThread;
 
@@ -39,7 +40,7 @@ public class AsyncThread implements Runnable {
 		tickOver += tickRate;
 		denstiyCalculationTickOver += tickRate;
 		//if(denstiyCalculationTickOver > (20 * 60 * 5)){ 5minutes
-		if(denstiyCalculationTickOver > (20 * 10)){ //10 secs
+		if(denstiyCalculationTickOver > (20 * 60 * DatabaseConfigData.getUpdateMinutes())){ //60 secs * x minutes between updates
 			this.denstiyCalculationTickOver = 0;
 			this.pdThread.run();
 		}
