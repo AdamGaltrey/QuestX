@@ -57,7 +57,6 @@ public class ConversationRegister implements Listener {
 		for (Conversation c : playersConversing) {
 			if (c != null) {
 				if (c.getConvoData().getPlayer().getName().equalsIgnoreCase(p.getName())) {
-					QuestX.logChat(p, ChatColor.AQUA + "[QuestX] " + ChatColor.RED + " Conversation ended.");
 					c.endConversation();
 					return;
 				}
@@ -73,7 +72,6 @@ public class ConversationRegister implements Listener {
 					String s = evt.getMessage();
 					if (s.equalsIgnoreCase("exit") || s.equalsIgnoreCase("end") || s.equalsIgnoreCase("stop") || s.equalsIgnoreCase("quit") || s.equalsIgnoreCase("close")) {
 						Player p = evt.getPlayer();
-						QuestX.logChat(p, ChatColor.AQUA + "[QuestX] " + ChatColor.RED + " Conversation ended.");
 						c.endConversation();
 						evt.setCancelled(true);
 						return;

@@ -36,6 +36,7 @@ import com.adamki11s.threads.ThreadController;
 import com.adamki11s.updates.UpdateNotifier;
 import com.adamki11s.updates.Updater;
 import com.adamki11s.updates.Updater.UpdateType;
+import com.adamki11s.validation.Validator;
 
 public class QuestX extends JavaPlugin {
 
@@ -169,6 +170,8 @@ public class QuestX extends JavaPlugin {
 		ExtractPayload.extractPayload();
 
 		handle = new NPCHandler(this, WorldConfigData.getWorlds());
+		
+		Validator.validateAll();
 
 		FixedLoadingTable.spawnFixedNPCS(handle);
 
