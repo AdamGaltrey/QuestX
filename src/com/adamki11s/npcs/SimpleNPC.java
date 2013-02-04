@@ -238,9 +238,6 @@ public class SimpleNPC {
 	}
 
 	public void damageNPC(Player p, int damage) {
-		if (this.isSpawnFixed) {
-			return;
-		}
 
 		this.setTouched();
 
