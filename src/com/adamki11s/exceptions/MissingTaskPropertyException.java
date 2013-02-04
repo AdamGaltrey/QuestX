@@ -13,7 +13,9 @@ public class MissingTaskPropertyException extends Exception{
 	}
 	
 	public void printErrorReason(){
+		QuestX.logError("##### MissingTaskPropertyException #####");
 		QuestX.logError("Missing property '" + this.prop + "' in task file for NPC '" + this.npc + "'.");
+		QuestX.logError("##### MissingTaskPropertyException #####");
 	}
 
 }

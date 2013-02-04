@@ -2,6 +2,7 @@ package com.adamki11s.exceptions;
 
 import com.adamki11s.questx.QuestX;
 
+@SuppressWarnings("serial")
 public class InvalidISAException extends Exception {
 
 	final String line, reason, cause;
@@ -15,6 +16,7 @@ public class InvalidISAException extends Exception {
 	}
 
 	public void printErrorReason() {
+		QuestX.logError("##### InvalidISAException #####");
 		if (!quest) {
 			QuestX.logError("Error while parsing ItemStack Array String for NPC '" + this.cause + "'.");
 		} else {
@@ -22,6 +24,7 @@ public class InvalidISAException extends Exception {
 		}
 		QuestX.logError("String : " + this.line);
 		QuestX.logError("Reason : " + this.reason);
+		QuestX.logError("##### InvalidISAException #####");
 	}
 
 }

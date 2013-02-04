@@ -13,6 +13,7 @@ public class InvalidKillTrackerException extends Exception{
 	}
 
 	public void printCustomErrorReason(boolean quest, String cause){
+		QuestX.logError("##### InvalidKillTrackerException #####");
 		if(quest){
 		QuestX.logError("Error while parsing quest file for quest '" + cause + "'.");
 		} else {
@@ -20,6 +21,7 @@ public class InvalidKillTrackerException extends Exception{
 		}
 		QuestX.logError("String : " + this.line);
 		QuestX.logError("Reason : " + this.reason);
+		QuestX.logError("##### InvalidKillTrackerException #####");
 	}
 
 }

@@ -12,6 +12,7 @@ import com.adamki11s.commands.QuestXCMDExecutor;
 import com.adamki11s.exceptions.InvalidISAException;
 import com.adamki11s.exceptions.InvalidKillTrackerException;
 import com.adamki11s.exceptions.InvalidQuestException;
+import com.adamki11s.exceptions.MissingQuestPropertyException;
 import com.adamki11s.io.FileLocator;
 import com.adamki11s.npcs.tasks.EntityKillTracker;
 import com.adamki11s.npcs.tasks.Fireworks;
@@ -41,23 +42,28 @@ public class QuestLoader {
 	NPCKillTracker nkt;
 	boolean apAdd, apRem, execPlayerCommand, execServerCommand, fireWorks;
 
-	public QuestLoader(File f) {
+	public QuestLoader(File f) throws InvalidQuestException, MissingQuestPropertyException {
 		this.config = new SyncConfiguration(f);
-		try {
-			this.load();
-		} catch (InvalidQuestException e) {
-			e.printErrorReason();
-		}
+		this.load();
 	}
 
-	void load() throws InvalidQuestException {
+	void load() throws InvalidQuestException, MissingQuestPropertyException {
 		this.config.read();
-		this.questName = config.getString("NAME");
+
+		if (this.config.doesKeyExist("NAME")) {
+			this.questName = config.getString("NAME");
+		} else {
+			throw new MissingQuestPropertyException(questName, "NAME");
+		}
+
 		int i = 0;
+
 		while (config.doesKeyExist((i + 1) + "")) {
 			i++;
 		}
+
 		this.nodes = i;
+
 		if (config.doesKeyExist("REWARD_ITEMS")) {
 			if (!this.config.getString("REWARD_ITEMS").equalsIgnoreCase("0")) {
 				try {
@@ -70,37 +76,37 @@ public class QuestLoader {
 				this.rewardItems = null;
 			}
 		} else {
-			QuestX.logError("Missing property 'REWARD_ITEMS' in quest file for Quest " + this.questName);
-			this.rewardItems = null;
+			throw new MissingQuestPropertyException(questName, "REWARD_ITEMS");
 		}
 
 		if (config.doesKeyExist("REWARD_EXP")) {
 			this.rewardExp = config.getInt("REWARD_EXP");
 		} else {
-			QuestX.logError("Missing property 'REWARD_EXP' in quest file for Quest " + this.questName);
+			throw new MissingQuestPropertyException(questName, "REWARD_EXP");
 		}
 
 		if (config.doesKeyExist("REWARD_REP")) {
 			this.rewardRep = config.getInt("REWARD_REP");
 		} else {
-			QuestX.logError("Missing property 'REWARD_REP' in quest file for Quest " + this.questName);
+			throw new MissingQuestPropertyException(questName, "REWARD_REP");
 		}
+
 		if (config.doesKeyExist("START_TEXT")) {
 			this.startText = this.config.getString("START_TEXT");
 		} else {
-			QuestX.logError("Missing property 'START_TEXT' in quest file for Quest " + this.questName);
+			throw new MissingQuestPropertyException(questName, "START_TEXT");
 		}
 
 		if (config.doesKeyExist("END_TEXT")) {
 			this.endText = this.config.getString("END_TEXT");
 		} else {
-			QuestX.logError("Missing property 'END_TEXT' in quest file for Quest " + this.questName);
+			throw new MissingQuestPropertyException(questName, "END_TEXT");
 		}
 
 		if (config.doesKeyExist("REWARD_GOLD")) {
 			this.rewardGold = config.getInt("REWARD_GOLD");
 		} else {
-			QuestX.logError("Missing property 'REWARD_GOLD' in quest file for Quest " + this.questName);
+			throw new MissingQuestPropertyException(questName, "REWARD_GOLD");
 		}
 
 		if (config.doesKeyExist("REWARD_PERMISSIONS_ADD")) {
@@ -111,8 +117,7 @@ public class QuestLoader {
 				this.apAdd = false;
 			}
 		} else {
-			QuestX.logError("Missing property 'REWARD_PERMISSIONS_ADD' in quest file for Quest " + this.questName);
-			this.apAdd = false;
+			throw new MissingQuestPropertyException(questName, "REWARD_PERMISSIONS_ADD");
 		}
 
 		if (config.doesKeyExist("REWARD_PERMISSIONS_REMOVE")) {
@@ -123,8 +128,7 @@ public class QuestLoader {
 				this.apRem = false;
 			}
 		} else {
-			QuestX.logError("Missing property 'REWARD_PERMISSIONS_REMOVE' in quest file for Quest " + this.questName);
-			this.apRem = false;
+			throw new MissingQuestPropertyException(questName, "REWARD_PERMISSIONS_REMOVE");
 		}
 
 		if (config.doesKeyExist("EXECUTE_PLAYER_CMD")) {
@@ -135,10 +139,9 @@ public class QuestLoader {
 				this.execPlayerCommand = false;
 			}
 		} else {
-			QuestX.logError("Missing property 'EXECUTE_PLAYER_CMD' in quest file for Quest " + this.questName);
-			this.execPlayerCommand = false;
+			throw new MissingQuestPropertyException(questName, "EXECUTE_PLAYER_CMD");
 		}
-		
+
 		if (config.doesKeyExist("EXECUTE_SERVER_CMD")) {
 			if (!config.getString("EXECUTE_SERVER_CMD").equalsIgnoreCase("0")) {
 				this.playerCmds = config.getString("EXECUTE_SERVER_CMD").split("#");
@@ -147,8 +150,7 @@ public class QuestLoader {
 				this.execPlayerCommand = false;
 			}
 		} else {
-			QuestX.logError("Missing property 'EXECUTE_SERVER_CMD' in quest file for Quest " + this.questName);
-			this.execPlayerCommand = false;
+			throw new MissingQuestPropertyException(questName, "EXECUTE_SERVER_CMD");
 		}
 
 		if (config.doesKeyExist("FIREWORKS")) {
@@ -171,8 +173,7 @@ public class QuestLoader {
 				this.fireWorks = false;
 			}
 		} else {
-			QuestX.logError("Missing property 'FIREWORKS' in quest file for Quest " + this.questName);
-			this.fireWorks = false;
+			throw new MissingQuestPropertyException(questName, "FIREWORKS");
 		}
 
 		this.tasks = new QuestTask[i];

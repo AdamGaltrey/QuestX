@@ -14,9 +14,11 @@ public class InvalidQuestException extends Exception {
 	}
 
 	public void printErrorReason() {
+		QuestX.logError("##### InvalidQuestException #####");
 		QuestX.logError("Error while parsing quest file for quest '" + this.quest + "'.");
 		QuestX.logError("String : " + this.line);
 		QuestX.logError("Reason : " + this.reason);
+		QuestX.logError("##### InvalidQuestException #####");
 	}
 
 }

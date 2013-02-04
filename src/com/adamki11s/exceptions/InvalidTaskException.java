@@ -14,9 +14,11 @@ public class InvalidTaskException extends Exception {
 	}
 
 	public void printErrorReason() {
+		QuestX.logError("##### InvalidTaskException #####");
 		QuestX.logError("Error while parsing task file for NPC '" + this.npc + "'.");
 		QuestX.logError("String : " + this.line);
 		QuestX.logError("Reason : " + this.reason);
+		QuestX.logError("##### InvalidTaskException #####");
 	}
 
 }

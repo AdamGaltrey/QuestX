@@ -14,9 +14,11 @@ public class InvalidDialogueException extends Exception {
 	}
 	
 	public void printErrorReason(){
+		QuestX.logError("##### InvalidDialogueException #####");
 		QuestX.logError("Error while parsing dialogue file for NPC '" + this.npc + "'.");
 		QuestX.logError("String : " + this.line);
 		QuestX.logError("Reason : " + this.reason);
+		QuestX.logError("##### InvalidDialogueException #####");
 	}
 
 }

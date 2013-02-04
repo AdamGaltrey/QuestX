@@ -13,7 +13,9 @@ public class MissingPropertyException extends Exception{
 	}
 	
 	public void printErrorReason(){
+		QuestX.logError("##### MissingPropertyException #####");
 		QuestX.logError("Missing property '" + this.prop + "' for NPC '" + this.npc + "'.");
+		QuestX.logError("##### MissingPropertyException #####");
 	}
 
 }
