@@ -17,6 +17,11 @@ public class Pages {
 		this.itemsPerPage = Math.abs(itemsPerPage);
 	}
 
+	/**
+	 * Returns the strings on a given page as a String[] array.
+	 * @param page The page number to show (1 - pageNumbers)
+	 * @return
+	 */
 	public String[] getStringsToSend(int page) {
 		int startIndex = this.itemsPerPage * (Math.abs(page) - 1);
 		LinkedList<String> list = new LinkedList<String>();
@@ -30,6 +35,10 @@ public class Pages {
 		return list.toArray(new String[list.size()]);
 	}
 
+	/**
+	 * Get the number of pages which can be displayed.
+	 * @return
+	 */
 	public int getPages() {
 		return (data.length / this.itemsPerPage);
 	}
