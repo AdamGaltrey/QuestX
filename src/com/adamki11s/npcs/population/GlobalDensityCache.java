@@ -1,13 +1,10 @@
 package com.adamki11s.npcs.population;
 
-import java.math.BigInteger;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
-import com.adamki11s.questx.QuestX;
 import com.adamki11s.sync.sql.SyncSQL;
 
 public class GlobalDensityCache {
@@ -36,7 +33,6 @@ public class GlobalDensityCache {
 			if (gDensities.containsKey(w)) {
 				if (gDensity > gDensities.get(w)) {
 					gDensities.put(w, gDensity);
-					QuestX.logMSG("Global Density Updated to " + gDensity);
 				}
 			} else {
 				gDensities.put(w, gDensity);

@@ -31,7 +31,6 @@ public class FixedLoadingTable {
 			if (wrapper.getTag().equalsIgnoreCase("NPC_COUNT")) {
 				continue;
 			}
-			System.out.println("Wrapper tag = " + wrapper.getTag());
 			String npcName = wrapper.getTag();
 			if (FileLocator.doesNPCNameExist(npcName)) {
 				SyncLocation sl = (SyncLocation) wrapper.getObject();
