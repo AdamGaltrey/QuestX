@@ -49,5 +49,9 @@ public class Pages {
 	public int getPages() {
 		return (data.length / this.itemsPerPage);
 	}
+	
+	public int getRawArrayLength(){
+		return this.data.length;
+	}
 
 }

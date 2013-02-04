@@ -13,6 +13,7 @@ import org.bukkit.inventory.ItemStack;
 import com.adamki11s.ai.RandomMovement;
 import com.adamki11s.data.ItemStackDrop;
 import com.adamki11s.data.ItemStackProbability;
+import com.adamki11s.display.FixedSpawnsDisplay;
 import com.adamki11s.display.QuestDisplay;
 import com.adamki11s.display.TaskDisplay;
 import com.adamki11s.npcs.NPCHandler;
@@ -176,6 +177,23 @@ public class QuestXCommands implements CommandExecutor {
 						return true;
 					} else {
 						p.teleport(npc.getHumanNPC().getBukkitEntity().getLocation());
+						return true;
+					}
+				}
+				
+				if(args.length >= 2 && args[0].equalsIgnoreCase("display")){
+					if(args[1].equalsIgnoreCase("fixedspawns")){
+						if(args.length == 2){
+							FixedSpawnsDisplay.display(p, 1);
+						} else if(args.length == 3) {
+							int pg;
+							try{
+								pg = Integer.parseInt(args[2]);
+							} catch (NumberFormatException nfe){
+								QuestX.logChat(p, ChatColor.RED + "Page number must be an integer! /q display fixedspawns <page>");
+							}
+							FixedSpawnsDisplay.display(p, pg);
+						}
 						return true;
 					}
 				}

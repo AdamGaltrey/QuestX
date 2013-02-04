@@ -1,6 +1,9 @@
 package com.adamki11s.npcs.loading;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map.Entry;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -23,6 +26,17 @@ public class FixedLoadingTable {
 
 	final static SyncObjectIO loader = new SyncObjectIO(FileLocator.getNPCFixedSpawnsFile());
 
+	
+	public static String[] getFixedSpawns() {
+		HashSet<String> ret = new HashSet<String>(fixedSpawns.size());
+		for (Entry<String, Location> e : fixedSpawns.entrySet()) {
+			ret.add(e.getKey());
+		}
+		String[] toSort = ret.toArray(new String[ret.size()]);
+		Arrays.sort(toSort, String.CASE_INSENSITIVE_ORDER);
+		return toSort;
+	}
+
 	public static void spawnFixedNPCS(NPCHandler handle) {
 		QuestX.logDebug("registering npc spawns");
 		loader.read();
@@ -44,7 +58,7 @@ public class FixedLoadingTable {
 				} catch (MissingPropertyException e) {
 					e.printErrorReason();
 				}
-				
+
 			} else {
 				QuestX.logError("Tried to load NPC '" + npcName + "' but no NPC file was found.");
 			}
@@ -63,7 +77,7 @@ public class FixedLoadingTable {
 		} catch (MissingPropertyException e) {
 			e.printErrorReason();
 		}
-	
+
 	}
 
 	public static boolean addFixedNPCSpawn(Player p, String npcName, Location l, NPCHandler handle) {
@@ -79,7 +93,7 @@ public class FixedLoadingTable {
 			if (remove != null) {
 				remove.destroyNPCObject();
 			}
-			
+
 			LoadNPCTemplate tmp = new LoadNPCTemplate(npcName);
 			try {
 				tmp.loadProperties();
@@ -87,7 +101,7 @@ public class FixedLoadingTable {
 			} catch (MissingPropertyException e) {
 				e.printErrorReason();
 			}
-			
+
 			loader.read();
 			for (SyncWrapper wrap : loader.getReadableData()) {
 				loader.add(wrap.getTag(), wrap.getObject());
