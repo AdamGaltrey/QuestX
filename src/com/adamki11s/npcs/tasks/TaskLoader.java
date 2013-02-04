@@ -28,7 +28,7 @@ public class TaskLoader {
 	public TaskLoader(File taskFile, String npcName) {
 		this.taskFile = taskFile;
 		this.npcName = npcName;
-		QuestX.logMSG("TaskLoader Instantiated");
+		QuestX.logDebug("TaskLoader Instantiated");
 	}
 
 	public void setTaskCompleted(String playerName) {
@@ -70,7 +70,7 @@ public class TaskLoader {
 			throw new MissingTaskPropertyException(npcName, "COMPLETE_TASK_SPEECH");
 		}
 
-		QuestX.logMSG("Reading fetch_items");
+		QuestX.logDebug("Reading fetch_items");
 
 		if (config.doesKeyExist("FETCH_ITEMS")) {
 			if (!config.getString("FETCH_ITEMS").trim().equalsIgnoreCase("0")) {
@@ -88,7 +88,7 @@ public class TaskLoader {
 			throw new MissingTaskPropertyException(npcName, "FETCH_ITEMS");
 		}
 
-		QuestX.logMSG("Reading reward_items");
+		QuestX.logDebug("Reading reward_items");
 
 		if (config.doesKeyExist("REWARD_ITEMS")) {
 			if (!config.getString("REWARD_ITEMS").trim().equalsIgnoreCase("0")) {
@@ -106,7 +106,7 @@ public class TaskLoader {
 			throw new MissingTaskPropertyException(npcName, "REWARD_ITEMS");
 		}
 
-		QuestX.logMSG("Reading kill_entities");
+		QuestX.logDebug("Reading kill_entities");
 
 		if (config.doesKeyExist("KILL_ENTITIES")) {
 			if (!config.getString("KILL_ENTITIES").trim().equalsIgnoreCase("0")) {
@@ -126,11 +126,11 @@ public class TaskLoader {
 
 		if (config.doesKeyExist("KILL_NPCS")) {
 			if (!config.getString("KILL_NPCS").trim().equalsIgnoreCase("0")) {
-				QuestX.logMSG("Loading NPC's to kill");
+				QuestX.logDebug("Loading NPC's to kill");
 				this.nkt = new NPCKillTracker(config.getString("KILL_NPCS"));
 				this.killNPCS = true;
 			} else {
-				QuestX.logMSG("Not loading NPC's to kill");
+				QuestX.logDebug("Not loading NPC's to kill");
 				this.killNPCS = false;
 			}
 		} else {
@@ -221,7 +221,7 @@ public class TaskLoader {
 			throw new MissingTaskPropertyException(npcName, "EXECUTE_SERVER_CMD");
 		}
 
-		QuestX.logMSG("TaskLoad Operation completed");
+		QuestX.logDebug("TaskLoad Operation completed");
 	}
 
 	public boolean isExecutingPlayerCmds() {
