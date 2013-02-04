@@ -186,7 +186,7 @@ public class QuestXCommands implements CommandExecutor {
 						if(args.length == 2){
 							FixedSpawnsDisplay.display(p, 1);
 						} else if(args.length == 3) {
-							int pg;
+							int pg = 1;
 							try{
 								pg = Integer.parseInt(args[2]);
 							} catch (NumberFormatException nfe){
