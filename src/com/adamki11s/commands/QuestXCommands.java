@@ -58,10 +58,10 @@ public class QuestXCommands implements CommandExecutor {
 				Player p = (Player) sender;
 
 				ItemStack[] gear = new ItemStack[] { null, null, null, null, new ItemStack(Material.WOOD_AXE) };
-				
-				if(args.length == 1 && args[0].equalsIgnoreCase("force-update")){
+
+				if (args.length == 1 && args[0].equalsIgnoreCase("force-update")) {
 					Updater u = new Updater(QuestX.p, "questx", QuestX.f, UpdateType.DEFAULT, true);
-					if(u.getResult() == UpdateResult.SUCCESS){
+					if (u.getResult() == UpdateResult.SUCCESS) {
 						QuestX.logChat(p, "QuestX version " + u.getLatestVersionString() + " was updated successfully!");
 					} else {
 						QuestX.logChat(p, ChatColor.RED + "Something went wrong downloading the update! Result = " + u.getResult().toString());
@@ -69,20 +69,20 @@ public class QuestXCommands implements CommandExecutor {
 					return true;
 				}
 
-				if(args.length == 2 && args[0].equalsIgnoreCase("qinfo")){
-					if(args[1].equalsIgnoreCase("current")){
+				if (args.length == 2 && args[0].equalsIgnoreCase("qinfo")) {
+					if (args[1].equalsIgnoreCase("current")) {
 						QuestDisplay.displayCurrentQuestInfo(p);
 					}
 					return true;
 				}
-				
-				if(args.length == 2 && args[0].equalsIgnoreCase("tinfo")){
-					if(args[1].equalsIgnoreCase("current")){
+
+				if (args.length == 2 && args[0].equalsIgnoreCase("tinfo")) {
+					if (args[1].equalsIgnoreCase("current")) {
 						TaskDisplay.displayTaskInfo(p);
 					}
 					return true;
 				}
-				
+
 				if (args.length == 2 && args[0].equalsIgnoreCase("unpack")) {
 					String qName = args[1];
 					QuestUnpacker upack = new QuestUnpacker(qName);
@@ -98,7 +98,7 @@ public class QuestXCommands implements CommandExecutor {
 
 				if (args.length == 2 && args[0].equalsIgnoreCase("setup")) {
 					String qName = args[1];
-					if(setups.containsKey(p.getName())){
+					if (setups.containsKey(p.getName())) {
 						QuestX.logChat(p, "You are already setting this quest up!");
 						return true;
 					}
@@ -184,7 +184,10 @@ public class QuestXCommands implements CommandExecutor {
 					String npcName = args[1];
 					boolean suc = FixedLoadingTable.addFixedNPCSpawn(p, npcName, p.getLocation(), handle);
 					if (suc) {
-						this.handle.getSimpleNPCByName(npcName).spawnNPC();
+						SimpleNPC snpc = this.handle.getSimpleNPCByName(npcName);
+						if (snpc != null) {
+							snpc.spawnNPC();
+						}
 					}
 					return true;
 				}
@@ -192,8 +195,8 @@ public class QuestXCommands implements CommandExecutor {
 				if (args.length == 2 && args[0].equalsIgnoreCase("stressspawn")) {
 					int max = Integer.parseInt(args[1]);
 					for (int i = 0; i < max; i++) { // 1/10 chance of dropping
-						SimpleNPC snpc = new SimpleNPC(this.handle, ("a" + i), true, true, 60, 200, 20, 100, 200, new ItemStackDrop(
-								new ItemStackProbability[] { new ItemStackProbability(new ItemStack(Material.GOLD_AXE, 1), 6000) }), gear, 1, 1.5);
+						SimpleNPC snpc = new SimpleNPC(this.handle, ("a" + i), true, true, 60, 200, 20, 100, 200, new ItemStackDrop(new ItemStackProbability[] { new ItemStackProbability(
+								new ItemStack(Material.GOLD_AXE, 1), 6000) }), gear, 1, 1.5);
 						snpc.setNewSpawnLocation(p.getLocation());
 						snpc.spawnNPC();
 						// QuestX.logChat(p, "NPC Spawned!");
@@ -207,8 +210,8 @@ public class QuestXCommands implements CommandExecutor {
 						QuestX.logChat(p, ChatColor.RED + "Name is not unique!");
 						return true;
 					} else {
-						SimpleNPC snpc = new SimpleNPC(this.handle, npcName, true, true, 60, 200, 10, 100, 200, new ItemStackDrop(
-								new ItemStackProbability[] { new ItemStackProbability(new ItemStack(Material.GOLD_AXE, 1), 6000) }), gear, 1, 1.5);
+						SimpleNPC snpc = new SimpleNPC(this.handle, npcName, true, true, 60, 200, 10, 100, 200, new ItemStackDrop(new ItemStackProbability[] { new ItemStackProbability(
+								new ItemStack(Material.GOLD_AXE, 1), 6000) }), gear, 1, 1.5);
 						snpc.spawnNPC();
 
 						QuestX.logChat(p, "NPC Spawned!");

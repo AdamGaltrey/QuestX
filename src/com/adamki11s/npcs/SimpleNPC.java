@@ -273,6 +273,9 @@ public class SimpleNPC {
 				TaskManager tm = TaskRegister.getTaskManager(p.getName());
 				tm.trackNPCKill(this.getName());
 			}
+			
+			QuestX.logChat(p, ChatColor.RED + "You killed NPC '" + this.name + "'");
+			
 			this.despawnNPC();
 		}
 	}

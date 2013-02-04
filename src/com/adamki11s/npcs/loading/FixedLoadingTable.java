@@ -19,7 +19,7 @@ import com.adamki11s.sync.io.serializable.SyncLocation;
 
 public class FixedLoadingTable {
 
-	static HashMap<String, Location> fixedSpawns = new HashMap<String, Location>();
+	static volatile HashMap<String, Location> fixedSpawns = new HashMap<String, Location>();
 
 	final static SyncObjectIO loader = new SyncObjectIO(FileLocator.getNPCFixedSpawnsFile());
 
@@ -79,6 +79,15 @@ public class FixedLoadingTable {
 			if (remove != null) {
 				remove.destroyNPCObject();
 			}
+			
+			LoadNPCTemplate tmp = new LoadNPCTemplate(npcName);
+			try {
+				tmp.loadProperties();
+				tmp.getLoadedNPCTemplate().registerSimpleNPCFixedSpawn(handle, l);
+			} catch (MissingPropertyException e) {
+				e.printErrorReason();
+			}
+			
 			loader.read();
 			for (SyncWrapper wrap : loader.getReadableData()) {
 				loader.add(wrap.getTag(), wrap.getObject());
