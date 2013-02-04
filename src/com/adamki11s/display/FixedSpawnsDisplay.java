@@ -9,7 +9,7 @@ import com.adamki11s.questx.QuestX;
 
 public class FixedSpawnsDisplay {
 	
-	static SoftReference<Pages> pages;
+	static SoftReference<Pages> pages = new SoftReference<Pages>(new Pages(FixedLoadingTable.getFixedSpawns(), 8));
 	
 	public static void display(Player player, int page){
 		if(pages.get() == null){
