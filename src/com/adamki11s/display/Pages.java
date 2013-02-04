@@ -7,6 +7,11 @@ public class Pages {
 	final String[] data;
 	final int itemsPerPage;
 
+/**
+ * Constructor
+ * @param data The list of information in a String array available to be displayed
+ * @param itemsPerPage How many items will be returned per page
+ */
 	public Pages(String[] data, int itemsPerPage) {
 		this.data = data;
 		this.itemsPerPage = Math.abs(itemsPerPage);
