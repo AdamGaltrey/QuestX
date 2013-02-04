@@ -13,9 +13,9 @@ public class RandomMovement {
 	final SimpleNPC npc;
 	MovementData md;
 
-	volatile boolean newMDScheduled = false;
+	boolean newMDScheduled = false;
 
-	volatile Location rootPoint, currentPoint, targetPoint;
+	Location rootPoint, currentPoint, targetPoint;
 	int minPauseTicks, maxPauseTicks, maxVariation, pauseTicks;
 
 	public RandomMovement(SimpleNPC npc, Location rootPoint, int minPauseTicks, int maxPauseTicks, int maxVariation) {

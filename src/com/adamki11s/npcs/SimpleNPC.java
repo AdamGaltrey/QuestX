@@ -53,7 +53,7 @@ public class SimpleNPC {
 	volatile Location fixedLocation, spawnedLocation;
 	boolean isSpawnFixed = false;
 
-	volatile HumanNPC npc;
+	HumanNPC npc;
 	boolean isSpawned = false, underAttack = false;
 
 	final ItemStack[] gear;// boots 1, legs 2, chest 3, head 4, arm 5

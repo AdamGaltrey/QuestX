@@ -17,7 +17,7 @@ import com.adamki11s.sync.io.objects.SyncWrapper;
 
 public class HotspotManager {
 
-	private static volatile HashMap<String, Hotspot> hotspots = new HashMap<String, Hotspot>();
+	private static HashMap<String, Hotspot> hotspots = new HashMap<String, Hotspot>();
 	
 	public static synchronized void createHotspot(Hotspot h){
 		hotspots.put(h.getTag(), h);
