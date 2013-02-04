@@ -31,7 +31,7 @@ public class NPCDamageEvent implements Listener{
 			Player damager = (Player) evt.getDamager();
 			SimpleNPC attacked = handle.getSimpleNPCByEntity(evt.getEntity());
 			if(attacked != null && attacked.isAttackable()){
-				QuestX.logChat(damager, "You did " + evt.getDamage() + " damage to NPC " + attacked.getName());
+				//QuestX.logChat(damager, "You did " + evt.getDamage() + " damage to NPC " + attacked.getName());
 				attacked.getHumanNPC().actAsHurt();
 				attacked.damageNPC(damager, evt.getDamage());
 			} else {
