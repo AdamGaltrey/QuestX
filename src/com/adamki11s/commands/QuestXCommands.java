@@ -114,6 +114,10 @@ public class QuestXCommands implements CommandExecutor {
 						int pg;
 						try {
 							pg = Integer.parseInt(args[2]);
+							if(pg > this.npcList.getPages()){
+								QuestX.logChatError(p, ChatColor.RED + "There are not that many pages!");
+								return true;
+							}
 							String[] send = this.npcList.getStringsToSend(pg);
 							QuestX.logChat(p, "Displaying (" + send.length + "/" + this.npcList.getRawArrayLength() + ") Spawned NPC's, Page (" + pg + "/" + this.npcList.getPages() + ")");
 							int c = 0;
