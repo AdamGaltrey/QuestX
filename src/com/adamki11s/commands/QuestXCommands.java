@@ -1,5 +1,7 @@
 package com.adamki11s.commands;
 
+import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 
 import org.bukkit.ChatColor;
@@ -15,9 +17,12 @@ import com.adamki11s.ai.RandomMovement;
 import com.adamki11s.data.ItemStackDrop;
 import com.adamki11s.data.ItemStackProbability;
 import com.adamki11s.display.FixedSpawnsDisplay;
+import com.adamki11s.display.Pages;
 import com.adamki11s.display.QuestDisplay;
+import com.adamki11s.display.StaticStrings;
 import com.adamki11s.display.TaskDisplay;
 import com.adamki11s.guidance.LocationGuider;
+import com.adamki11s.io.FileLocator;
 import com.adamki11s.npcs.NPCHandler;
 import com.adamki11s.npcs.SimpleNPC;
 import com.adamki11s.npcs.UniqueNameRegister;
@@ -33,6 +38,7 @@ import com.adamki11s.reputation.Reputation;
 import com.adamki11s.updates.Updater;
 import com.adamki11s.updates.Updater.UpdateResult;
 import com.adamki11s.updates.Updater.UpdateType;
+import com.adamki11s.utils.FileUtils;
 import com.topcat.npclib.entity.HumanNPC;
 
 public class QuestXCommands implements CommandExecutor {
@@ -48,9 +54,9 @@ public class QuestXCommands implements CommandExecutor {
 	HumanNPC test;
 	RandomMovement rm;
 
-	Reputation r = new Reputation("Adamki11s", 100);
-
 	HashMap<String, QuestSetup> setups = new HashMap<String, QuestSetup>();
+
+	Pages npcList;
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -79,27 +85,88 @@ public class QuestXCommands implements CommandExecutor {
 					}
 					return true;
 				}
-				
+
+				/*
+				 * NPC Commands (START)
+				 */
+
+				if (args.length >= 2 && args[0].equalsIgnoreCase("npc") && args[1].equalsIgnoreCase("list")) {
+					String[] list = new String[handle.getNPCs().size()];
+					int count = 0;
+					for (SimpleNPC npc : handle.getNPCs()) {
+						list[count] = npc.getName();
+						count++;
+					}
+					Arrays.sort(list, String.CASE_INSENSITIVE_ORDER);
+					this.npcList = new Pages(list, 10);
+					if (args.length == 2) {
+						// page 1
+						String[] send = this.npcList.getStringsToSend(1);
+						QuestX.logChat(p, "Displaying (" + send.length + "/" + this.npcList.getRawArrayLength() + ") Spawned NPC's, Page (1/" + this.npcList.getPages() + ")");
+						int c = 0;
+						for (String s : send) {
+							c++;
+							QuestX.logChat(p, "#" + (c) + " - " + s);
+						}
+						QuestX.logChat(p, StaticStrings.separator);
+						return true;
+					} else if (args.length == 3) {
+						int pg;
+						try {
+							pg = Integer.parseInt(args[2]);
+							String[] send = this.npcList.getStringsToSend(pg);
+							QuestX.logChat(p, "Displaying (" + send.length + "/" + this.npcList.getRawArrayLength() + ") Spawned NPC's, Page (" + pg + "/" + this.npcList.getPages() + ")");
+							int c = 0;
+							for (String s : send) {
+								c++;
+								QuestX.logChat(p, "#" + ((pg * 10) + c) + " - " + s);
+							}
+							QuestX.logChat(p, StaticStrings.separator);
+						} catch (NumberFormatException nfe) {
+							QuestX.logChatError(p, ChatColor.RED + "Page number must be an integer!");
+						}
+						return true;
+					}
+
+					return true;
+				}
+
+				if (args.length == 3 && args[0].equalsIgnoreCase("npc") && args[1].equalsIgnoreCase("delete")) {
+					String toDel = args[2];
+					try {
+						FileUtils.deleteDirectory(FileLocator.getNPCRootDir(toDel));
+						handle.getSimpleNPCByName(toDel).destroyNPCObject();
+						if (FixedLoadingTable.doesNPCHaveFixedSpawn(toDel)) {
+							FixedLoadingTable.removeFixedNPCSpawn(p, toDel, handle);
+						}
+						QuestX.logChat(p, ChatColor.GREEN + "NPC deleted successfully.");
+
+					} catch (IOException e) {
+						QuestX.logChatError(p, ChatColor.RED + "Error while deleting NPC '" + toDel + "'");
+						e.printStackTrace();
+					}
+				}
+
+				/*
+				 * NPC Commands (END)
+				 */
+
 				/*
 				 * Task Commands (START)
 				 */
-				
-				
+
 				if (args.length == 2 && args[0].equalsIgnoreCase("task")) {
 					if (args[1].equalsIgnoreCase("info")) {
 						TaskDisplay.displayTaskInfo(p);
-					} else if(args[1].equalsIgnoreCase("cancel")){
+					} else if (args[1].equalsIgnoreCase("cancel")) {
 						TaskRegister.cancelPlayerTask(p);
 					}
 					return true;
 				}
-				
-				
+
 				/*
 				 * Task Commands (END)
 				 */
-
-				
 
 				if (args.length == 2 && args[0].equalsIgnoreCase("unpack")) {
 					String qName = args[1];
@@ -182,9 +249,12 @@ public class QuestXCommands implements CommandExecutor {
 						Location npcLoc = npc.getHumanNPC().getBukkitEntity().getLocation();
 						LocationGuider guide = new LocationGuider(p.getName(), npcLoc.getWorld().getName(), npcLoc.getBlockX(), npcLoc.getBlockY(), npcLoc.getBlockZ());
 						guide.drawPath();
-						/*Fireworks f = new Fireworks(npc.getHumanNPC().getBukkitEntity().getLocation(), 6, 20);
-						f.fireLocatorBeacons();
-						QuestX.logChat(p, "Launching locator beacons!");*/
+						/*
+						 * Fireworks f = new
+						 * Fireworks(npc.getHumanNPC().getBukkitEntity
+						 * ().getLocation(), 6, 20); f.fireLocatorBeacons();
+						 * QuestX.logChat(p, "Launching locator beacons!");
+						 */
 						return true;
 					}
 				}
@@ -201,17 +271,17 @@ public class QuestXCommands implements CommandExecutor {
 						return true;
 					}
 				}
-				
-				if(args.length == 3 && args[0].equalsIgnoreCase("fixedspawns")){
+
+				if (args.length == 3 && args[0].equalsIgnoreCase("fixedspawns")) {
 					String npcName = args[2];
-					if(args[1].equalsIgnoreCase("remove")){	
+					if (args[1].equalsIgnoreCase("remove")) {
 						FixedLoadingTable.removeFixedNPCSpawn(p, npcName, handle);
 						return true;
-					} else if(args[1].equalsIgnoreCase("edit")){
+					} else if (args[1].equalsIgnoreCase("edit")) {
 						FixedLoadingTable.editFixedNPCSpawn(p, npcName, handle);
 						return true;
-					} else if(args[1].equalsIgnoreCase("removeall")){
-						if(p.isOp()){
+					} else if (args[1].equalsIgnoreCase("removeall")) {
+						if (p.isOp()) {
 							FixedLoadingTable.deleteAllFixedSpawns(p, handle);
 						} else {
 							QuestX.logChatError(p, "You must be an Operator to perform this command");
@@ -219,16 +289,16 @@ public class QuestXCommands implements CommandExecutor {
 						return true;
 					}
 				}
-				
-				if(args.length >= 2 && args[0].equalsIgnoreCase("fixedspawns")){
-					if(args[1].equalsIgnoreCase("display")){
-						if(args.length == 2){
+
+				if (args.length >= 2 && args[0].equalsIgnoreCase("fixedspawns")) {
+					if (args[1].equalsIgnoreCase("display")) {
+						if (args.length == 2) {
 							FixedSpawnsDisplay.display(p, 1);
-						} else if(args.length == 3) {
+						} else if (args.length == 3) {
 							int pg = 1;
-							try{
+							try {
 								pg = Integer.parseInt(args[2]);
-							} catch (NumberFormatException nfe){
+							} catch (NumberFormatException nfe) {
 								QuestX.logChat(p, ChatColor.RED + "Page number must be an integer! /q display fixedspawns <page>");
 							}
 							FixedSpawnsDisplay.display(p, pg);

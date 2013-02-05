@@ -14,6 +14,7 @@ import java.util.zip.ZipFile;
 
 import com.adamki11s.io.FileLocator;
 import com.adamki11s.questx.QuestX;
+import com.adamki11s.utils.FileUtils;
 
 public class QuestUnpacker {
 
@@ -51,7 +52,7 @@ public class QuestUnpacker {
 				QuestX.logMSG("NPC name '" + f.getName() + "' already exists. Please rename the NPC.");
 				QuestX.logMSG("UNPACKER ERROR--- Duplicate NPC name");
 				try {
-					this.deleteDirectory(new File(tempExtract));
+					FileUtils.deleteDirectory(new File(tempExtract));
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -79,7 +80,7 @@ public class QuestUnpacker {
 
 		// delete temporary folder and zip file
 		try {
-			this.deleteDirectory(new File(tempExtract));
+			FileUtils.deleteDirectory(new File(tempExtract));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -222,41 +223,6 @@ public class QuestUnpacker {
 		}
 	}
 
-	private void deleteDirectory(File file) throws IOException {
-
-		if (file.isDirectory()) {
-
-			// directory is empty, then delete it
-			if (file.list().length == 0) {
-
-				file.delete();
-				System.out.println("Directory is deleted : " + file.getAbsolutePath());
-
-			} else {
-
-				// list all the directory contents
-				String files[] = file.list();
-
-				for (String temp : files) {
-					// construct the file structure
-					File fileDelete = new File(file, temp);
-
-					// recursive delete
-					deleteDirectory(fileDelete);
-				}
-
-				// check the directory again, if empty then delete it
-				if (file.list().length == 0) {
-					file.delete();
-					System.out.println("Directory is deleted : " + file.getAbsolutePath());
-				}
-			}
-
-		} else {
-			// if file, then delete it
-			file.delete();
-			System.out.println("File is deleted : " + file.getAbsolutePath());
-		}
-	}
+	
 
 }

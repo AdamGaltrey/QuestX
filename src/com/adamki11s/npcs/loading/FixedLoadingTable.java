@@ -82,6 +82,10 @@ public class FixedLoadingTable {
 		}
 
 	}
+	
+	public static boolean doesNPCHaveFixedSpawn(String npc){
+		return fixedSpawns.containsKey(npc);
+	}
 
 	public static final void deleteAllFixedSpawns(Player p, NPCHandler handle) {
 		File spawn = FileLocator.getNPCFixedSpawnsFile();
