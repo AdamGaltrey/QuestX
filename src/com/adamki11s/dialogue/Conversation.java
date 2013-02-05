@@ -67,6 +67,15 @@ public class Conversation {
 	}
 
 	public void startConversation() {
+		Player p = this.getConvoData().getPlayer();
+		StringBuilder build = new StringBuilder();
+		build.append("Conversing with ").append(this.getConvoData().getSimpleNpc().getName()).append(" TASK:");
+		if(TaskRegister.hasPlayerCompletedTask(this.getConvoData().getSimpleNpc().getName(), p.getName())){
+			build.append(ChatColor.GREEN).append("Complete");
+		} else {
+			build.append(ChatColor.DARK_RED).append("Incomplete");
+		}
+		QuestX.logChat(p, build.toString());
 		this.conversing = true;
 		this.displaySpeechOptions();
 		ConversationRegister.playersConversing.add(this);
