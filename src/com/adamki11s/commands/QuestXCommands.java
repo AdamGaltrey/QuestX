@@ -3,6 +3,7 @@ package com.adamki11s.commands;
 import java.util.HashMap;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -16,6 +17,7 @@ import com.adamki11s.data.ItemStackProbability;
 import com.adamki11s.display.FixedSpawnsDisplay;
 import com.adamki11s.display.QuestDisplay;
 import com.adamki11s.display.TaskDisplay;
+import com.adamki11s.guidance.LocationGuider;
 import com.adamki11s.npcs.NPCHandler;
 import com.adamki11s.npcs.SimpleNPC;
 import com.adamki11s.npcs.UniqueNameRegister;
@@ -162,9 +164,12 @@ public class QuestXCommands implements CommandExecutor {
 						QuestX.logChat(p, "NPC with this name is not spawned");
 						return true;
 					} else {
-						Fireworks f = new Fireworks(npc.getHumanNPC().getBukkitEntity().getLocation(), 6, 20);
+						Location npcLoc = npc.getHumanNPC().getBukkitEntity().getLocation();
+						LocationGuider guide = new LocationGuider(p.getName(), npcLoc.getWorld().getName(), npcLoc.getBlockX(), npcLoc.getBlockY(), npcLoc.getBlockZ());
+						guide.drawPath();
+						/*Fireworks f = new Fireworks(npc.getHumanNPC().getBukkitEntity().getLocation(), 6, 20);
 						f.fireLocatorBeacons();
-						QuestX.logChat(p, "Launching locator beacons!");
+						QuestX.logChat(p, "Launching locator beacons!");*/
 						return true;
 					}
 				}
@@ -173,10 +178,11 @@ public class QuestXCommands implements CommandExecutor {
 					String npcName = args[1];
 					SimpleNPC npc = this.handle.getSimpleNPCByName(npcName);
 					if (npc == null) {
-						QuestX.logChat(p, "NPC with this name is not spawned");
+						QuestX.logChat(p, "An NPC with this name has not spawned");
 						return true;
 					} else {
 						p.teleport(npc.getHumanNPC().getBukkitEntity().getLocation());
+						QuestX.logChat(p, "Teleported to NPC '" + npc + "'.");
 						return true;
 					}
 				}
