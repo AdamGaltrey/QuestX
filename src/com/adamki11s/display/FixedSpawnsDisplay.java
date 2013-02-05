@@ -18,7 +18,7 @@ public class FixedSpawnsDisplay {
 		}
 		Pages p = pages.get();
 		String[] send = p.getStringsToSend(page);
-		QuestX.logChat(player, "Fixed NPC Spawns Page (" + page + "/" + p.getPages() + ") Displaying (8/" + p.getRawArrayLength() + ")");
+		QuestX.logChat(player, "Fixed NPC Spawns Page (" + page + "/" + p.getPages() + ") Displaying (" + send.length + "/" + p.getRawArrayLength() + ")");
 		for(String s : send){
 			QuestX.logChat(player, s);
 		}

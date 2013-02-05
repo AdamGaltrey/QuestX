@@ -50,6 +50,10 @@ public class Pages {
 		return (int) Math.ceil((double)data.length / (double)this.itemsPerPage);
 	}
 	
+	/**
+	 * 
+	 * @return The number of elements in the data array.
+	 */
 	public int getRawArrayLength(){
 		return this.data.length;
 	}
