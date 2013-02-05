@@ -1,5 +1,7 @@
 package com.adamki11s.npcs.loading;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -81,6 +83,26 @@ public class FixedLoadingTable {
 
 	}
 
+	public static final void deleteAllFixedSpawns(Player p, NPCHandler handle) {
+		File spawn = FileLocator.getNPCFixedSpawnsFile();
+		if (spawn.canRead() && spawn.canWrite()) {
+			if (spawn.exists()) {
+				spawn.delete();
+				try {
+					spawn.createNewFile();
+					QuestX.logChat(p, "All fixed spawns for NPCs were deleted");
+				} catch (IOException e) {
+					QuestX.logChat(p, "There was an error deleting the file");
+					e.printStackTrace();
+				}
+			} else {
+				QuestX.logChat(p, "The file does not exist!");
+			}
+		} else {
+			QuestX.logChat(p, "The file cannot be accessed, it is either missing or being used. Please try again later.");
+		}
+	}
+
 	public static boolean editFixedNPCSpawn(Player p, String npcName, NPCHandler handle) {
 		if (!FileLocator.doesNPCNameExist(npcName)) {
 			if (p != null) {
@@ -113,11 +135,11 @@ public class FixedLoadingTable {
 						}
 					}
 				}
-				
+
 				loader.write();
 				loader.clearReadArray();
 				loader.clearWriteArray();
-				
+
 				if (p != null) {
 					QuestX.logChat(p, "The fixed spawn for NPC '" + npcName + "' was changed to your current location.");
 				}

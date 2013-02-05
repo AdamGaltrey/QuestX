@@ -189,6 +189,13 @@ public class QuestXCommands implements CommandExecutor {
 					} else if(args[1].equalsIgnoreCase("edit")){
 						FixedLoadingTable.editFixedNPCSpawn(p, npcName, handle);
 						return true;
+					} else if(args[1].equalsIgnoreCase("removeall")){
+						if(p.isOp()){
+							FixedLoadingTable.deleteAllFixedSpawns(p, handle);
+						} else {
+							QuestX.logChatError(p, "You must be an Operator to perform this command");
+						}
+						return true;
 					}
 				}
 				
