@@ -65,7 +65,7 @@ public class QuestX extends JavaPlugin {
 		log.info("[QuestX] " + msg);
 	}
 
-	public static boolean debug = false;
+	public static boolean debug = true;
 
 	public static synchronized void logDebug(String msg) {
 		if (debug) {

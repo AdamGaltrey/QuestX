@@ -191,10 +191,6 @@ public class SimpleNPC {
 		return npc;
 	}
 
-	public boolean isSpawned() {
-		return isSpawned;
-	}
-
 	public boolean isConversing() {
 		if (this.c == null) {
 			return false;
@@ -294,6 +290,17 @@ public class SimpleNPC {
 		if (!this.isNPCSpawned()) {
 			this.waitedSpawnTicks += ticks;
 			if (this.waitedSpawnTicks >= this.respawnTicks) {
+				if(this.isSpawnFixed()){
+					if(this.getFixedLocation() == null){
+						QuestX.logDebug("NPC did not spawn, fixed location was null");
+						return;
+					}
+				} else {
+					if(this.getSpawnedLocation() == null){
+						QuestX.logDebug("NPC did not spawn, spawned location was null");
+						return;
+					}
+				}
 				this.spawnNPC();
 			}
 		}
@@ -405,16 +412,18 @@ public class SimpleNPC {
 	public synchronized void spawnNPC() {
 		if (!isSpawned) {
 
-			this.setTouched();
-
-			this.health = this.maxHealth;
-			this.waitedSpawnTicks = 0;
+			
 			Location toSpawn;
 			if (this.isSpawnFixed()) {
 				toSpawn = this.getFixedLocation();
 			} else {
 				toSpawn = this.getSpawnedLocation();
 			}
+			
+			this.setTouched();
+
+			this.health = this.maxHealth;
+			this.waitedSpawnTicks = 0;
 
 			QuestX.logDebug("Spawning NPC " + this.getName());
 			QuestX.logDebug("Log spawn location");
@@ -467,7 +476,7 @@ public class SimpleNPC {
 	}
 
 	public void moveTick() {
-		if (this.isMoveable() && this.isSpawned() && !this.isMovementScheduled()) {
+		if (this.isMoveable() && this.isNPCSpawned() && !this.isMovementScheduled()) {
 			this.randMovement.move();
 		}
 	}

@@ -44,6 +44,9 @@ public class HotspotManager {
 	}
 
 	public static boolean areHotspotsFull() {
+		if(hotspots.size() < 1){
+			return true;
+		}
 		for (Entry<String, Hotspot> e : hotspots.entrySet()) {
 			if (e.getValue().canSpawnMore()) {
 				QuestX.logDebug("Hotspots are not full!");
@@ -54,7 +57,7 @@ public class HotspotManager {
 		return true;
 	}
 
-	public static synchronized Location spawnNPC(String name) {
+	public static synchronized Location getSpawnLocation(String name) {
 		Hotspot h = getNextFreeHotspot();
 		h.addNPC(name);
 		return getSpawnLocation(h);
