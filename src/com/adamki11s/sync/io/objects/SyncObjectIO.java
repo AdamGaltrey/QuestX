@@ -39,6 +39,10 @@ public class SyncObjectIO extends ObjectIOStream {
 	public void add(String tag, Object object) {
 		this.writeableData.add(new SyncWrapper(tag, object));
 	}
+	
+	public void add(SyncWrapper wrap){
+		this.writeableData.add(wrap);
+	}
 
 	/**
 	 * Remove a n Object from the data to be written upon invocation of the
