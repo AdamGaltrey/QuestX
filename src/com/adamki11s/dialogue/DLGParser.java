@@ -65,7 +65,13 @@ public class DLGParser {
 				// SingleDialogueItem Create
 				String[] parts = line.split("#");
 				String nodeID = parts[0];
-				int options = Integer.parseInt(parts[2]);
+
+				int options;
+				try {
+					options = Integer.parseInt(parts[2]);
+				} catch (NumberFormatException nfe) {
+					throw new InvalidDialogueException(line, "Number of options must be an intger value (Whole number)", npc);
+				}
 				String[] speechOptions = new String[options];
 				String[] gTagIds = new String[options];
 				String[] trigIds = new String[options];
