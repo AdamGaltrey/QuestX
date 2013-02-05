@@ -181,8 +181,19 @@ public class QuestXCommands implements CommandExecutor {
 					}
 				}
 				
-				if(args.length >= 2 && args[0].equalsIgnoreCase("display")){
-					if(args[1].equalsIgnoreCase("fixedspawns")){
+				if(args.length == 3 && args[0].equalsIgnoreCase("fixedspawns")){
+					String npcName = args[2];
+					if(args[1].equalsIgnoreCase("remove")){	
+						FixedLoadingTable.removeFixedNPCSpawn(p, npcName, handle);
+						return true;
+					} else if(args[1].equalsIgnoreCase("edit")){
+						FixedLoadingTable.editFixedNPCSpawn(p, npcName, handle);
+						return true;
+					}
+				}
+				
+				if(args.length >= 2 && args[0].equalsIgnoreCase("fixedspawns")){
+					if(args[1].equalsIgnoreCase("display")){
 						if(args.length == 2){
 							FixedSpawnsDisplay.display(p, 1);
 						} else if(args.length == 3) {

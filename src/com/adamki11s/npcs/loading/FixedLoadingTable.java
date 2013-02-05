@@ -27,7 +27,6 @@ public class FixedLoadingTable {
 
 	final static SyncObjectIO loader = new SyncObjectIO(FileLocator.getNPCFixedSpawnsFile());
 
-	
 	public static String[] getFixedSpawns() {
 		HashSet<String> ret = new HashSet<String>(fixedSpawns.size());
 		for (Entry<String, Location> e : fixedSpawns.entrySet()) {
@@ -82,13 +81,102 @@ public class FixedLoadingTable {
 
 	}
 
+	public static boolean editFixedNPCSpawn(Player p, String npcName, NPCHandler handle) {
+		if (!FileLocator.doesNPCNameExist(npcName)) {
+			if (p != null) {
+				QuestX.logChat(p, ChatColor.RED + "There is no NPC created with this name!");
+			}
+			return false;
+		} else {
+			if (!fixedSpawns.containsKey(npcName)) {
+				if (p != null) {
+					QuestX.logChat(p, "A fixed spawn location for this NPC does not exist");
+				}
+				return false;
+			} else {
+
+				SimpleNPC rem = handle.getSimpleNPCByName(npcName);
+				if (rem != null) {
+					rem.destroyNPCObject();
+				}
+
+				loader.read();
+				loader.clearWriteArray();
+				for (SyncWrapper wrap : loader.getReadableData()) {
+					// copy all the data read, except the npc to remove, set
+					// this to be edited
+					if (!wrap.getTag().equalsIgnoreCase(npcName)) {
+						loader.add(wrap);
+					} else {
+						if (p != null) {
+							loader.add(wrap.getTag(), p.getLocation());
+						}
+					}
+				}
+				
+				loader.write();
+				loader.clearReadArray();
+				loader.clearWriteArray();
+				
+				if (p != null) {
+					QuestX.logChat(p, "The fixed spawn for NPC '" + npcName + "' was changed to your current location.");
+				}
+
+				return true;
+			}
+		}
+	}
+
+	public static boolean removeFixedNPCSpawn(Player p, String npcName, NPCHandler handle) {
+		if (!FileLocator.doesNPCNameExist(npcName)) {
+			if (p != null) {
+				QuestX.logChat(p, ChatColor.RED + "There is no NPC created with this name!");
+			}
+			return false;
+		} else {
+			if (!fixedSpawns.containsKey(npcName)) {
+				if (p != null) {
+					QuestX.logChat(p, "A fixed spawn location for this NPC does not exist");
+				}
+				return false;
+			} else {
+				SimpleNPC rem = handle.getSimpleNPCByName(npcName);
+				if (rem != null) {
+					rem.destroyNPCObject();
+				}
+
+				loader.read();
+				loader.clearWriteArray();
+				for (SyncWrapper wrap : loader.getReadableData()) {
+					// copy all the data read, except the npc to remove
+					if (!wrap.getTag().equalsIgnoreCase(npcName)) {
+						loader.add(wrap);
+					}
+				}
+				loader.write();
+				loader.clearReadArray();
+				loader.clearWriteArray();
+
+				if (p != null) {
+					QuestX.logChat(p, "The fixed spawn for NPC '" + npcName + "' was removed.");
+				}
+
+				return true;
+			}
+		}
+	}
+
 	public static boolean addFixedNPCSpawn(Player p, String npcName, Location l, NPCHandler handle) {
 		if (!FileLocator.doesNPCNameExist(npcName)) {
-			QuestX.logChat(p, ChatColor.RED + "There is no NPC created with this name!");
+			if (p != null) {
+				QuestX.logChat(p, ChatColor.RED + "There is no NPC created with this name!");
+			}
 			return false;
 		} else {
 			if (fixedSpawns.containsKey(npcName)) {
-				QuestX.logChat(p, "A fixed spawn location for this NPC already exists");
+				if (p != null) {
+					QuestX.logChat(p, "A fixed spawn location for this NPC already exists");
+				}
 				return false;
 			}
 			SimpleNPC remove = handle.getSimpleNPCByName(npcName);
@@ -115,7 +203,9 @@ public class FixedLoadingTable {
 
 			fixedSpawns.put(npcName, l);
 
-			QuestX.logChat(p, "Fixed spawn created successfully for NPC '" + npcName + "'.");
+			if (p != null) {
+				QuestX.logChat(p, "Fixed spawn created successfully for NPC '" + npcName + "'.");
+			}
 			return true;
 		}
 	}
