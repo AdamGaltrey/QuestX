@@ -293,11 +293,13 @@ public class SimpleNPC {
 				if(this.isSpawnFixed()){
 					if(this.getFixedLocation() == null){
 						QuestX.logDebug("NPC did not spawn, fixed location was null");
+						this.waitedSpawnTicks = 0;
 						return;
 					}
 				} else {
 					if(this.getSpawnedLocation() == null){
 						QuestX.logDebug("NPC did not spawn, spawned location was null");
+						this.waitedSpawnTicks = 0;
 						return;
 					}
 				}
