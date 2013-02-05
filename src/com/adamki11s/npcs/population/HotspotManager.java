@@ -1,6 +1,7 @@
 package com.adamki11s.npcs.population;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.Random;
@@ -18,20 +19,63 @@ import com.adamki11s.sync.io.objects.SyncWrapper;
 public class HotspotManager {
 
 	private static HashMap<String, Hotspot> hotspots = new HashMap<String, Hotspot>();
+
+	private static volatile SyncObjectIO io = new SyncObjectIO(FileLocator.getHotspotFile());
 	
-	public static synchronized void createHotspot(Hotspot h){
+	public static String[] getAlphabeticalHotspots(){
+		String[] alph = new String[hotspots.size()];
+		int c = 0;
+		for(Entry<String, Hotspot> e : hotspots.entrySet()){
+			alph[c] = e.getKey();
+			c++;
+		}
+		Arrays.sort(alph, String.CASE_INSENSITIVE_ORDER);
+		return alph;
+	}
+
+	public static synchronized void createHotspot(Hotspot h) {
 		hotspots.put(h.getTag(), h);
-		File f = FileLocator.getHotspotFile();
-		SyncObjectIO io = new SyncObjectIO(f);
 		io.read();
+		io.clearWriteArray();
 		io.insertWriteableData(io.getReadableData());
 		io.add(h.getTag(), h);
 		io.write();
 	}
 
-	public static void loadHotspots() {
-		File f = FileLocator.getHotspotFile();
-		SyncObjectIO io = new SyncObjectIO(f);
+	public static synchronized void editHotspot(String name, int range, int maxSpawns) {
+		Hotspot r = hotspots.get(name);
+		Hotspot newHS = new Hotspot(r.getCx(), r.getCy(), r.getCz(), range, maxSpawns, r.getTag(), r.getWorldName());
+		hotspots.remove(name);
+		io.read();
+		io.clearWriteArray();
+		for (SyncWrapper wrap : io.getReadableData()) {
+			if (wrap.getTag().equalsIgnoreCase(name)) {
+				io.add(name, newHS);
+				hotspots.put(name, newHS);
+			} else {
+				io.add(wrap);
+			}
+		}
+		io.write();
+	}
+
+	public static synchronized void deleteHotspot(String name) {
+		hotspots.remove(name);
+		io.read();
+		io.clearWriteArray();
+		for (SyncWrapper wrap : io.getReadableData()) {
+			if (!wrap.getTag().equalsIgnoreCase(name)) {
+				io.add(wrap);
+			}
+		}
+		io.write();
+	}
+
+	public static boolean doesHotspotExist(String name) {
+		return hotspots.containsKey(name);
+	}
+
+	public static synchronized void loadHotspots() {
 		io.read();
 		for (SyncWrapper wrap : io.getReadableData()) {
 			Object o;
@@ -44,7 +88,7 @@ public class HotspotManager {
 	}
 
 	public static boolean areHotspotsFull() {
-		if(hotspots.size() < 1){
+		if (hotspots.size() < 1) {
 			return true;
 		}
 		for (Entry<String, Hotspot> e : hotspots.entrySet()) {
@@ -62,8 +106,8 @@ public class HotspotManager {
 		h.addNPC(name);
 		return getSpawnLocation(h);
 	}
-	
-	public static World getNextWorldForSpawn(){
+
+	public static World getNextWorldForSpawn() {
 		return Bukkit.getServer().getWorld(getNextFreeHotspot().getWorldName());
 	}
 
@@ -85,9 +129,9 @@ public class HotspotManager {
 	}
 
 	private static boolean canMoveHere(Location l) {
-		Block b = l.getBlock().getRelative(0, -1, 0);// block it stands on
-		// b.setType(Material.EMERALD_BLOCK);
-		return (!b.isLiquid() && b.getTypeId() != 0 && b.getRelative(0, 1, 0).getTypeId() == 0 && b.getRelative(0, 2, 0).getTypeId() == 0);
+		Block b = l.getBlock().getRelative(0, -1, 0);
+		return (!b.isLiquid() && b.getTypeId() != 0 && b.getRelative(0, 1, 0).getTypeId() == 0 && b.getRelative(0, 2, 0).getTypeId() == 0 && b.getRelative(1, 0, 0).getTypeId() == 0
+				&& b.getRelative(-1, 0, 0).getTypeId() == 0 && b.getRelative(0, 0, 1).getTypeId() == 0 && b.getRelative(0, 0, -1).getTypeId() == 0);
 	}
 
 	public static synchronized void despawnNPC(String name) {
