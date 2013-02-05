@@ -14,8 +14,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import com.adamki11s.ai.RandomMovement;
-import com.adamki11s.data.ItemStackDrop;
-import com.adamki11s.data.ItemStackProbability;
 import com.adamki11s.display.FixedSpawnsDisplay;
 import com.adamki11s.display.Pages;
 import com.adamki11s.display.QuestDisplay;
@@ -25,16 +23,14 @@ import com.adamki11s.guidance.LocationGuider;
 import com.adamki11s.io.FileLocator;
 import com.adamki11s.npcs.NPCHandler;
 import com.adamki11s.npcs.SimpleNPC;
-import com.adamki11s.npcs.UniqueNameRegister;
-import com.adamki11s.npcs.io.CreateNPC;
 import com.adamki11s.npcs.loading.FixedLoadingTable;
-import com.adamki11s.npcs.tasks.Fireworks;
+import com.adamki11s.npcs.population.Hotspot;
+import com.adamki11s.npcs.population.HotspotManager;
 import com.adamki11s.npcs.tasks.TaskRegister;
 import com.adamki11s.quests.QuestManager;
 import com.adamki11s.quests.setup.QuestSetup;
 import com.adamki11s.quests.setup.QuestUnpacker;
 import com.adamki11s.questx.QuestX;
-import com.adamki11s.reputation.Reputation;
 import com.adamki11s.updates.Updater;
 import com.adamki11s.updates.Updater.UpdateResult;
 import com.adamki11s.updates.Updater.UpdateType;
@@ -79,12 +75,77 @@ public class QuestXCommands implements CommandExecutor {
 					return true;
 				}
 
-				if (args.length == 2 && args[0].equalsIgnoreCase("qinfo")) {
-					if (args[1].equalsIgnoreCase("current")) {
+				/*
+				 * Quest Commands (START)
+				 */
+
+				if (args.length == 2 && args[0].equalsIgnoreCase("quest")) {
+					if (args[1].equalsIgnoreCase("info")) {
 						QuestDisplay.displayCurrentQuestInfo(p);
 					}
 					return true;
 				}
+
+				if (args.length == 3 && args[0].equalsIgnoreCase("quest") && args[1].equalsIgnoreCase("unpack")) {
+					String qName = args[2];
+					QuestUnpacker upack = new QuestUnpacker(qName);
+					boolean suc = upack.unpackQuest();
+					if (suc) {
+						QuestX.logChat(p, "Unpack successfull");
+						QuestX.logChat(p, "/QuestX quest setup <questname> " + ChatColor.GREEN + " to setup this quest");
+					} else {
+						QuestX.logChat(p, "Error while unpacking");
+					}
+					return true;
+				}
+
+				if (args.length == 3 && args[0].equalsIgnoreCase("quest") && args[1].equalsIgnoreCase("setup")) {
+					String qName = args[2];
+					if (setups.containsKey(p.getName())) {
+						QuestX.logChat(p, "You are already setting this quest up!");
+						return true;
+					}
+					if (!setups.containsKey(p.getName())) {
+						if (QuestManager.doesQuestExist(qName)) {
+							if (!QuestManager.hasQuestBeenSetup(qName)) {
+								QuestSetup qs = new QuestSetup(qName, handle);
+								if (!qs.canSetup()) {
+									QuestX.logChat(p, "Failed to start setup, reason : " + qs.getFailSetupReason());
+								} else {
+									QuestX.logChat(p, "Setup successful! /questx quest next " + ChatColor.GREEN + "To select the next spawn location");
+									qs.sendInitialMessage(p);
+									this.setups.put(p.getName(), qs);
+								}
+							} else {
+								QuestX.logChat(p, "This quest has already been setup");
+							}
+						} else {
+							QuestX.logChat(p, "A quest by that name does not exist");
+						}
+					}
+					return true;
+				}
+
+				if (args.length == 2 && args[0].equalsIgnoreCase("quest") && args[1].equalsIgnoreCase("next")) {
+					if (setups.containsKey(p.getName())) {
+						QuestSetup qs = this.setups.get(p.getName());
+						if (!qs.isSetupComplete()) {
+							qs.setupSpawn(p);
+							if (qs.isSetupComplete()) {
+								qs.removeFromList();
+								this.setups.remove(p.getName());
+								QuestX.logChat(p, "Quest setup successfully!");
+							}
+						}
+					} else {
+						QuestX.logChat(p, "You aren't setting up a quest!");
+					}
+					return true;
+				}
+
+				/*
+				 * Quest Commands (END)
+				 */
 
 				/*
 				 * NPC Commands (START)
@@ -114,7 +175,7 @@ public class QuestXCommands implements CommandExecutor {
 						int pg;
 						try {
 							pg = Integer.parseInt(args[2]);
-							if(pg > this.npcList.getPages()){
+							if (pg > this.npcList.getPages()) {
 								QuestX.logChatError(p, ChatColor.RED + "There are not that many pages!");
 								return true;
 							}
@@ -151,6 +212,33 @@ public class QuestXCommands implements CommandExecutor {
 					}
 				}
 
+				if (args.length == 3 && args[0].equalsIgnoreCase("npc") && args[1].equalsIgnoreCase("find")) {
+					String npcName = args[2];
+					SimpleNPC npc = this.handle.getSimpleNPCByName(npcName);
+					if (npc == null) {
+						QuestX.logChat(p, "NPC with this name is not spawned");
+						return true;
+					} else {
+						Location npcLoc = npc.getHumanNPC().getBukkitEntity().getLocation();
+						LocationGuider guide = new LocationGuider(p.getName(), npcLoc.getWorld().getName(), npcLoc.getBlockX(), npcLoc.getBlockY(), npcLoc.getBlockZ());
+						guide.drawPath();
+						return true;
+					}
+				}
+
+				if (args.length == 3 && args[0].equalsIgnoreCase("npc") && args[1].equalsIgnoreCase("tele")) {
+					String npcName = args[2];
+					SimpleNPC npc = this.handle.getSimpleNPCByName(npcName);
+					if (npc == null) {
+						QuestX.logChat(p, "An NPC with this name has not spawned");
+						return true;
+					} else {
+						p.teleport(npc.getHumanNPC().getBukkitEntity().getLocation());
+						QuestX.logChat(p, "Teleported to NPC '" + npc + "'.");
+						return true;
+					}
+				}
+
 				/*
 				 * NPC Commands (END)
 				 */
@@ -172,109 +260,9 @@ public class QuestXCommands implements CommandExecutor {
 				 * Task Commands (END)
 				 */
 
-				if (args.length == 2 && args[0].equalsIgnoreCase("unpack")) {
-					String qName = args[1];
-					QuestUnpacker upack = new QuestUnpacker(qName);
-					boolean suc = upack.unpackQuest();
-					if (suc) {
-						QuestX.logChat(p, "Unpack successfull");
-						QuestX.logChat(p, "/QuestX setup <questname> " + ChatColor.GREEN + " to setup this quest");
-					} else {
-						QuestX.logChat(p, "Error while unpacking");
-					}
-					return true;
-				}
-
-				if (args.length == 2 && args[0].equalsIgnoreCase("setup")) {
-					String qName = args[1];
-					if (setups.containsKey(p.getName())) {
-						QuestX.logChat(p, "You are already setting this quest up!");
-						return true;
-					}
-					if (!setups.containsKey(p.getName())) {
-						if (QuestManager.doesQuestExist(qName)) {
-							if (!QuestManager.hasQuestBeenSetup(qName)) {
-								QuestSetup qs = new QuestSetup(qName, handle);
-								if (!qs.canSetup()) {
-									QuestX.logChat(p, "Failed to start setup, reason : " + qs.getFailSetupReason());
-								} else {
-									QuestX.logChat(p, "Setup successful! /questx next " + ChatColor.GREEN + "To select the next spawn location");
-									qs.sendInitialMessage(p);
-									this.setups.put(p.getName(), qs);
-								}
-							} else {
-								QuestX.logChat(p, "This quest has already been setup");
-							}
-						} else {
-							QuestX.logChat(p, "A quest by that name does not exist");
-						}
-					}
-					return true;
-				}
-
-				if (args.length == 1 && args[0].equalsIgnoreCase("next")) {
-					if (setups.containsKey(p.getName())) {
-						QuestSetup qs = this.setups.get(p.getName());
-						if (!qs.isSetupComplete()) {
-							qs.setupSpawn(p);
-							if (qs.isSetupComplete()) {
-								qs.removeFromList();
-								this.setups.remove(p.getName());
-								QuestX.logChat(p, "Quest setup successfully!");
-							}
-						}
-					} else {
-						QuestX.logChat(p, "You aren't setting up a quest!");
-					}
-					return true;
-				}
-
-				if (args.length == 2 && args[0].equalsIgnoreCase("create")) {
-					if (UniqueNameRegister.isNameUnique(args[1])) {
-						CreateNPC create = new CreateNPC(args[1], ChatColor.RED);
-
-						// Format id:data:quantity:chance(out of 10,000)/
-						String invDrops = "1,0,5,6000#2,0,3,3000", gr = "0,0,0,0,0";
-						create.setProperties(true, true, false, true, (20 * 5), (20 * 20), 15, (20 * 30), 30, 2, 2, invDrops, gr);
-						create.createNPCFiles();
-					} else {
-						QuestX.logChat(p, "NPC with this name already exists");
-					}
-					return true;
-				}
-
-				if (args.length == 2 && args[0].equalsIgnoreCase("find")) {
-					String npcName = args[1];
-					SimpleNPC npc = this.handle.getSimpleNPCByName(npcName);
-					if (npc == null) {
-						QuestX.logChat(p, "NPC with this name is not spawned");
-						return true;
-					} else {
-						Location npcLoc = npc.getHumanNPC().getBukkitEntity().getLocation();
-						LocationGuider guide = new LocationGuider(p.getName(), npcLoc.getWorld().getName(), npcLoc.getBlockX(), npcLoc.getBlockY(), npcLoc.getBlockZ());
-						guide.drawPath();
-						/*
-						 * Fireworks f = new
-						 * Fireworks(npc.getHumanNPC().getBukkitEntity
-						 * ().getLocation(), 6, 20); f.fireLocatorBeacons();
-						 * QuestX.logChat(p, "Launching locator beacons!");
-						 */
-						return true;
-					}
-				}
-
-				if (args.length == 2 && args[0].equalsIgnoreCase("tele")) {
-					String npcName = args[1];
-					SimpleNPC npc = this.handle.getSimpleNPCByName(npcName);
-					if (npc == null) {
-						QuestX.logChat(p, "An NPC with this name has not spawned");
-						return true;
-					} else {
-						p.teleport(npc.getHumanNPC().getBukkitEntity().getLocation());
-						QuestX.logChat(p, "Teleported to NPC '" + npc + "'.");
-						return true;
-					}
-				}
+				/*
+				 * Fixed Spawn Commands (START)
+				 */
 
 				if (args.length == 3 && args[0].equalsIgnoreCase("fixedspawns")) {
 					String npcName = args[2];
@@ -311,8 +299,8 @@ public class QuestXCommands implements CommandExecutor {
 					}
 				}
 
-				if (args.length == 2 && args[0].equalsIgnoreCase("setfixedspawn")) {
-					String npcName = args[1];
+				if (args.length == 3 && args[0].equalsIgnoreCase("fixedspawns") && args[1].equalsIgnoreCase("add")) {
+					String npcName = args[2];
 					boolean suc = FixedLoadingTable.addFixedNPCSpawn(p, npcName, p.getLocation(), handle);
 					if (suc) {
 						SimpleNPC snpc = this.handle.getSimpleNPCByName(npcName);
@@ -323,33 +311,107 @@ public class QuestXCommands implements CommandExecutor {
 					return true;
 				}
 
-				if (args.length == 2 && args[0].equalsIgnoreCase("stressspawn")) {
-					int max = Integer.parseInt(args[1]);
-					for (int i = 0; i < max; i++) { // 1/10 chance of dropping
-						SimpleNPC snpc = new SimpleNPC(this.handle, ("a" + i), true, true, 60, 200, 20, 100, 200, new ItemStackDrop(new ItemStackProbability[] { new ItemStackProbability(
-								new ItemStack(Material.GOLD_AXE, 1), 6000) }), gear, 1, 1.5);
-						snpc.setNewSpawnLocation(p.getLocation());
-						snpc.spawnNPC();
-						// QuestX.logChat(p, "NPC Spawned!");
+				/*
+				 * Fixed Spawn Commands (END)
+				 */
+
+				/*
+				 * Hotspot Commands (START)
+				 */
+
+				if (args.length >= 2 && args[0].equalsIgnoreCase("hotspots") && args[1].equalsIgnoreCase("list")) {
+					if (args.length == 2) {
+						Pages pages = new Pages(HotspotManager.getAlphabeticalHotspots(), 10);
+						String[] send = pages.getStringsToSend(1);
+						QuestX.logChat(p, "Displaying (" + send.length + "/" + this.npcList.getRawArrayLength() + ") Hotspots, Page (1/" + pages.getPages() + ")");
+						int c = 0;
+						for (String s : send) {
+							c++;
+							QuestX.logChat(p, "#" + (c) + " - " + s);
+						}
+						QuestX.logChat(p, StaticStrings.separator);
+					} else if (args.length == 3) {
+						int pg;
+						try {
+							pg = Integer.parseInt(args[2]);
+							Pages pages = new Pages(HotspotManager.getAlphabeticalHotspots(), 10);
+							String[] send = pages.getStringsToSend(pg);
+							QuestX.logChat(p, "Displaying (" + send.length + "/" + this.npcList.getRawArrayLength() + ") Hotspots, Page (1/" + pages.getPages() + ")");
+							int c = 0;
+							for (String s : send) {
+								c++;
+								QuestX.logChat(p, "#" + ((pg * 10) + c) + " - " + s);
+							}
+							QuestX.logChat(p, StaticStrings.separator);
+						} catch (NumberFormatException nfe) {
+							QuestX.logChatError(p, ChatColor.RED + "Page number must be an integer value!");
+							QuestX.logChatError(p, ChatColor.RED + "Format : /questx hotspots list <page-number>");
+							return true;
+						}
 					}
 					return true;
 				}
 
-				if (args.length == 2 && args[0].equalsIgnoreCase("spawn")) {
-					String npcName = args[1];
-					if (!UniqueNameRegister.isNameUnique(npcName)) {
-						QuestX.logChat(p, ChatColor.RED + "Name is not unique!");
+				if (args.length == 5 && args[0].equalsIgnoreCase("hotspots") && args[1].equalsIgnoreCase("add")) {
+					String name = args[2];
+
+					if (HotspotManager.doesHotspotExist(name)) {
+						QuestX.logChatError(p, ChatColor.RED + "A hotspot with this name already exists");
 						return true;
 					} else {
-						SimpleNPC snpc = new SimpleNPC(this.handle, npcName, true, true, 60, 200, 10, 100, 200, new ItemStackDrop(new ItemStackProbability[] { new ItemStackProbability(
-								new ItemStack(Material.GOLD_AXE, 1), 6000) }), gear, 1, 1.5);
-						snpc.spawnNPC();
-
-						QuestX.logChat(p, "NPC Spawned!");
-						return true;
+						int range, maxSpawns;
+						try {
+							range = Integer.parseInt(args[3]);
+							maxSpawns = Integer.parseInt(args[4]);
+							Location l = p.getLocation();
+							Hotspot h = new Hotspot(l.getBlockX(), l.getBlockY(), l.getBlockZ(), range, maxSpawns, name, l.getWorld().getName());
+							HotspotManager.createHotspot(h);
+							QuestX.logChat(p, ChatColor.GREEN + "Hotspot '" + name + "' was created successfully.");
+						} catch (NumberFormatException nfe) {
+							QuestX.logChatError(p, ChatColor.RED + "Range and Maximum spawns must be integer values!");
+							QuestX.logChatError(p, ChatColor.RED + "Format : /questx hotspots add <range> <maxspawns>");
+						}
 					}
 
+					return true;
 				}
+
+				if (args.length == 3 && args[0].equalsIgnoreCase("hotspots") && args[1].equalsIgnoreCase("delete")) {
+					String name = args[2];
+					if (HotspotManager.doesHotspotExist(name)) {
+						HotspotManager.deleteHotspot(name);
+						QuestX.logChat(p, ChatColor.GREEN + "Hotspot deleted successfully.");
+					} else {
+						QuestX.logChatError(p, ChatColor.RED + "A hotspot with this name does not exist");
+					}
+					return true;
+				}
+
+				if (args.length == 5 && args[0].equalsIgnoreCase("hotspots") && args[1].equalsIgnoreCase("edit")) {
+					String name = args[2];
+
+					if (!HotspotManager.doesHotspotExist(name)) {
+						QuestX.logChatError(p, ChatColor.RED + "A hotspot with this name does not exist");
+						return true;
+					} else {
+						int range, maxSpawns;
+						try {
+							range = Integer.parseInt(args[3]);
+							maxSpawns = Integer.parseInt(args[4]);
+							HotspotManager.editHotspot(name, range, maxSpawns);
+							QuestX.logChat(p, ChatColor.GREEN + "Hotspot '" + name + "' was editied successfully.");
+						} catch (NumberFormatException nfe) {
+							QuestX.logChatError(p, ChatColor.RED + "Range and Maximum spawns must be integer values!");
+							QuestX.logChatError(p, ChatColor.RED + "Format : /questx hotspots add <range> <maxspawns>");
+						}
+					}
+
+					return true;
+				}
+
+				/*
+				 * Hotspot Commands (END)
+				 */
 			}
 		}
 		return true;
