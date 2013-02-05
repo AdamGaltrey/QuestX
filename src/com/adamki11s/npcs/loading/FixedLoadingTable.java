@@ -131,7 +131,7 @@ public class FixedLoadingTable {
 						loader.add(wrap);
 					} else {
 						if (p != null) {
-							loader.add(wrap.getTag(), p.getLocation());
+							loader.add(wrap.getTag(), new SyncLocation(p.getLocation()));
 						}
 					}
 				}
