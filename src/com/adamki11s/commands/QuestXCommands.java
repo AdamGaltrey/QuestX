@@ -24,6 +24,7 @@ import com.adamki11s.npcs.UniqueNameRegister;
 import com.adamki11s.npcs.io.CreateNPC;
 import com.adamki11s.npcs.loading.FixedLoadingTable;
 import com.adamki11s.npcs.tasks.Fireworks;
+import com.adamki11s.npcs.tasks.TaskRegister;
 import com.adamki11s.quests.QuestManager;
 import com.adamki11s.quests.setup.QuestSetup;
 import com.adamki11s.quests.setup.QuestUnpacker;
@@ -78,13 +79,27 @@ public class QuestXCommands implements CommandExecutor {
 					}
 					return true;
 				}
-
-				if (args.length == 2 && args[0].equalsIgnoreCase("tinfo")) {
-					if (args[1].equalsIgnoreCase("current")) {
+				
+				/*
+				 * Task Commands (START)
+				 */
+				
+				
+				if (args.length == 2 && args[0].equalsIgnoreCase("task")) {
+					if (args[1].equalsIgnoreCase("info")) {
 						TaskDisplay.displayTaskInfo(p);
+					} else if(args[1].equalsIgnoreCase("cancel")){
+						TaskRegister.cancelPlayerTask(p);
 					}
 					return true;
 				}
+				
+				
+				/*
+				 * Task Commands (END)
+				 */
+
+				
 
 				if (args.length == 2 && args[0].equalsIgnoreCase("unpack")) {
 					String qName = args[1];

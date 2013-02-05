@@ -3,6 +3,9 @@ package com.adamki11s.npcs.tasks;
 import java.io.File;
 import java.util.HashSet;
 
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
+
 import com.adamki11s.io.FileLocator;
 import com.adamki11s.questx.QuestX;
 
@@ -19,6 +22,16 @@ public class TaskRegister {
 	public static void unRegisterTask(TaskManager tm){
 		if(managers.contains(tm)){
 			managers.remove(tm);
+		}
+	}
+	
+	public static void cancelPlayerTask(Player p){
+		if(doesPlayerHaveTask(p.getName())){
+			TaskManager tm = getTaskManager(p.getName());
+			unRegisterTask(tm);
+			QuestX.logChat(p, ChatColor.GREEN + "Task cancelled!");
+		} else {
+			QuestX.logChat(p, ChatColor.RED + "You do not have a task to cancel.");
 		}
 	}
 	
