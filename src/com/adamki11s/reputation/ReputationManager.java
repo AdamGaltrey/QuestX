@@ -2,7 +2,9 @@ package com.adamki11s.reputation;
 
 import java.util.HashMap;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 
 import com.adamki11s.io.GeneralConfigData;
 import com.adamki11s.questx.QuestX;
@@ -38,6 +40,14 @@ public class ReputationManager {
 			QuestX.logDebug("REP DOES NOT CONTAIN PLAYER NAME");
 			loadPlayerReputation(name);
 			rep.get(name).addRep(amount);
+		}
+		Player p = Bukkit.getServer().getPlayer(name);
+		if (p != null) {
+			if (amount < 0) {
+				QuestX.logChat(p, "You lost " + ChatColor.RED + Math.abs(amount) + ChatColor.RESET + " reputation.");
+			} else if (amount > 0) {
+				QuestX.logChat(p, "You gained " + ChatColor.GREEN + Math.abs(amount) + ChatColor.RESET + " reputation.");
+			}
 		}
 		updateColourCache(name);
 	}
