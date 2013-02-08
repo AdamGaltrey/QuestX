@@ -1,7 +1,6 @@
 package com.adamki11s.npcs;
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.HashSet;
 
 import net.minecraft.server.v1_4_R1.Packet;
@@ -13,18 +12,19 @@ import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_4_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.Recipe;
 
 import com.adamki11s.ai.RandomMovement;
 import com.adamki11s.data.ItemStackDrop;
 import com.adamki11s.dialogue.Conversation;
 import com.adamki11s.events.ConversationRegister;
+import com.adamki11s.exceptions.MissingDeathTriggerPropertyException;
 import com.adamki11s.io.FileLocator;
 import com.adamki11s.io.WorldConfigData;
 import com.adamki11s.npcs.population.HotspotManager;
 import com.adamki11s.npcs.tasks.Fireworks;
 import com.adamki11s.npcs.tasks.TaskManager;
 import com.adamki11s.npcs.tasks.TaskRegister;
+import com.adamki11s.npcs.triggers.DeathTrigger;
 import com.adamki11s.quests.QuestLoader;
 import com.adamki11s.quests.QuestManager;
 import com.adamki11s.quests.QuestTask;
@@ -59,6 +59,8 @@ public class SimpleNPC {
 	boolean isSpawned = false, underAttack = false;
 
 	final ItemStack[] gear;// boots 1, legs 2, chest 3, head 4, arm 5
+	
+	private DeathTrigger deathTrigger;
 
 	public SimpleNPC(NPCHandler handle, String name, boolean moveable, boolean attackable, int minPauseTicks, int maxPauseTicks, int maxVariation, int health, int respawnTicks,
 			ItemStackDrop inventory, ItemStack[] gear, int damageMod, double retalliationMultiplier) {
@@ -92,6 +94,14 @@ public class SimpleNPC {
 			QuestX.logDebug("nodes = " + cfg.getString("NODES"));
 		} else {
 			this.questName = "null";
+		}
+		
+		deathTrigger = new DeathTrigger(name);
+		try {
+			deathTrigger.load();
+		} catch (MissingDeathTriggerPropertyException e) {
+			deathTrigger = null;
+			e.printErrorReason();
 		}
 
 		handle.registerNPC(this);
@@ -271,6 +281,12 @@ public class SimpleNPC {
 			}
 
 			QuestX.logChat(p, ChatColor.RED + "You killed NPC '" + this.name + "'");
+			
+			if(this.deathTrigger != null){
+				this.deathTrigger.execute(p);
+			} else {
+				QuestX.logError("Death trigger was not triggered for NPC '" + this.name + "', because it loaded incorrectly.");
+			}
 
 			this.despawnNPC();
 		}
