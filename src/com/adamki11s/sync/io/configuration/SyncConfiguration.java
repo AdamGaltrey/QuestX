@@ -162,8 +162,14 @@ public class SyncConfiguration extends IOStream {
 		}
 	}
 
-	public int getInt(String key) {
-		return Integer.parseInt(getString(key));
+	public int getInt(String key) throws NumberFormatException{
+		int i = 0;
+		try{
+			i = Integer.parseInt(getString(key));
+		} catch (NumberFormatException e){
+			throw e;
+		}
+		return i;
 	}
 
 	public double getDouble(String key) {
