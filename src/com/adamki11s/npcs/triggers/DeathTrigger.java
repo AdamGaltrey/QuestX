@@ -77,11 +77,11 @@ public class DeathTrigger {
 			}
 		}
 		
-		if (playerCMD.length > 0) {
+		if (playerCMD.length > 0 && !playerCMD[0].equalsIgnoreCase("0")) {
 			QuestXCMDExecutor.executeAsPlayer(p.getName(), playerCMD);
 		}
 
-		if (serverCMD.length > 0) {
+		if (serverCMD.length > 0 && !playerCMD[0].equalsIgnoreCase("0")) {
 			QuestXCMDExecutor.executeAsServer(serverCMD);
 		}
 	}
