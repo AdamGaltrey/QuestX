@@ -355,8 +355,8 @@ public class SimpleNPC {
 									QuestX.logChat(p, t.getCompleteTaskText());
 									if (ql.isQuestComplete(p.getName())) {
 										QuestX.logChat(p, ql.getEndText());
-										Fireworks f = new Fireworks(p.getLocation(), 6, 60);
-										f.circularDisplay();
+										/*Fireworks f = new Fireworks(p.getLocation(), 6, 60);
+										f.circularDisplay();*/
 										QuestManager.removeCurrentPlayerQuest(ql.getName(), p.getName());
 									}
 								} else {

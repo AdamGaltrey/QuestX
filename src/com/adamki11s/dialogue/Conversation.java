@@ -1,6 +1,5 @@
 package com.adamki11s.dialogue;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -13,6 +12,7 @@ import com.adamki11s.exceptions.MissingTaskPropertyException;
 import com.adamki11s.io.FileLocator;
 import com.adamki11s.npcs.NPCHandler;
 import com.adamki11s.npcs.SimpleNPC;
+import com.adamki11s.npcs.tasks.NPCTalkTracker;
 import com.adamki11s.npcs.tasks.TaskLoader;
 import com.adamki11s.npcs.tasks.TaskManager;
 import com.adamki11s.npcs.tasks.TaskRegister;
@@ -70,7 +70,7 @@ public class Conversation {
 		Player p = this.getConvoData().getPlayer();
 		StringBuilder build = new StringBuilder();
 		build.append("Conversing with ").append(this.getConvoData().getSimpleNpc().getName()).append(" TASK:");
-		if(TaskRegister.hasPlayerCompletedTask(this.getConvoData().getSimpleNpc().getName(), p.getName())){
+		if (TaskRegister.hasPlayerCompletedTask(this.getConvoData().getSimpleNpc().getName(), p.getName())) {
 			build.append(ChatColor.GREEN).append("Complete");
 		} else {
 			build.append(ChatColor.DARK_RED).append("Incomplete");
@@ -206,9 +206,40 @@ public class Conversation {
 							this.endConversation();
 						} else {
 							QuestX.logDebug("Player has quest!");
+							if (npc.doesLinkToQuest()) {
+
+								QuestTask qt = QuestManager.getCurrentQuestTask(p.getName());
+
+								if (qt.isTalkNPC()) {
+									QuestLoader ql = QuestManager.getQuestLoader(QuestManager.getCurrentQuestName(p.getName()));
+									int curNode = ql.getCurrentQuestNode(p.getName());
+									NPCTalkTracker track = (NPCTalkTracker)qt.getData();
+									if (npc.getCompleteQuestNodes().contains(curNode)) {
+										//npc can complete
+										
+										if(track.getNPCName().equalsIgnoreCase(npc.getName())){
+											//correct npc
+											track.setTalkedTo();
+											ql.incrementTaskProgress(p);
+											if (ql.isQuestComplete(p.getName())) {
+												QuestX.logChat(p, ql.getEndText());
+												QuestManager.removeCurrentPlayerQuest(ql.getName(), p.getName());
+											}
+										} else {
+											QuestX.logChat(p, "You need to speak to '" + track.getNPCName() + "' to complete this part of your quest.");
+											//wrong npc
+										}
+										
+									} else {
+										QuestX.logChat(p, "You need to speak to '" + track.getNPCName() + "' to complete this part of your quest.");
+									}
+								}
+
+							}
+
 							// player already has quest
 						}
-
+						this.endConversation();
 					} else {
 						// quest has not been setup
 						QuestX.logChat(p, "This quest has not yet been setup. /q setup " + qName);
