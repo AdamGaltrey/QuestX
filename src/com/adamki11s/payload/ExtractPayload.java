@@ -21,24 +21,16 @@ public class ExtractPayload {
 
 	public static void extractPayload() {
 		
-		File extractToggle = new File(FileLocator.data_root + File.separator + "payload.pyl");
-		
-		if(!extractToggle.exists()){
-
-		QuestX.logMSG("Extracting npc_payload.zip");
+		QuestX.logMSG("Checking payload state...");
 
 		final String fs = File.separator;
-		// InputStream stream =
-		// ExtractPayload.class.getResourceAsStream("/res/npc/npc_payload.zip");//note
-		// that each / is a directory down in the "jar tree" been the jar the
-		// root of the tree"
 		InputStream stream = ExtractPayload.class.getResourceAsStream("/res/npc_payload.zip");
 		OutputStream resStreamOut;
 		int readBytes;
 		byte[] buffer = new byte[4096];
 		try {
 			resStreamOut = new FileOutputStream(new File(FileLocator.npc_data_root + fs + "npc_payload.zip"));
-			
+
 			while ((readBytes = stream.read(buffer)) > 0) {
 				resStreamOut.write(buffer, 0, readBytes);
 			}
@@ -49,10 +41,7 @@ public class ExtractPayload {
 			e1.printStackTrace();
 		}
 
-		QuestX.logMSG("Extracting quest_payload.zip");
-
 		stream = ExtractPayload.class.getResourceAsStream("/res/quest_payload.zip");
-		
 
 		try {
 			resStreamOut = new FileOutputStream(new File(FileLocator.quest_data_root + fs + "quest_payload.zip"));
@@ -65,29 +54,29 @@ public class ExtractPayload {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		
-
-		QuestX.logMSG("Unzipping quest_payload.zip...");
 
 		final String zipQ = FileLocator.quest_data_root + File.separator + "quest_payload.zip", zipNPC = FileLocator.npc_data_root + File.separator + "npc_payload.zip";
 		final File qFile = new File(zipQ), npcFile = new File(zipNPC);
 
-		extractFolder(zipQ, FileLocator.quest_data_root);
+		int questMods = extractFolder(zipQ, FileLocator.quest_data_root);
 
-		QuestX.logMSG("Unzipping npc_payload.zip...");
-
-		extractFolder(zipNPC, FileLocator.npc_data_root);
+		int npcMods = extractFolder(zipNPC, FileLocator.npc_data_root);
 
 		// delete original payload extract
 		qFile.delete();
 		npcFile.delete();
-		
 
 		// unpack quests
 		for (File f : new File(FileLocator.quest_data_root).listFiles()) {
 			if (f.getName().endsWith(".zip")) {
 				String qName = f.getName().substring(0, f.getName().lastIndexOf("."));
-				QuestX.logError("Unpacking ------" + qName);
+				
+				File questFileLocal = new File(FileLocator.quest_data_root + File.separator + qName);
+				
+				if(questFileLocal.exists()){
+					continue;
+				}
+				
 				QuestUnpacker upack = new QuestUnpacker(qName);
 				boolean suc = upack.unpackQuest();
 				if (!suc) {
@@ -95,28 +84,20 @@ public class ExtractPayload {
 				}
 			}
 		}
-		
-		
-		
 
-		QuestX.logMSG("Internal files unpacked successfully.");
-		
-		try {
-			extractToggle.createNewFile();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}	
+		if(questMods == 0 && npcMods == 0){
+			//everything went fine
+			QuestX.logMSG("Payload is up to date.");
 		} else {
-			QuestX.logMSG("Payload has already been unpacked.");
+			QuestX.logMSG("Payload updated. NPC File Modifications = " + npcMods + ", Quest file modifications = " + questMods);
 		}
 
 	}
 
-	private static void extractFolder(String zipFile, String extractFolder) {
+	private static int extractFolder(String zipFile, String extractFolder) {
 		ZipFile zip = null;
+		int modifications = 0;
 		try {
-			// QuestX.logMSG("Unpacking Quest '" + name + "' files.");
 			int BUFFER = 2048;
 			File file = new File(zipFile);
 
@@ -124,33 +105,44 @@ public class ExtractPayload {
 
 			String newPath = extractFolder;
 
-			new File(newPath).mkdir();
+			
+			
 			Enumeration<? extends ZipEntry> zipFileEntries = zip.entries();
+			
+			boolean needToMakePath = true;
 
-			// Process each entry
 			while (zipFileEntries.hasMoreElements()) {
-				// grab a zip file entry
+
 				ZipEntry entry = (ZipEntry) zipFileEntries.nextElement();
 				String currentEntry = entry.getName();
 
 				File destFile = new File(newPath, currentEntry);
-				// destFile = new File(newPath, destFile.getName());
+
+				//Don't overwrite existing file
+				if (destFile.exists()) {
+					continue;
+				}
+				
+				if(needToMakePath){
+					//switches boolean value (switch to false)
+					needToMakePath ^= true;
+					new File(newPath).mkdir();
+				}
+				
+				modifications++;
+
 				File destinationParent = destFile.getParentFile();
 
-				// create the parent directory structure if needed
 				destinationParent.mkdirs();
 
 				if (!entry.isDirectory()) {
 					BufferedInputStream is = new BufferedInputStream(zip.getInputStream(entry));
 					int currentByte;
-					// establish buffer for writing file
 					byte data[] = new byte[BUFFER];
 
-					// write the current file to disk
 					FileOutputStream fos = new FileOutputStream(destFile);
 					BufferedOutputStream dest = new BufferedOutputStream(fos, BUFFER);
 
-					// read and write until last byte is encountered
 					while ((currentByte = is.read(data, 0, BUFFER)) != -1) {
 						dest.write(data, 0, currentByte);
 					}
@@ -160,37 +152,25 @@ public class ExtractPayload {
 					fos.close();
 					is.close();
 				}
-				
 
 			}
+
 			
-		
-
-			//QuestX.logMSG("Zip closed!");
-			//zip.close();
-
-			QuestX.logMSG("Files unpacked successfully.");
 		} catch (Exception e) {
-			// QuestX.logMSG("Error encountered while unpacking Quest '" + name
-			// + "' " + e.getMessage());
 			e.printStackTrace();
 		} finally {
 			try {
 				if (zip != null) {
-					QuestX.logDebug("Zip closed in FINALLY!");
 					zip.close();
-				} else {
-					QuestX.logDebug("Zip was null :(!");
 				}
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
-
+		return modifications;
 	}
 
-	private static void CopyFolder() {
+	/*private static void CopyFolder() {
 		try {
 			File dir = new File("plugins/QuestX/Data/NPCs");
 			dir.mkdirs();
@@ -251,6 +231,6 @@ public class ExtractPayload {
 			out.close();
 			System.out.println("File copied from " + src + " to " + dest);
 		}
-	}
+	}*/
 
 }
