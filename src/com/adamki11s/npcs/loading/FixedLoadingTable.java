@@ -12,6 +12,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import com.adamki11s.display.FixedSpawnsDisplay;
+import com.adamki11s.exceptions.MissingDeathTriggerPropertyException;
 import com.adamki11s.exceptions.MissingPropertyException;
 import com.adamki11s.io.FileLocator;
 import com.adamki11s.npcs.NPCHandler;
@@ -59,6 +60,8 @@ public class FixedLoadingTable {
 					fixedSpawns.put(npcName, spawnLocation);
 				} catch (MissingPropertyException e) {
 					e.printErrorReason();
+				} catch (MissingDeathTriggerPropertyException e) {
+					e.printErrorReason();
 				}
 
 			} else {
@@ -78,6 +81,8 @@ public class FixedLoadingTable {
 			NPCTemplate template = tempLoader.getLoadedNPCTemplate();
 			template.registerSimpleNPCFixedSpawn(handle, spawnLocation);
 		} catch (MissingPropertyException e) {
+			e.printErrorReason();
+		} catch (MissingDeathTriggerPropertyException e) {
 			e.printErrorReason();
 		}
 
@@ -215,6 +220,8 @@ public class FixedLoadingTable {
 				tmp.loadProperties();
 				tmp.getLoadedNPCTemplate().registerSimpleNPCFixedSpawn(handle, l);
 			} catch (MissingPropertyException e) {
+				e.printErrorReason();
+			} catch (MissingDeathTriggerPropertyException e) {
 				e.printErrorReason();
 			}
 

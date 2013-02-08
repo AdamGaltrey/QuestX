@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 
+import com.adamki11s.exceptions.MissingDeathTriggerPropertyException;
 import com.adamki11s.exceptions.MissingPropertyException;
 import com.adamki11s.io.FileLocator;
 import com.adamki11s.npcs.NPCHandler;
@@ -79,6 +80,9 @@ public class RespawnController {
 							e.printErrorReason();
 						}
 						// load into waiting list
+						catch (MissingDeathTriggerPropertyException e) {
+							e.printErrorReason();
+						}
 					}
 				}
 
@@ -105,9 +109,9 @@ public class RespawnController {
 						QuestX.logDebug("NPC can spawn in world '" + w + "'. Generating location..");
 
 						Location l;
-						
+
 						SimpleNPC front;
-						
+
 						boolean fullHS = HotspotManager.areHotspotsFull();
 
 						if (!fullHS) {
@@ -116,14 +120,12 @@ public class RespawnController {
 							l = HotspotManager.getSpawnLocation(front.getName());
 						} else {
 							QuestX.logDebug("########### Hot spots are full!");
-							
+
 							l = this.handle.getDispatcher(w).getSpawnLocation();
 							front = this.handle.getNextWaitingToSpawn(l.getWorld().getName());
 						}
 
 						QuestX.logDebug("Location generated = " + l.toString());
-
-						
 
 						// this.waiting.removeFirst();
 						if (front == null) {

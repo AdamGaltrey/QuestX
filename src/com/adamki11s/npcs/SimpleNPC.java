@@ -59,11 +59,11 @@ public class SimpleNPC {
 	boolean isSpawned = false, underAttack = false;
 
 	final ItemStack[] gear;// boots 1, legs 2, chest 3, head 4, arm 5
-	
+
 	private DeathTrigger deathTrigger;
 
 	public SimpleNPC(NPCHandler handle, String name, boolean moveable, boolean attackable, int minPauseTicks, int maxPauseTicks, int maxVariation, int health, int respawnTicks,
-			ItemStackDrop inventory, ItemStack[] gear, int damageMod, double retalliationMultiplier) {
+			ItemStackDrop inventory, ItemStack[] gear, int damageMod, double retalliationMultiplier) throws MissingDeathTriggerPropertyException {
 		UniqueNameRegister.addNPCName(name);
 		this.name = name;
 		this.moveable = moveable;
@@ -95,14 +95,9 @@ public class SimpleNPC {
 		} else {
 			this.questName = "null";
 		}
-		
+
 		deathTrigger = new DeathTrigger(name);
-		try {
-			deathTrigger.load();
-		} catch (MissingDeathTriggerPropertyException e) {
-			deathTrigger = null;
-			e.printErrorReason();
-		}
+		deathTrigger.load();
 
 		handle.registerNPC(this);
 	}
@@ -281,8 +276,8 @@ public class SimpleNPC {
 			}
 
 			QuestX.logChat(p, ChatColor.RED + "You killed NPC '" + this.name + "'");
-			
-			if(this.deathTrigger != null){
+
+			if (this.deathTrigger != null) {
 				this.deathTrigger.execute(p);
 			} else {
 				QuestX.logError("Death trigger was not triggered for NPC '" + this.name + "', because it loaded incorrectly.");
@@ -306,14 +301,14 @@ public class SimpleNPC {
 		if (!this.isNPCSpawned()) {
 			this.waitedSpawnTicks += ticks;
 			if (this.waitedSpawnTicks >= this.respawnTicks) {
-				if(this.isSpawnFixed()){
-					if(this.getFixedLocation() == null){
+				if (this.isSpawnFixed()) {
+					if (this.getFixedLocation() == null) {
 						QuestX.logDebug("NPC did not spawn, fixed location was null");
 						this.waitedSpawnTicks = 0;
 						return;
 					}
 				} else {
-					if(this.getSpawnedLocation() == null){
+					if (this.getSpawnedLocation() == null) {
 						QuestX.logDebug("NPC did not spawn, spawned location was null");
 						this.waitedSpawnTicks = 0;
 						return;
@@ -355,8 +350,11 @@ public class SimpleNPC {
 									QuestX.logChat(p, t.getCompleteTaskText());
 									if (ql.isQuestComplete(p.getName())) {
 										QuestX.logChat(p, ql.getEndText());
-										/*Fireworks f = new Fireworks(p.getLocation(), 6, 60);
-										f.circularDisplay();*/
+										/*
+										 * Fireworks f = new
+										 * Fireworks(p.getLocation(), 6, 60);
+										 * f.circularDisplay();
+										 */
 										QuestManager.removeCurrentPlayerQuest(ql.getName(), p.getName());
 									}
 								} else {
@@ -430,14 +428,13 @@ public class SimpleNPC {
 	public synchronized void spawnNPC() {
 		if (!isSpawned) {
 
-			
 			Location toSpawn;
 			if (this.isSpawnFixed()) {
 				toSpawn = this.getFixedLocation();
 			} else {
 				toSpawn = this.getSpawnedLocation();
 			}
-			
+
 			this.setTouched();
 
 			this.health = this.maxHealth;

@@ -1,6 +1,7 @@
 package com.adamki11s.npcs.triggers;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Player;
@@ -26,6 +27,23 @@ public class DeathTrigger {
 	public void load() throws MissingDeathTriggerPropertyException {
 		File f = FileLocator.getNPCDeathTriggerFile(npcName);
 		SyncConfiguration io = new SyncConfiguration(f);
+		
+		if(!f.exists()){
+			try {
+				f.createNewFile();
+				io.add("REWARD_EXP", 0);
+				io.add("REWARD_GOLD", 0);
+				io.add("REWARD_REP", 0);
+				io.add("EXECUTE_PLAYER_CMD", 0);
+				io.add("EXECUTE_SERVER_CMD", 0);
+				io.write();
+				QuestX.logError("Death Trigger file for NPC '" + npcName + "' was not found, it was created automatically.");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		
 		io.read();
 
 		if(io.doesKeyExist("REWARD_EXP")){
