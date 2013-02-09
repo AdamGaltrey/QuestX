@@ -58,11 +58,22 @@ public class ExtractPayload {
 			e1.printStackTrace();
 		}
 
+		final String zipQ = FileLocator.quest_data_root + File.separator + "quest_payload.zip", zipNPC = FileLocator.npc_data_root + File.separator + "npc_payload.zip";
+		final File qFile = new File(zipQ), npcFile = new File(zipNPC);
+
+		int npcMods = extractFolder(zipNPC, FileLocator.npc_data_root);
+
+		npcFile.delete();
+
 		stream = ExtractPayload.class.getResourceAsStream("/res/quest_payload.zip");
 
 		if (stream == null) {
 			// breaks out of startup check if server reloads with a newer
 			// version
+			if (npcMods != 0) {
+				QuestX.logMSG("NPC File modifications = " + npcMods);
+			}
+			QuestX.logMSG("Payload is up to date.");
 			return;
 		}
 
@@ -78,16 +89,10 @@ public class ExtractPayload {
 			e1.printStackTrace();
 		}
 
-		final String zipQ = FileLocator.quest_data_root + File.separator + "quest_payload.zip", zipNPC = FileLocator.npc_data_root + File.separator + "npc_payload.zip";
-		final File qFile = new File(zipQ), npcFile = new File(zipNPC);
-
 		int questMods = extractFolder(zipQ, FileLocator.quest_data_root);
-
-		int npcMods = extractFolder(zipNPC, FileLocator.npc_data_root);
 
 		// delete original payload extract
 		qFile.delete();
-		npcFile.delete();
 
 		// unpack quests
 		for (File f : new File(FileLocator.quest_data_root).listFiles()) {
@@ -113,6 +118,7 @@ public class ExtractPayload {
 			QuestX.logMSG("Payload is up to date.");
 		} else {
 			QuestX.logMSG("Payload updated. NPC File Modifications = " + npcMods + ", Quest file modifications = " + questMods);
+			QuestX.logMSG("Payload is up to date.");
 		}
 
 	}
@@ -147,7 +153,9 @@ public class ExtractPayload {
 				if (needToMakePath) {
 					// switches boolean value (switch to false)
 					needToMakePath ^= true;
-					new File(newPath).mkdir();
+					
+					//create need directory
+					new File(newPath).mkdirs();
 				}
 
 				modifications++;
@@ -172,6 +180,8 @@ public class ExtractPayload {
 					fos.flush();
 					fos.close();
 					is.close();
+				} else {
+					destFile.mkdirs();
 				}
 
 			}
