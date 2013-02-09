@@ -51,7 +51,6 @@ public class AttackController {
 				//QuestX.logChat(p, "NPC HIT YOU");
 				npc.getHumanNPC().animateArmSwing();
 				p.damage(npc.getDamageMod());
-				//System.out.println(p.getHealth());
 			}
 
 		} else {

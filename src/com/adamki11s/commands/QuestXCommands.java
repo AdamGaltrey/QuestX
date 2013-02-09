@@ -56,7 +56,7 @@ public class QuestXCommands implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if (label.equalsIgnoreCase("questx") || label.equalsIgnoreCase("q")) {
 			if (!(sender instanceof Player)) {
-				System.out.println("QuestX Commands must be issued in-game.");
+				QuestX.logError("QuestX Commands must be issued in-game.");
 				return true;
 			} else {
 				Player p = (Player) sender;

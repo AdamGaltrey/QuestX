@@ -86,8 +86,6 @@ public class QuestUnpacker {
 		}
 		new File(zipFile).delete();
 
-		System.out.println("Done");
-
 		return true;
 	}
 
@@ -153,7 +151,6 @@ public class QuestUnpacker {
 			// if directory not exists, create it
 			if (!dest.exists()) {
 				dest.mkdir();
-				System.out.println("Directory copied from " + src + "  to " + dest);
 			}
 
 			// list all the directory contents
@@ -183,7 +180,6 @@ public class QuestUnpacker {
 
 			in.close();
 			out.close();
-			System.out.println("File copied from " + src + " to " + dest);
 		}
 	}
 

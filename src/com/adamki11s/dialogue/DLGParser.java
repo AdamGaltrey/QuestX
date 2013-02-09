@@ -46,8 +46,6 @@ public class DLGParser {
 				continue;
 			}
 			nodes++;
-			// System.out.println("Reading line " + nodes + " content = " +
-			// line);
 			int firstHashIndex = line.indexOf("#") + 1;
 			int secondHashIndex = line.indexOf("#", firstHashIndex + 1);
 			String responseType = (line.substring(firstHashIndex, secondHashIndex));
@@ -56,10 +54,8 @@ public class DLGParser {
 				throw new InvalidDialogueException(line, "Response must be either 'say' or 'reply'", npc);
 			}
 
-			// System.out.println("RESPONSE TYPE = " + responseType);
 			if (responseType.equalsIgnoreCase("reply")) {
 
-				// System.out.println("Line " + nodes + " is a reply, skip");
 				continue;
 			} else {
 				// SingleDialogueItem Create
@@ -183,7 +179,6 @@ public class DLGParser {
 				continue;
 			}
 			nodes++;
-			// System.out.println("Reading line " + nodes + " content = " +
 			// line);
 			int firstHashIndex = line.indexOf("#") + 1;
 			int secondHashIndex = line.indexOf("#", firstHashIndex + 1);
@@ -193,10 +188,8 @@ public class DLGParser {
 				throw new InvalidDialogueException(line, "Response must be either 'say' or 'reply'", npc);
 			}
 
-			// System.out.println("RESPONSE TYPE = " + responseType);
 			if (responseType.equalsIgnoreCase("reply")) {
 
-				// System.out.println("Line " + nodes + " is a reply, skip");
 				continue;
 			} else {
 				// SingleDialogueItem Create

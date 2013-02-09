@@ -3,6 +3,7 @@ package com.adamki11s.io;
 import java.io.File;
 import java.io.IOException;
 
+import com.adamki11s.questx.QuestX;
 import com.adamki11s.sync.io.configuration.SyncConfiguration;
 import com.adamki11s.sync.io.objects.SyncObjectIO;
 
@@ -79,7 +80,7 @@ public class InitialSetup {
 
 	static void folderSetup(File f) {
 		if (!f.exists()) {
-			System.out.println("Directory Created : " + f.getPath());
+			QuestX.logMSG("Directory Created : " + f.getPath());
 			f.mkdirs();
 		}
 	}

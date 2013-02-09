@@ -192,33 +192,6 @@ public class QuestX extends JavaPlugin {
 			tagColourEvent = new TagColourEvent(this);
 		}
 
-		// register events
-
-		/*
-		 * String name = "Adam";
-		 * 
-		 * boolean unique = CreateNPC.isNameUnique(name);
-		 */
-
-		/*
-		 * if (unique) {
-		 * 
-		 * CreateNPC create = new CreateNPC(name, ChatColor.RED);
-		 * 
-		 * // Format id:data:quantity:chance(out of 10,000)/ String invDrops =
-		 * "1,0,5,6000#2,0,3,3000", gear = "0,0,0,0,0";
-		 * create.setProperties(true, true, false, true, (20 * 5), (20 * 20),
-		 * 15, (20 * 30), 30, 2, 2, invDrops, gear); create.createNPCFiles();
-		 * 
-		 * } else {
-		 * System.out.println("[QuestX] An NPC with this name already exists!");
-		 * }
-		 */
-
-		// Updater updater = new Updater(this, "bukkitdev_slug", this.getFile(),
-		// Updater.UpdateType.DEFAULT, false);//Final boolean = show dl progress
-
-		// update on reloads
 		for (Player player : Bukkit.getServer().getOnlinePlayers()) {
 			ReputationManager.loadPlayerReputation(player.getName());
 			QuestManager.loadCurrentPlayerQuest(player.getName());

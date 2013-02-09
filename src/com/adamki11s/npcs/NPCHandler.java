@@ -170,7 +170,6 @@ public class NPCHandler {
 	void incrementSpawnCount(Chunk c) {
 		HashSet<NPCChunkData> cData = npcChunkData.get(c.getWorld().getName());
 		if (cData == null) {
-			System.out.println("NPCChunkData is null");
 			return;
 		}
 		for (NPCChunkData cd : cData) {

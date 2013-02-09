@@ -55,7 +55,6 @@ public class DialogueItem {
 			} while (repPoints > 200);
 		}
 		for(GenericRepLevel grl : repList){
-			System.out.println("REP = " + grl.toString());
 			if(grl.equals(this.requriedRep)){
 				return true;
 			}

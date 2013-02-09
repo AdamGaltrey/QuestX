@@ -18,19 +18,19 @@ import com.adamki11s.quests.setup.QuestUnpacker;
 import com.adamki11s.questx.QuestX;
 
 public class ExtractPayload {
-	
+
 	private static boolean startup = true;
 
 	public static void extractPayload() {
-		
-		if(startup){
-			//invert boolean
+
+		if (startup) {
+			// invert boolean
 			startup ^= true;
 		} else {
-			//only check payload on server stars, not reloads.
+			// only check payload on server stars, not reloads.
 			return;
 		}
-		
+
 		QuestX.logMSG("Checking payload state...");
 
 		final String fs = File.separator;
@@ -38,6 +38,13 @@ public class ExtractPayload {
 		OutputStream resStreamOut;
 		int readBytes;
 		byte[] buffer = new byte[4096];
+
+		if (stream == null) {
+			// breaks out of startup check if server reloads with a newer
+			// version
+			return;
+		}
+
 		try {
 			resStreamOut = new FileOutputStream(new File(FileLocator.npc_data_root + fs + "npc_payload.zip"));
 
@@ -52,6 +59,12 @@ public class ExtractPayload {
 		}
 
 		stream = ExtractPayload.class.getResourceAsStream("/res/quest_payload.zip");
+
+		if (stream == null) {
+			// breaks out of startup check if server reloads with a newer
+			// version
+			return;
+		}
 
 		try {
 			resStreamOut = new FileOutputStream(new File(FileLocator.quest_data_root + fs + "quest_payload.zip"));
@@ -80,13 +93,13 @@ public class ExtractPayload {
 		for (File f : new File(FileLocator.quest_data_root).listFiles()) {
 			if (f.getName().endsWith(".zip")) {
 				String qName = f.getName().substring(0, f.getName().lastIndexOf("."));
-				
+
 				File questFileLocal = new File(FileLocator.quest_data_root + File.separator + qName);
-				
-				if(questFileLocal.exists()){
+
+				if (questFileLocal.exists()) {
 					continue;
 				}
-				
+
 				QuestUnpacker upack = new QuestUnpacker(qName);
 				boolean suc = upack.unpackQuest();
 				if (!suc) {
@@ -95,8 +108,8 @@ public class ExtractPayload {
 			}
 		}
 
-		if(questMods == 0 && npcMods == 0){
-			//everything went fine
+		if (questMods == 0 && npcMods == 0) {
+			// everything went fine
 			QuestX.logMSG("Payload is up to date.");
 		} else {
 			QuestX.logMSG("Payload updated. NPC File Modifications = " + npcMods + ", Quest file modifications = " + questMods);
@@ -115,10 +128,8 @@ public class ExtractPayload {
 
 			String newPath = extractFolder;
 
-			
-			
 			Enumeration<? extends ZipEntry> zipFileEntries = zip.entries();
-			
+
 			boolean needToMakePath = true;
 
 			while (zipFileEntries.hasMoreElements()) {
@@ -128,17 +139,17 @@ public class ExtractPayload {
 
 				File destFile = new File(newPath, currentEntry);
 
-				//Don't overwrite existing file
+				// Don't overwrite existing file
 				if (destFile.exists()) {
 					continue;
 				}
-				
-				if(needToMakePath){
-					//switches boolean value (switch to false)
+
+				if (needToMakePath) {
+					// switches boolean value (switch to false)
 					needToMakePath ^= true;
 					new File(newPath).mkdir();
 				}
-				
+
 				modifications++;
 
 				File destinationParent = destFile.getParentFile();
@@ -165,7 +176,6 @@ public class ExtractPayload {
 
 			}
 
-			
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -179,68 +189,5 @@ public class ExtractPayload {
 		}
 		return modifications;
 	}
-
-	/*private static void CopyFolder() {
-		try {
-			File dir = new File("plugins/QuestX/Data/NPCs");
-			dir.mkdirs();
-			File resource = new File(new URI(ExtractPayload.class.getClass().getResource("/res/npcs").toString()));
-			File[] listResource = resource.listFiles();
-			String[] files = resource.list();
-			for (int i = 0; i < files.length; i++) {
-				File dstfile1 = new File(dir, files[i]);
-				FileInputStream is1 = new FileInputStream(listResource[i]);
-				FileOutputStream fos1 = new FileOutputStream(dstfile1);
-				int b1;
-				while ((b1 = is1.read()) != -1) {
-					fos1.write(b1);
-				}
-				fos1.close();
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	private static void copyFolder(File src, File dest) throws IOException {
-
-		if (src.isDirectory()) {
-
-			// if directory not exists, create it
-			if (!dest.exists()) {
-				dest.mkdir();
-				System.out.println("Directory copied from " + src + "  to " + dest);
-			}
-
-			// list all the directory contents
-			String files[] = src.list();
-
-			for (String file : files) {
-				// construct the src and dest file structure
-				File srcFile = new File(src, file);
-				File destFile = new File(dest, file);
-				// recursive copy
-				copyFolder(srcFile, destFile);
-			}
-
-		} else {
-			// if file, then copy it
-			// Use bytes stream to support all file types
-			InputStream in = new FileInputStream(src);
-			OutputStream out = new FileOutputStream(dest);
-
-			byte[] buffer = new byte[1024];
-
-			int length;
-			// copy the file content in bytes
-			while ((length = in.read(buffer)) > 0) {
-				out.write(buffer, 0, length);
-			}
-
-			in.close();
-			out.close();
-			System.out.println("File copied from " + src + " to " + dest);
-		}
-	}*/
 
 }

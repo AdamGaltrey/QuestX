@@ -27,7 +27,6 @@ final NPCHandler handle;
 	public void onEntityInteract(final PlayerInteractEntityEvent evt){
 		 Player p = (Player) evt.getPlayer();
 		 Entity e = evt.getRightClicked();
-		 System.out.println("r-clicked entity, entity is npc? = " + handle.getNPCManager().isNPC(e));
 		 if(handle.getNPCManager().isNPC(e)){
 			 SimpleNPC npc = handle.getSimpleNPCByEntity(e);
 			 if(npc != null){

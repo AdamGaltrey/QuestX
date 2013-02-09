@@ -90,7 +90,6 @@ public class LocationGuider {
 
 			public void run() {
 				if (count > 9) {
-					System.out.println("Task 1 cancelled");
 					Bukkit.getServer().getScheduler().cancelTask(id1);
 				} else {
 					Location l = generate[count];
@@ -108,7 +107,6 @@ public class LocationGuider {
 
 			public void run() {
 				if (count > 9) {
-					System.out.println("Task 2 cancelled");
 					Bukkit.getServer().getScheduler().cancelTask(id2);
 				} else {
 					Location l = generate[count];

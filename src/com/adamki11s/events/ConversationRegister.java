@@ -71,7 +71,6 @@ public class ConversationRegister implements Listener {
 				if (c.getConvoData().getPlayer().getName().equalsIgnoreCase(evt.getPlayer().getName())) {
 					String s = evt.getMessage();
 					if (s.equalsIgnoreCase("exit") || s.equalsIgnoreCase("end") || s.equalsIgnoreCase("stop") || s.equalsIgnoreCase("quit") || s.equalsIgnoreCase("close")) {
-						Player p = evt.getPlayer();
 						c.endConversation();
 						evt.setCancelled(true);
 						return;
