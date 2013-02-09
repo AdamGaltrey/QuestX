@@ -131,6 +131,8 @@ public class QuestUnpacker {
 					dest.flush();
 					dest.close();
 					is.close();
+				} else {
+					destFile.mkdirs();
 				}
 
 			}
