@@ -35,7 +35,6 @@ public class ReputationIO {
 	}
 	
 	public void updatePlayerRep(String name, int amount){
-		QuestX.logMSG("Adding " + amount + " rep to " + name);
 		File f = FileLocator.getPlayerRepFile(name);
 		SyncConfiguration cfg = new SyncConfiguration(f);
 		cfg.read();
