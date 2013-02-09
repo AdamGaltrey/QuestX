@@ -60,8 +60,8 @@ public class QuestXCommands implements CommandExecutor {
 				return true;
 			} else {
 				Player p = (Player) sender;
-				
-				if(args.length >= 1 && (args[0].equalsIgnoreCase("help") || args[0].equalsIgnoreCase("?"))){
+
+				if (args.length >= 1 && (args[0].equalsIgnoreCase("help") || args[0].equalsIgnoreCase("?"))) {
 					HelpDispatcher.helpDispatcher(p, args);
 					return true;
 				}
@@ -164,7 +164,7 @@ public class QuestXCommands implements CommandExecutor {
 					if (args.length == 2) {
 						// page 1
 						String[] send = this.npcList.getStringsToSend(1);
-						QuestX.logChat(p, "Displaying (" + send.length + "/" + this.npcList.getRawArrayLength() + ") Spawned NPC's, Page (1/" + this.npcList.getPages() + ")");
+						QuestX.logChat(p, ChatColor.GREEN +  "Displaying (" + send.length + "/" + this.npcList.getRawArrayLength() + ") Spawned NPC's, Page (1/" + this.npcList.getPages() + ")");
 						int c = 0;
 						for (String s : send) {
 							c++;
@@ -185,7 +185,7 @@ public class QuestXCommands implements CommandExecutor {
 							int c = 0;
 							for (String s : send) {
 								c++;
-								QuestX.logChat(p, "#" + ((pg * 10) + c) + " - " + s);
+								QuestX.logChat(p, "#" + (((pg - 1) * 10) + c) + " - " + s);
 							}
 							QuestX.logChat(p, StaticStrings.separator);
 						} catch (NumberFormatException nfe) {
@@ -220,9 +220,13 @@ public class QuestXCommands implements CommandExecutor {
 						QuestX.logChat(p, "NPC with this name is not spawned");
 						return true;
 					} else {
-						Location npcLoc = npc.getHumanNPC().getBukkitEntity().getLocation();
-						LocationGuider guide = new LocationGuider(p.getName(), npcLoc.getWorld().getName(), npcLoc.getBlockX(), npcLoc.getBlockY(), npcLoc.getBlockZ());
-						guide.drawPath();
+						if (npc.isNPCSpawned()) {
+							Location npcLoc = npc.getHumanNPC().getBukkitEntity().getLocation();
+							LocationGuider guide = new LocationGuider(p.getName(), npcLoc.getWorld().getName(), npcLoc.getBlockX(), npcLoc.getBlockY(), npcLoc.getBlockZ());
+							guide.drawPath();
+						} else {
+							QuestX.logChatError(p, "This NPC has not spawned.");
+						}
 						return true;
 					}
 				}
