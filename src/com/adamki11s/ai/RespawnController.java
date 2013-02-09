@@ -1,6 +1,10 @@
 package com.adamki11s.ai;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -54,7 +58,11 @@ public class RespawnController {
 			if (!areAllLoaded) {
 
 				String npcNameToLoad;
-				for (File f : new File(FileLocator.npc_data_root).listFiles()) {
+				
+				List<File> fList = new ArrayList<File>(Arrays.asList(new File(FileLocator.npc_data_root).listFiles()));
+		        Collections.shuffle(fList);
+				
+				for (File f : fList) {
 					boolean loaded = false;
 					for (String pre : preloaded) {
 						if (f.getName().equalsIgnoreCase(pre) || f.getName().contains(".zip")) {
