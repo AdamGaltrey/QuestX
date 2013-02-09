@@ -202,6 +202,7 @@ public class QuestX extends JavaPlugin {
 	public void onDisable() {
 		tControl.terminateAsyncThread();
 		tControl.terminateSyncronousThread();
+		Bukkit.getServer().getScheduler().cancelTasks(this);
 	}
 
 }
