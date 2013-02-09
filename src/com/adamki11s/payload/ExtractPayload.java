@@ -18,8 +18,18 @@ import com.adamki11s.quests.setup.QuestUnpacker;
 import com.adamki11s.questx.QuestX;
 
 public class ExtractPayload {
+	
+	private static boolean startup = true;
 
 	public static void extractPayload() {
+		
+		if(startup){
+			//invert boolean
+			startup ^= true;
+		} else {
+			//only check payload on server stars, not reloads.
+			return;
+		}
 		
 		QuestX.logMSG("Checking payload state...");
 
