@@ -8,7 +8,6 @@ import com.adamki11s.io.DatabaseConfigData;
 import com.adamki11s.npcs.NPCHandler;
 import com.adamki11s.npcs.population.PopulationDensityThread;
 
-
 public class AsyncThread implements Runnable {
 
 	final NPCHandler handle;
@@ -19,6 +18,8 @@ public class AsyncThread implements Runnable {
 	final DespawnController dControl;
 	final int tickRate;
 
+	private volatile boolean running;
+
 	AsyncThread(NPCHandler handle, int tickRate) {
 		this.handle = handle;
 		mControl = new MovementController(handle);
@@ -28,8 +29,9 @@ public class AsyncThread implements Runnable {
 		dControl = new DespawnController(handle);
 		this.tickRate = tickRate;
 	}
-	
-	public void onShutdown(){
+
+	public void onShutdown() {
+		this.running = false;
 		this.pdThread.terminateSQL();
 	}
 
@@ -37,21 +39,29 @@ public class AsyncThread implements Runnable {
 
 	@Override
 	public void run() {
-		tickOver += tickRate;
-		denstiyCalculationTickOver += tickRate;
-		//if(denstiyCalculationTickOver > (20 * 60 * 5)){ 5minutes
-		if(denstiyCalculationTickOver > (20 * 60 * DatabaseConfigData.getUpdateMinutes())){ //60 secs * x minutes between updates
-			this.denstiyCalculationTickOver = 0;
-			this.pdThread.run();
+		if (running) {
+			tickOver += tickRate;
+			denstiyCalculationTickOver += tickRate;
+			// if(denstiyCalculationTickOver > (20 * 60 * 5)){ 5minutes
+			if (denstiyCalculationTickOver > (20 * 60 * DatabaseConfigData.getUpdateMinutes())) { // 60
+																									// secs
+																									// *
+																									// x
+																									// minutes
+																									// between
+																									// updates
+				this.denstiyCalculationTickOver = 0;
+				this.pdThread.run();
+			}
+			// run every second
+			if (tickOver % 20 == 0) {
+				this.mControl.run();
+				this.rControl.run(tickRate);
+				this.dControl.run(tickRate);
+				tickOver = 0;
+			}
+			aControl.run();
 		}
-		//run every second
-		if (tickOver % 20 == 0) {
-			this.mControl.run();
-			this.rControl.run(tickRate);
-			this.dControl.run(tickRate);
-			tickOver = 0;
-		}
-		aControl.run();
 	}
 
 }
