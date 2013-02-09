@@ -85,7 +85,7 @@ public class Conversation {
 	public void endConversation() {
 		Player p = this.getConvoData().getPlayer();
 		if (p != null) {
-			QuestX.logChat(p, ChatColor.RED + " Conversation ended.");
+			QuestX.logChat(p, ChatColor.RED + "Conversation ended.");
 		}
 		this.conversing = false;
 		ConversationRegister.playersConversing.remove(this);
