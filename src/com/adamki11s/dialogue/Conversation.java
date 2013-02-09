@@ -6,6 +6,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.adamki11s.dialogue.triggers.Trigger;
 import com.adamki11s.dialogue.triggers.TriggerType;
+import com.adamki11s.display.StaticStrings;
 import com.adamki11s.events.ConversationRegister;
 import com.adamki11s.exceptions.InvalidDialogueException;
 import com.adamki11s.exceptions.MissingTaskPropertyException;
@@ -84,7 +85,7 @@ public class Conversation {
 	public void endConversation() {
 		Player p = this.getConvoData().getPlayer();
 		if (p != null) {
-			QuestX.logChat(p, ChatColor.AQUA + "[QuestX] " + ChatColor.RED + " Conversation ended.");
+			QuestX.logChat(p, ChatColor.RED + " Conversation ended.");
 		}
 		this.conversing = false;
 		ConversationRegister.playersConversing.remove(this);
@@ -99,6 +100,7 @@ public class Conversation {
 		DialogueItem[] items = d.getItems();
 		Player p = this.convoData.getPlayer();
 		int count = 1;
+		QuestX.logChat(p, ChatColor.ITALIC + "Speech Options " + ChatColor.RESET + StaticStrings.separator.substring(13));
 		for (DialogueItem di : items) {
 			if (di.doesPlayerHaveRequiredRepLevel(p.getName())) {
 				QuestX.logChat(p, "[#" + count + "] " + di.getSay());
@@ -107,12 +109,12 @@ public class Conversation {
 			}
 			count += 1;
 		}
+		
 	}
 
 	public void selectSpeechOption(int index) {
 		DialogueSet d = this.getDialogeSetFromNode(currentNode);
 		DialogueItem[] items = d.getItems();
-		QuestX.logMSG("Items length = " + items.length);
 		if (index > items.length || index < 1) {
 			QuestX.logChat(this.getConvoData().getPlayer(), "Invalid chat option!");
 			this.displaySpeechOptions();
@@ -122,23 +124,18 @@ public class Conversation {
 		Player p = this.convoData.getPlayer();
 		if (selected.doesPlayerHaveRequiredRepLevel(p.getName())) {
 			Trigger selTrigger = selected.getTrigger();
-
+			QuestX.logChat(p, ChatColor.ITALIC + "Response " + ChatColor.RESET + StaticStrings.separator.substring(8));
 			if (selTrigger.getTriggerType() != TriggerType.QUEST) {
 				DialogueResponse dr = d.getResponse();
 				String response = dr.getResponses()[index - 1];
 				QuestX.logChat(p, "[" + this.convoData.getSimpleNpc().getName() + "] " + response);
 			}
 
-			System.out.println("Current node = " + this.currentNode);
 			this.currentNode = this.currentNode + index;
-			System.out.println("Current node = " + this.currentNode);
-			System.out.println("Trigger type = " + selTrigger.getTriggerType().toString());
 			if (selTrigger.getTriggerType() == TriggerType.END) {
 				this.endConversation();
 				return;
 			} else if (selTrigger.getTriggerType() == TriggerType.TASK) {
-				System.out.println("INSIDE TRIGGER code");
-				System.out.println("Does player have task = " + TaskRegister.doesPlayerHaveTask(p.getName()));
 				boolean alreadyDone = TaskRegister.hasPlayerCompletedTask(this.getConvoData().getSimpleNpc().getName(), p.getName());
 				if (alreadyDone) {
 					QuestX.logChat(p, "You have already completed this task!");
@@ -146,13 +143,11 @@ public class Conversation {
 					return;
 				}
 				if (TaskRegister.doesPlayerHaveTask(p.getName())) {
-					System.out.println("In has task code");
 					QuestX.logChat(p, ChatColor.RED + "You already have a task assigned!");
 					QuestX.logChat(p, ChatColor.WHITE + "/questx task cancel" + ChatColor.RED + " to cancel current task.");
 					this.endConversation();
 					return;
 				} else {
-					System.out.println("In has NOT task code");
 					TaskLoader tl = new TaskLoader(FileLocator.getNPCTaskFile(this.getConvoData().getSimpleNpc().getName()), this.getConvoData().getSimpleNpc().getName());
 					QuestX.logDebug("Loading task...");
 					try {
@@ -162,7 +157,6 @@ public class Conversation {
 						TaskRegister.registerTask(manage);
 						QuestX.logChat(p, ChatColor.ITALIC + tl.getTaskName() + ChatColor.RESET + ChatColor.GREEN + " task started!");
 						QuestX.logChat(p, "Task description : " + tl.getTaskDescription());
-						QuestX.logDebug("Not recieving msgs?");
 					} catch (MissingTaskPropertyException e) {
 						e.printErrorReason();
 						QuestX.logChat(p, "Task failed to load, task file is incorrectly formatted. Check the server log for details.");

@@ -412,7 +412,6 @@ public class SimpleNPC {
 					c.startConversation();
 					Location pl = p.getLocation();
 					this.getHumanNPC().lookAtPoint(new Location(pl.getWorld(), pl.getX(), pl.getY() + 1, pl.getZ()));
-					System.out.println("Conversing = " + this.isConversing());
 				} else {
 					QuestX.logChatError(p, "There was an error parsing the dialogue file for this NPC. Please check the server log for more information.");
 				}
