@@ -93,7 +93,7 @@ public class SyncConfiguration extends IOStream {
 	 * @return
 	 */
 	public boolean doesKeyExist(String key) {
-		return this.readableData.containsKey(key);
+		return this.readableData.containsKey(key.toUpperCase());
 	}
 
 	/**
@@ -151,7 +151,7 @@ public class SyncConfiguration extends IOStream {
 	}
 
 	public Object getObject(String key) {
-		return this.readableData.get(key);
+		return this.readableData.get(key.toUpperCase());
 	}
 
 	public String getString(String key) {

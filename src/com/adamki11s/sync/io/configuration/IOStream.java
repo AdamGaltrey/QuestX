@@ -51,7 +51,7 @@ public class IOStream extends GenericIO {
 				if (strLine.isEmpty() || strLine.length() < 2 || strLine.startsWith("#")) {
 					continue;
 				}
-				String key = strLine.trim().substring(0, strLine.indexOf(":"));
+				String key = strLine.trim().substring(0, strLine.indexOf(":")).toUpperCase();
 				String value = strLine.trim().substring(strLine.indexOf(":") + 1);
 				tempKeys.put(key, value);
 			}
