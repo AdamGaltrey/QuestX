@@ -100,7 +100,7 @@ public class Conversation {
 		DialogueItem[] items = d.getItems();
 		Player p = this.convoData.getPlayer();
 		int count = 1;
-		QuestX.logChat(p, ChatColor.ITALIC + "Speech Options " + ChatColor.RESET + StaticStrings.separator.substring(13));
+		QuestX.logChat(p, ChatColor.ITALIC + "" + ChatColor.BLUE + "Speech Options " + ChatColor.RESET + StaticStrings.separator.substring(13));
 		for (DialogueItem di : items) {
 			if (di.doesPlayerHaveRequiredRepLevel(p.getName())) {
 				QuestX.logChat(p, "[#" + count + "] " + di.getSay());
@@ -124,7 +124,7 @@ public class Conversation {
 		Player p = this.convoData.getPlayer();
 		if (selected.doesPlayerHaveRequiredRepLevel(p.getName())) {
 			Trigger selTrigger = selected.getTrigger();
-			QuestX.logChat(p, ChatColor.ITALIC + "Response " + ChatColor.RESET + StaticStrings.separator.substring(8));
+			QuestX.logChat(p, ChatColor.ITALIC + "" + ChatColor.BLUE + "Response " + ChatColor.RESET + StaticStrings.separator.substring(8));
 			if (selTrigger.getTriggerType() != TriggerType.QUEST) {
 				DialogueResponse dr = d.getResponse();
 				String response = dr.getResponses()[index - 1];
