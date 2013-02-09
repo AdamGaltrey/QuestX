@@ -176,7 +176,7 @@ public class LoadNPCTemplate {
 			QuestX.logMSG("NPC " + this.name + " has invalid data in field 'INVENTORY_DROPS'.");
 			QuestX.logMSG("NPC " + this.name + " unloaded.");
 			unload = true;
-		} catch (IndexOutOfBoundsException e){
+		} catch (ArrayIndexOutOfBoundsException e){
 			QuestX.logMSG("NPC " + this.name + " has invalid data in field 'INVENTORY_DROPS'.");
 			QuestX.logMSG("NPC " + this.name + " unloaded.");
 			unload = true;
