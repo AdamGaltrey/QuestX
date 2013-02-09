@@ -176,7 +176,12 @@ public class LoadNPCTemplate {
 			QuestX.logMSG("NPC " + this.name + " has invalid data in field 'INVENTORY_DROPS'.");
 			QuestX.logMSG("NPC " + this.name + " unloaded.");
 			unload = true;
+		} catch (IndexOutOfBoundsException e){
+			QuestX.logMSG("NPC " + this.name + " has invalid data in field 'INVENTORY_DROPS'.");
+			QuestX.logMSG("NPC " + this.name + " unloaded.");
+			unload = true;
 		}
+		
 		if (probability < 0 || probability > 10000) {
 			QuestX.logMSG("NPC " + this.name + " has invalid data in field 'INVENTORY_DROPS'. Probability must be between 0-10000");
 			QuestX.logMSG("NPC " + this.name + " unloaded.");
