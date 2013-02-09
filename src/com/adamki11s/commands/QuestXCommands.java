@@ -60,6 +60,11 @@ public class QuestXCommands implements CommandExecutor {
 				return true;
 			} else {
 				Player p = (Player) sender;
+				
+				if(args.length >= 1 && (args[0].equalsIgnoreCase("help") || args[0].equalsIgnoreCase("?"))){
+					HelpDispatcher.helpDispatcher(p, args);
+					return true;
+				}
 
 				if (args.length == 1 && args[0].equalsIgnoreCase("force-update") && QPerms.hasPermission(p, "questsx.update.update")) {
 					Updater u = new Updater(QuestX.p, "questx", QuestX.f, UpdateType.DEFAULT, true);
@@ -268,7 +273,7 @@ public class QuestXCommands implements CommandExecutor {
 					} else if (args[1].equalsIgnoreCase("edit") && QPerms.hasPermission(p, "questsx.fixedspawns.edit")) {
 						FixedLoadingTable.editFixedNPCSpawn(p, npcName, handle);
 						return true;
-					} else if (args[1].equalsIgnoreCase("removeall")) {
+					} else if (args[1].equalsIgnoreCase("deleteall")) {
 						if (QPerms.hasPermission(p, "questsx.fixedspawns.deleteall")) {
 							FixedLoadingTable.deleteAllFixedSpawns(p, handle);
 						} else {
