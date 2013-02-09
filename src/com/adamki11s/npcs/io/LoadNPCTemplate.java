@@ -51,7 +51,7 @@ public class LoadNPCTemplate {
 		return this.npcTemplate;
 	}
 
-	public void loadProperties() throws MissingPropertyException{
+	public void loadProperties() throws MissingPropertyException {
 		File prop = FileLocator.getNPCPropertiesFile(name);
 		// File prop = new File(folder + File.separator +
 		// FileLocator.propertyFile);
@@ -70,7 +70,7 @@ public class LoadNPCTemplate {
 			} else {
 				throw new MissingPropertyException(name, NPCTag.ATTACKABLE.toString());
 			}
-			
+
 			if (conf.doesKeyExist(NPCTag.MIN_PAUSE_TICKS.toString())) {
 				this.minPauseTicks = conf.getInt(NPCTag.MIN_PAUSE_TICKS.toString());
 			} else {
@@ -112,28 +112,33 @@ public class LoadNPCTemplate {
 			} else {
 				throw new MissingPropertyException(name, NPCTag.RETALLIATION_MULTIPLIER.toString());
 			}
-			
+
 			if (conf.doesKeyExist(NPCTag.INVENTORY_DROPS.toString())) {
 				this.inventDrops = conf.getString(NPCTag.INVENTORY_DROPS.toString());// id,data,quantity,chance#
 			} else {
 				throw new MissingPropertyException(name, NPCTag.INVENTORY_DROPS.toString());
 			}
-			
+
 			if (conf.doesKeyExist(NPCTag.GEAR.toString())) {
 				this.gear = conf.getString(NPCTag.GEAR.toString());// boots,legs,chest,helm,arm
 			} else {
 				throw new MissingPropertyException(name, NPCTag.GEAR.toString());
 			}
 
-			String[] inventDropsToParse = this.inventDrops.split("#");
+			if (!this.inventDrops.equalsIgnoreCase("0")) {
+				String[] inventDropsToParse = this.inventDrops.split("#");
 
-			ItemStackProbability[] ispDrops = new ItemStackProbability[inventDropsToParse.length];
+				ItemStackProbability[] ispDrops = new ItemStackProbability[inventDropsToParse.length];
 
-			for (int i = 0; i < inventDropsToParse.length; i++) {
-				ispDrops[i] = this.parseISP(inventDropsToParse[i]);
+				for (int i = 0; i < inventDropsToParse.length; i++) {
+					ispDrops[i] = this.parseISP(inventDropsToParse[i]);
+				}
+
+				this.itemStackDrop = new ItemStackDrop(ispDrops);
+			} else {
+				this.itemStackDrop = null;
 			}
 
-			this.itemStackDrop = new ItemStackDrop(ispDrops);
 			this.npcGear = this.parseGear(gear);
 
 			if (!unload) {
@@ -176,12 +181,12 @@ public class LoadNPCTemplate {
 			QuestX.logMSG("NPC " + this.name + " has invalid data in field 'INVENTORY_DROPS'.");
 			QuestX.logMSG("NPC " + this.name + " unloaded.");
 			unload = true;
-		} catch (ArrayIndexOutOfBoundsException e){
+		} catch (ArrayIndexOutOfBoundsException e) {
 			QuestX.logMSG("NPC " + this.name + " has invalid data in field 'INVENTORY_DROPS'.");
 			QuestX.logMSG("NPC " + this.name + " unloaded.");
 			unload = true;
 		}
-		
+
 		if (probability < 0 || probability > 10000) {
 			QuestX.logMSG("NPC " + this.name + " has invalid data in field 'INVENTORY_DROPS'. Probability must be between 0-10000");
 			QuestX.logMSG("NPC " + this.name + " unloaded.");

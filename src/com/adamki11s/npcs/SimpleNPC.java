@@ -260,14 +260,16 @@ public class SimpleNPC {
 			StringBuilder loot = new StringBuilder();
 			loot.append(this.name).append(" dropped : ");
 			boolean gainedLoot = false;
-			for (ItemStack i : this.inventory.getDrops()) {
-				gainedLoot = true;
-				loot.append(i.getAmount()).append(" ").append(i.getType().toString()).append(", ");
-				p.getWorld().dropItemNaturally(this.npc.getBukkitEntity().getLocation(), i);
-			}
+			if (this.inventory != null) {
+				for (ItemStack i : this.inventory.getDrops()) {
+					gainedLoot = true;
+					loot.append(i.getAmount()).append(" ").append(i.getType().toString()).append(", ");
+					p.getWorld().dropItemNaturally(this.npc.getBukkitEntity().getLocation(), i);
+				}
 
-			if (gainedLoot) {
-				QuestX.logChat(p, loot.toString().substring(0, loot.toString().length()));
+				if (gainedLoot) {
+					QuestX.logChat(p, loot.toString().substring(0, loot.toString().length()));
+				}
 			}
 
 			if (TaskRegister.doesPlayerHaveTask(p.getName())) {
