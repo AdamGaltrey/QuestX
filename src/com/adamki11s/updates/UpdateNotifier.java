@@ -18,7 +18,7 @@ public class UpdateNotifier {
 
 	public static void onPlayerLogin(Player p) {
 		// if player is admin
-		if (GeneralConfigData.isNotifyAdmin() && u.getResult() == UpdateResult.UPDATE_AVAILABLE && QPerms.hasPermission(p, "questx.update.update")) {
+		if (GeneralConfigData.isNotifyAdmin() && u.getResult() == UpdateResult.UPDATE_AVAILABLE && QPerms.hasPermission(p, "questx.update.notify")) {
 			QuestX.logChat(p, ChatColor.GREEN + "Version " + u.getLatestVersionString() + " of QuestX has been released, you are running version " + QuestX.version);
 			QuestX.logChat(p, ChatColor.GREEN + "Run command " + ChatColor.RED + "/questx force-update" + ChatColor.GREEN + " to automatically update the plugin if you wish to do so.");
 		}
