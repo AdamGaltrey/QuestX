@@ -81,6 +81,7 @@ public class QuestXCommands implements CommandExecutor {
 				 */
 
 				if (args.length == 2 && args[0].equalsIgnoreCase("quest") && args[1].equalsIgnoreCase("info")) {
+						QuestDisplay.displayCurrentQuestInfo(p);
 					return true;
 				}
 				
