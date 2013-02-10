@@ -83,12 +83,14 @@ public class Conversation {
 	}
 
 	public void endConversation() {
-		Player p = this.getConvoData().getPlayer();
-		if (p != null) {
-			QuestX.logChat(p, ChatColor.RED + "Conversation ended.");
+		if (this.conversing) {
+			Player p = this.getConvoData().getPlayer();
+			if (p != null) {
+				QuestX.logChat(p, ChatColor.RED + "Conversation ended.");
+			}
+			this.conversing = false;
+			ConversationRegister.playersConversing.remove(this);
 		}
-		this.conversing = false;
-		ConversationRegister.playersConversing.remove(this);
 	}
 
 	public boolean isConversing() {
@@ -109,7 +111,7 @@ public class Conversation {
 			}
 			count += 1;
 		}
-		
+
 	}
 
 	public void selectSpeechOption(int index) {
@@ -207,12 +209,12 @@ public class Conversation {
 								if (qt.isTalkNPC()) {
 									QuestLoader ql = QuestManager.getQuestLoader(QuestManager.getCurrentQuestName(p.getName()));
 									int curNode = ql.getCurrentQuestNode(p.getName());
-									NPCTalkTracker track = (NPCTalkTracker)qt.getData();
+									NPCTalkTracker track = (NPCTalkTracker) qt.getData();
 									if (npc.getCompleteQuestNodes().contains(curNode)) {
-										//npc can complete
-										
-										if(track.getNPCName().equalsIgnoreCase(npc.getName())){
-											//correct npc
+										// npc can complete
+
+										if (track.getNPCName().equalsIgnoreCase(npc.getName())) {
+											// correct npc
 											track.setTalkedTo();
 											ql.incrementTaskProgress(p);
 											if (ql.isQuestComplete(p.getName())) {
@@ -221,9 +223,9 @@ public class Conversation {
 											}
 										} else {
 											QuestX.logChat(p, "You need to speak to '" + track.getNPCName() + "' to complete this part of your quest.");
-											//wrong npc
+											// wrong npc
 										}
-										
+
 									} else {
 										QuestX.logChat(p, "You need to speak to '" + track.getNPCName() + "' to complete this part of your quest.");
 									}
