@@ -66,7 +66,7 @@ public class QuestXCommands implements CommandExecutor {
 					return true;
 				}
 
-				if (args.length == 1 && args[0].equalsIgnoreCase("force-update") && QPerms.hasPermission(p, "questsx.update.update")) {
+				if (args.length == 1 && args[0].equalsIgnoreCase("force-update") && QPerms.hasPermission(p, "questx.update.update")) {
 					Updater u = new Updater(QuestX.p, "questx", QuestX.f, UpdateType.DEFAULT, true);
 					if (u.getResult() == UpdateResult.SUCCESS) {
 						QuestX.logChat(p, "QuestX version " + u.getLatestVersionString() + " was updated successfully!");
@@ -86,9 +86,41 @@ public class QuestXCommands implements CommandExecutor {
 					}
 					return true;
 				}
+				
+				
+				if (args.length == 2 && args[0].equalsIgnoreCase("quest") && args[1].equalsIgnoreCase("next") && QPerms.hasPermission(p, "questx.quests.setup")) {
+					QuestX.logChat(p, "registered next command");
+					if (setups.containsKey(p.getName())) {
+						QuestX.logChat(p, "Setting up quest");
+						QuestSetup qs = this.setups.get(p.getName());
+						if (!qs.isSetupComplete()) {
+							qs.setupSpawn(p);
+							if (qs.isSetupComplete()) {
+								qs.removeFromList();
+								this.setups.remove(p.getName());
+								QuestX.logChat(p, "Quest setup successfully!");
+							}
+						} else {
+							QuestX.logChat(p, "Setup is completed already.");
+						}
+					} else {
+						QuestX.logChat(p, "You aren't setting up a quest!");
+					}
+					return true;
+				}
 
-				if (args.length == 3 && args[0].equalsIgnoreCase("quest") && args[1].equalsIgnoreCase("unpack") && QPerms.hasPermission(p, "questsx.quests.setup")) {
-					String qName = args[2];
+				if (args.length >= 3 && args[0].equalsIgnoreCase("quest") && args[1].equalsIgnoreCase("unpack") && QPerms.hasPermission(p, "questx.quests.setup")) {
+					StringBuilder build = new StringBuilder();
+					for(int i = 2; i < args.length; i++){
+						//if final arg
+						if((i + 1) == args.length){
+							build.append(args[i]);
+						} else {
+							build.append(args[i]).append(" ");
+						}
+					}
+					String qName = build.toString();
+					
 					QuestUnpacker upack = new QuestUnpacker(qName);
 					boolean suc = upack.unpackQuest();
 					if (suc) {
@@ -100,8 +132,18 @@ public class QuestXCommands implements CommandExecutor {
 					return true;
 				}
 
-				if (args.length == 3 && args[0].equalsIgnoreCase("quest") && args[1].equalsIgnoreCase("setup") && QPerms.hasPermission(p, "questsx.quests.setup")) {
-					String qName = args[2];
+				if (args.length >= 3 && args[0].equalsIgnoreCase("quest") && args[1].equalsIgnoreCase("setup") && QPerms.hasPermission(p, "questx.quests.setup")) {
+					StringBuilder build = new StringBuilder();
+					for(int i = 2; i < args.length; i++){
+						//if final arg
+						if((i + 1) == args.length){
+							build.append(args[i]);
+						} else {
+							build.append(args[i]).append(" ");
+						}
+					}
+					String qName = build.toString();
+					
 					if (setups.containsKey(p.getName())) {
 						QuestX.logChat(p, "You are already setting this quest up!");
 						return true;
@@ -127,22 +169,7 @@ public class QuestXCommands implements CommandExecutor {
 					return true;
 				}
 
-				if (args.length == 2 && args[0].equalsIgnoreCase("quest") && args[1].equalsIgnoreCase("next") && QPerms.hasPermission(p, "questsx.quests.setup")) {
-					if (setups.containsKey(p.getName())) {
-						QuestSetup qs = this.setups.get(p.getName());
-						if (!qs.isSetupComplete()) {
-							qs.setupSpawn(p);
-							if (qs.isSetupComplete()) {
-								qs.removeFromList();
-								this.setups.remove(p.getName());
-								QuestX.logChat(p, "Quest setup successfully!");
-							}
-						}
-					} else {
-						QuestX.logChat(p, "You aren't setting up a quest!");
-					}
-					return true;
-				}
+				
 
 				/*
 				 * Quest Commands (END)
@@ -152,7 +179,7 @@ public class QuestXCommands implements CommandExecutor {
 				 * NPC Commands (START)
 				 */
 
-				if (args.length >= 2 && args[0].equalsIgnoreCase("npc") && args[1].equalsIgnoreCase("list") && QPerms.hasPermission(p, "questsx.npcs.list")) {
+				if (args.length >= 2 && args[0].equalsIgnoreCase("npc") && args[1].equalsIgnoreCase("list") && QPerms.hasPermission(p, "questx.npcs.list")) {
 					String[] list = new String[handle.getNPCs().size()];
 					int count = 0;
 					for (SimpleNPC npc : handle.getNPCs()) {
@@ -197,7 +224,7 @@ public class QuestXCommands implements CommandExecutor {
 					return true;
 				}
 
-				if (args.length == 3 && args[0].equalsIgnoreCase("npc") && args[1].equalsIgnoreCase("delete") && QPerms.hasPermission(p, "questsx.npcs.delete")) {
+				if (args.length == 3 && args[0].equalsIgnoreCase("npc") && args[1].equalsIgnoreCase("delete") && QPerms.hasPermission(p, "questx.npcs.delete")) {
 					String toDel = args[2];
 					try {
 						FileUtils.deleteDirectory(FileLocator.getNPCRootDir(toDel));
@@ -213,7 +240,7 @@ public class QuestXCommands implements CommandExecutor {
 					}
 				}
 
-				if (args.length == 3 && args[0].equalsIgnoreCase("npc") && args[1].equalsIgnoreCase("find") && QPerms.hasPermission(p, "questsx.npcs.find")) {
+				if (args.length == 3 && args[0].equalsIgnoreCase("npc") && args[1].equalsIgnoreCase("find") && QPerms.hasPermission(p, "questx.npcs.find")) {
 					String npcName = args[2];
 					SimpleNPC npc = this.handle.getSimpleNPCByName(npcName);
 					if (npc == null) {
@@ -231,7 +258,7 @@ public class QuestXCommands implements CommandExecutor {
 					}
 				}
 
-				if (args.length == 3 && args[0].equalsIgnoreCase("npc") && args[1].equalsIgnoreCase("tele") && QPerms.hasPermission(p, "questsx.npcs.tele")) {
+				if (args.length == 3 && args[0].equalsIgnoreCase("npc") && args[1].equalsIgnoreCase("tele") && QPerms.hasPermission(p, "questx.npcs.tele")) {
 					String npcName = args[2];
 					SimpleNPC npc = this.handle.getSimpleNPCByName(npcName);
 					if (npc == null) {
@@ -271,14 +298,14 @@ public class QuestXCommands implements CommandExecutor {
 
 				if (args.length == 3 && args[0].equalsIgnoreCase("fixedspawns")) {
 					String npcName = args[2];
-					if (args[1].equalsIgnoreCase("delete") && QPerms.hasPermission(p, "questsx.fixedspawns.delete")) {
+					if (args[1].equalsIgnoreCase("delete") && QPerms.hasPermission(p, "questx.fixedspawns.delete")) {
 						FixedLoadingTable.removeFixedNPCSpawn(p, npcName, handle);
 						return true;
-					} else if (args[1].equalsIgnoreCase("edit") && QPerms.hasPermission(p, "questsx.fixedspawns.edit")) {
+					} else if (args[1].equalsIgnoreCase("edit") && QPerms.hasPermission(p, "questx.fixedspawns.edit")) {
 						FixedLoadingTable.editFixedNPCSpawn(p, npcName, handle);
 						return true;
 					} else if (args[1].equalsIgnoreCase("deleteall")) {
-						if (QPerms.hasPermission(p, "questsx.fixedspawns.deleteall")) {
+						if (QPerms.hasPermission(p, "questx.fixedspawns.deleteall")) {
 							FixedLoadingTable.deleteAllFixedSpawns(p, handle);
 						} else {
 							QuestX.logChatError(p, "You must be an Operator to perform this command");
@@ -287,7 +314,7 @@ public class QuestXCommands implements CommandExecutor {
 					}
 				}
 
-				if (args.length >= 2 && args[0].equalsIgnoreCase("fixedspawns") && QPerms.hasPermission(p, "questsx.fixedspawns.list")) {
+				if (args.length >= 2 && args[0].equalsIgnoreCase("fixedspawns") && QPerms.hasPermission(p, "questx.fixedspawns.list")) {
 					if (args[1].equalsIgnoreCase("list")) {
 						if (args.length == 2) {
 							FixedSpawnsDisplay.display(p, 1);
@@ -304,7 +331,7 @@ public class QuestXCommands implements CommandExecutor {
 					}
 				}
 
-				if (args.length == 3 && args[0].equalsIgnoreCase("fixedspawns") && args[1].equalsIgnoreCase("add") && QPerms.hasPermission(p, "questsx.fixedspawns.add")) {
+				if (args.length == 3 && args[0].equalsIgnoreCase("fixedspawns") && args[1].equalsIgnoreCase("add") && QPerms.hasPermission(p, "questx.fixedspawns.add")) {
 					String npcName = args[2];
 					boolean suc = FixedLoadingTable.addFixedNPCSpawn(p, npcName, p.getLocation(), handle);
 					if (suc) {
@@ -324,7 +351,7 @@ public class QuestXCommands implements CommandExecutor {
 				 * Hotspot Commands (START)
 				 */
 
-				if (args.length >= 2 && args[0].equalsIgnoreCase("hotspots") && args[1].equalsIgnoreCase("list") && QPerms.hasPermission(p, "questsx.hotspots.list")) {
+				if (args.length >= 2 && args[0].equalsIgnoreCase("hotspots") && args[1].equalsIgnoreCase("list") && QPerms.hasPermission(p, "questx.hotspots.list")) {
 					if (args.length == 2) {
 						Pages pages = new Pages(HotspotManager.getAlphabeticalHotspots(), 10);
 						String[] send = pages.getStringsToSend(1);
@@ -357,7 +384,7 @@ public class QuestXCommands implements CommandExecutor {
 					return true;
 				}
 
-				if (args.length == 5 && args[0].equalsIgnoreCase("hotspots") && args[1].equalsIgnoreCase("add") && QPerms.hasPermission(p, "questsx.hotspots.add")) {
+				if (args.length == 5 && args[0].equalsIgnoreCase("hotspots") && args[1].equalsIgnoreCase("add") && QPerms.hasPermission(p, "questx.hotspots.add")) {
 					String name = args[2];
 
 					if (HotspotManager.doesHotspotExist(name)) {
@@ -381,7 +408,7 @@ public class QuestXCommands implements CommandExecutor {
 					return true;
 				}
 
-				if (args.length == 3 && args[0].equalsIgnoreCase("hotspots") && args[1].equalsIgnoreCase("delete") && QPerms.hasPermission(p, "questsx.hotspots.delete")) {
+				if (args.length == 3 && args[0].equalsIgnoreCase("hotspots") && args[1].equalsIgnoreCase("delete") && QPerms.hasPermission(p, "questx.hotspots.delete")) {
 					String name = args[2];
 					if (HotspotManager.doesHotspotExist(name)) {
 						HotspotManager.deleteHotspot(name);
@@ -392,7 +419,7 @@ public class QuestXCommands implements CommandExecutor {
 					return true;
 				}
 
-				if (args.length == 5 && args[0].equalsIgnoreCase("hotspots") && args[1].equalsIgnoreCase("edit") && QPerms.hasPermission(p, "questsx.hotspots.edit")) {
+				if (args.length == 5 && args[0].equalsIgnoreCase("hotspots") && args[1].equalsIgnoreCase("edit") && QPerms.hasPermission(p, "questx.hotspots.edit")) {
 					String name = args[2];
 
 					if (!HotspotManager.doesHotspotExist(name)) {
