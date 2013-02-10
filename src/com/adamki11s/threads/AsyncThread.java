@@ -18,7 +18,7 @@ public class AsyncThread implements Runnable {
 	final DespawnController dControl;
 	final int tickRate;
 
-	private volatile boolean running;
+	private volatile boolean running = true;
 
 	AsyncThread(NPCHandler handle, int tickRate) {
 		this.handle = handle;
@@ -28,6 +28,7 @@ public class AsyncThread implements Runnable {
 		pdThread = new PopulationDensityThread();
 		dControl = new DespawnController(handle);
 		this.tickRate = tickRate;
+		this.running = true;
 	}
 
 	public void onShutdown() {
