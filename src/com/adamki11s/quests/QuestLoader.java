@@ -402,7 +402,6 @@ public class QuestLoader {
 	}
 
 	public QuestTask getPlayerQuestTask(String p) {
-		QuestX.logMSG("Logging player progress = " + this.playerProgress.get(p));
 		return this.currentTask.get(p);
 	}
 
@@ -430,7 +429,6 @@ public class QuestLoader {
 		QuestTask qt = this.currentTask.get(p.getName());
 
 		if (qt.isItemStacks()) {
-			QuestX.logMSG("Items do need to be removed...");
 			qt.removeItems(p);
 			p.updateInventory();
 		}
