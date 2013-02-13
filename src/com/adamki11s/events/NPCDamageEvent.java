@@ -14,30 +14,38 @@ import com.adamki11s.npcs.SimpleNPC;
 import com.adamki11s.npcs.tasks.TaskRegister;
 import com.adamki11s.questx.QuestX;
 
+public class NPCDamageEvent implements Listener {
 
-public class NPCDamageEvent implements Listener{
-	
 	final NPCHandler handle;
-	
-	public NPCDamageEvent(Plugin p, NPCHandler handle){
+
+	public NPCDamageEvent(Plugin p, NPCHandler handle) {
 		Bukkit.getServer().getPluginManager().registerEvents(this, p);
 		this.handle = handle;
 	}
-	
+
 	@EventHandler(priority = EventPriority.LOW)
-	public void onNPCDamage(final EntityDamageByEntityEvent evt){
-		if(evt.getDamager() instanceof Player && handle.getNPCManager().isNPC(evt.getEntity())){
-			//Player attacking NPC
-			Player damager = (Player) evt.getDamager();
-			SimpleNPC attacked = handle.getSimpleNPCByEntity(evt.getEntity());
-			if(attacked != null && attacked.isAttackable()){
-				//QuestX.logChat(damager, "You did " + evt.getDamage() + " damage to NPC " + attacked.getName());
-				attacked.getHumanNPC().actAsHurt();
-				attacked.damageNPC(damager, evt.getDamage());
+	public void onNPCDamage(final EntityDamageByEntityEvent evt) {
+		if (evt.getDamager() instanceof Player && handle.getNPCManager().isNPC(evt.getEntity())) {
+			// Player attacking NPC
+
+			if (evt.getDamager().getLocation().distance(evt.getEntity().getLocation()) < 3.5) {
+
+				Player damager = (Player) evt.getDamager();
+				SimpleNPC attacked = handle.getSimpleNPCByEntity(evt.getEntity());
+				if (attacked != null && attacked.isAttackable()) {
+					// QuestX.logChat(damager, "You did " + evt.getDamage() +
+					// " damage to NPC " + attacked.getName());
+					attacked.getHumanNPC().actAsHurt();
+					attacked.damageNPC(damager, evt.getDamage());
+				} else {
+					QuestX.logChat(damager, attacked.getName() + " can not be harmed.");
+					evt.setCancelled(true);
+				}
+
 			} else {
-				QuestX.logChat(damager, attacked.getName() + " can not be harmed.");
 				evt.setCancelled(true);
 			}
+
 		}
 	}
 
