@@ -2,9 +2,11 @@ package com.adamki11s.npcs;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
@@ -32,12 +34,15 @@ public class NPCHandler {
 
 	volatile HashSet<SimpleNPC> npcList = new HashSet<SimpleNPC>();
 
+	// Set<SimpleNPC> npcList = Collections.synchronizedSet(new
+	// HashSet<SimpleNPC>());
+
 	final HashSet<NPCWorldData> npcWorldData = new HashSet<NPCWorldData>();
 
 	HashMap<String, SpawnLocationDispatcher> spawnDispatchers = new HashMap<String, SpawnLocationDispatcher>();
 
 	HashMap<String, HashSet<NPCChunkData>> npcChunkData = new HashMap<String, HashSet<NPCChunkData>>();
-	
+
 	public void addToWaitingList(SimpleNPC npc) {
 
 		if (npc == null) {
@@ -87,8 +92,8 @@ public class NPCHandler {
 	public SpawnLocationDispatcher getDispatcher(String world) {
 		return this.spawnDispatchers.get(world);
 	}
-	
-	public boolean isWaitingQueueEmpty(){
+
+	public boolean isWaitingQueueEmpty() {
 		return (this.waiting.size() < 1);
 	}
 
@@ -97,29 +102,27 @@ public class NPCHandler {
 			QuestX.logDebug("0 Elements waiting, breaking...");
 			return null;
 		}
-		
-		/*QuestX.logMSG("NPC can spawn in world '" + w + "'. Generating location..");
-		
-		Location l = this.getDispatcher(w).getSpawnLocation();
-		QuestX.logMSG("Location generated = " + l.toString());
 
-		SimpleNPC front = this.waiting.removeFirst();
-		
-		//this.waiting.removeFirst();
-		if (front == null) {
-			QuestX.logMSG("NPC aquired from front was nulL! Check it loaded properly");
-		} else {
-			QuestX.logMSG("NPC " + front.getName() + " selected from waiting list!");
-		}
-		
-		if (front == null) {
-			QuestX.logMSG("Spawned npc is null, breaking...");
-		} else {
-			//QuestX.logMSG("Setting new npc spawn location...");
-			front.setNewSpawnLocation(l);
-			QuestX.logMSG("Spawning NPC...");
-			front.spawnNPC();
-		}*/
+		/*
+		 * QuestX.logMSG("NPC can spawn in world '" + w +
+		 * "'. Generating location..");
+		 * 
+		 * Location l = this.getDispatcher(w).getSpawnLocation();
+		 * QuestX.logMSG("Location generated = " + l.toString());
+		 * 
+		 * SimpleNPC front = this.waiting.removeFirst();
+		 * 
+		 * //this.waiting.removeFirst(); if (front == null) {
+		 * QuestX.logMSG("NPC aquired from front was nulL! Check it loaded properly"
+		 * ); } else { QuestX.logMSG("NPC " + front.getName() +
+		 * " selected from waiting list!"); }
+		 * 
+		 * if (front == null) {
+		 * QuestX.logMSG("Spawned npc is null, breaking..."); } else {
+		 * //QuestX.logMSG("Setting new npc spawn location...");
+		 * front.setNewSpawnLocation(l); QuestX.logMSG("Spawning NPC...");
+		 * front.spawnNPC(); }
+		 */
 		return this.waiting.removeFirst();
 	}
 
@@ -205,8 +208,12 @@ public class NPCHandler {
 		this.npcList.remove(npc);
 	}
 
+	private Object lock = new Object();
+
 	public HashSet<SimpleNPC> getNPCs() {
-		return this.npcList;
+		synchronized (lock) {
+			return this.npcList;
+		}
 	}
 
 	public NPCManager getNPCManager() {
