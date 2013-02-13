@@ -3,6 +3,7 @@ package com.adamki11s.dialogue;
 import java.io.File;
 import java.util.ArrayList;
 
+import com.adamki11s.dialogue.triggers.CustomTrigger;
 import com.adamki11s.dialogue.triggers.EndTrigger;
 import com.adamki11s.dialogue.triggers.NoTrigger;
 import com.adamki11s.dialogue.triggers.QuestTrigger;
@@ -90,14 +91,13 @@ public class DLGParser {
 					gRepLevels[i - 1] = GenericRepLevel.parseRepLevel(gTagIds[i - 1]);
 
 					if (gRepLevels[i - 1] == null) {
-						throw new InvalidDialogueException(line,
-								"Invalid generic rep level character provided, got '" + gTagIds[i - 1] + "' at index " + i + ", expected (a, b, e, g, h, o)", npc);
+						throw new InvalidDialogueException(line, "Invalid generic rep level provided, got '" + gTagIds[i - 1] + "' at index " + i + ", expected (a, b, e, g, h, o)", npc);
 					}
 
 					triggerTypes[i - 1] = TriggerType.parseTriggerType(trigIds[i - 1]);
 
 					if (triggerTypes[i - 1] == null) {
-						throw new InvalidDialogueException(line, "Invalid trigger type character provided, got '" + trigIds[i - 1] + "' at index " + i + ", expected (e, n, q, t)", npc);
+						throw new InvalidDialogueException(line, "Invalid trigger type provided, got '" + trigIds[i - 1] + "' at index " + i + ", expected (c, e, n, q, t)", npc);
 					}
 					// dialogues[i - 1] = new SingleDialogueItem(speechOptions[i
 					// - 1], gRepLevels[i - 1], triggerTypes[i - 1]);
@@ -111,6 +111,8 @@ public class DLGParser {
 						realTriggers[i - 1] = new EndTrigger(tt);
 					} else if (tt == TriggerType.TASK) {
 						realTriggers[i - 1] = new TaskTrigger(tt, FileLocator.getNPCTaskFile(c.getConvoData().getSimpleNpc().getName()));
+					} else if (tt == TriggerType.CUSTOM) {
+						realTriggers[i - 1] = new CustomTrigger(tt, FileLocator.getCustomTriggerFile(c.getConvoData().getSimpleNpc().getName()));
 					} else {
 						realTriggers[i - 1] = new QuestTrigger(tt, FileLocator.getNPCQuestLinkFile(c.getConvoData().getSimpleNpc().getName()));
 					}

@@ -10,7 +10,8 @@ public class FileLocator {
 	public static final String root = "plugins" + File.separator + "QuestX", config_root = root + File.separator + "Configuration", data_root = root + File.separator + "Data",
 			npc_data_root = data_root + File.separator + "NPCs", quest_data_root = data_root + File.separator + "Quests", rep_data_root = data_root + File.separator + "Reputation",
 
-			dlgFile = "dialogue.dlg", propertyFile = "properties.txt", taskScript = "task.qxs", questScript = "quest_link.qxs", questRoot = "quest.qxs", dtFile = "death_trigger.qxs";
+			dlgFile = "dialogue.dlg", propertyFile = "properties.txt", taskScript = "task.qxs", questScript = "quest_link.qxs", questRoot = "quest.qxs", dtFile = "death_trigger.qxs",
+			customScript = "custom_script.qxs";
 
 	public static File getQuestFile(String name) {
 		return new File(quest_data_root + File.separator + name + File.separator + questRoot);
@@ -46,6 +47,10 @@ public class FileLocator {
 
 	public static File getNPCTaskFile(String npcName) {
 		return new File(npc_data_root + File.separator + npcName + File.separator + taskScript);
+	}
+	
+	public static File getCustomTriggerFile(String npcName){
+		return new File(npc_data_root + File.separator + npcName + File.separator + customScript);
 	}
 	
 	public static File getNPCDeathTriggerFile(String npcName){

@@ -244,7 +244,10 @@ public class Conversation {
 					QuestX.logDebug("NPC has no link to a quest");
 				}
 				this.endConversation();
-			} else {
+			} else if(selTrigger.getTriggerType() == TriggerType.CUSTOM){
+				
+			}
+			else {
 				this.displaySpeechOptions();
 			}
 		} else {
