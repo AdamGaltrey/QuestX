@@ -13,14 +13,14 @@ import com.adamki11s.questx.QuestX;
 import com.adamki11s.reputation.ReputationManager;
 import com.adamki11s.sync.io.configuration.SyncConfiguration;
 
-public class DeathTrigger {
+public class DeathAction {
 
 	final String npcName;
 
 	String[] playerCMD, serverCMD;
 	int awardRep, awardGold, awardExp;
 
-	public DeathTrigger(String npcName) {
+	public DeathAction(String npcName) {
 		this.npcName = npcName;
 	}
 
