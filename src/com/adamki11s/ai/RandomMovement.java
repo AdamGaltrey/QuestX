@@ -2,6 +2,7 @@ package com.adamki11s.ai;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 
 import com.adamki11s.ai.dataset.MovementData;
 import com.adamki11s.npcs.SimpleNPC;
@@ -33,7 +34,12 @@ public class RandomMovement {
 
 	public synchronized void move() {
 		this.currentPoint = this.npc.getHumanNPC().getBukkitEntity().getLocation();
-		if (this.currentPoint.distance(this.targetPoint) == 0) {
+		
+		this.currentPoint.subtract(0, 1, 0);
+		
+		QuestX.logDebug("Current btype = " + this.currentPoint.getBlock().getType().toString());
+		// if (this.currentPoint.distance(this.targetPoint) == 0) {
+		if (this.npc.getHumanNPC().isPathFindComplete()) {
 
 			if (!this.newMDScheduled) {
 				this.newMDScheduled = true;
@@ -50,18 +56,38 @@ public class RandomMovement {
 			}
 		}
 	}
+
+	public void setMovementScheduled(boolean v){
+		this.newMDScheduled = v;
+	}
 	
-	public boolean isMovementScheduled(){
+	public boolean isMovementScheduled() {
 		return this.newMDScheduled;
 	}
 
 	public synchronized void generateNewMovement() {
 		QuestX.logDebug("Generating MData for '" + this.npc.getName() + "'");
 		md.generate();
+		Location old = targetPoint;
 		this.targetPoint = md.getEndPoint();
+		
+		if (old != null && targetPoint != null) {
+			QuestX.logDebug("Distance = " + old.distance(targetPoint));
+		}
+		
 		this.pauseTicks = md.getPauseTicks();
-		npc.getHumanNPC().walkTo(this.targetPoint);// throwing null
-		npc.getHumanNPC().lookAtPoint(this.targetPoint);
+		// npc.getHumanNPC().walkTo(this.targetPoint);
+		
+		if(targetPoint.getBlock().getTypeId() == 0){
+			QuestX.logDebug("Target is air!");
+		}
+		
+		if(currentPoint.getBlock().getTypeId() == 0){
+			QuestX.logDebug("Current is air!");
+		}
+		
+		npc.getHumanNPC().pathFindTo(currentPoint, targetPoint);
+		// npc.getHumanNPC().lookAtPoint(this.targetPoint);
 		this.newMDScheduled = false;
 	}
 
