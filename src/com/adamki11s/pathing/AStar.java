@@ -262,7 +262,7 @@ public class AStar {
 		int i = b.getTypeId();
 
 		// lava, fire, wheat and ladders cannot be walked on, and of course air
-		if (i != 10 && i != 11 && i != 51 && i != 59 && i != 65 && i != 0) {
+		if (i != 10 && i != 11 && i != 51 && i != 59 && i != 65 && i != 0 && !canBlockBeWalkedThrough(i)) {
 			// make sure the blocks above are air
 			if (canBlockBeWalkedThrough(b.getRelative(0, 1, 0).getTypeId()) && b.getRelative(0, 2, 0).getTypeId() == 0) {
 				return true;
