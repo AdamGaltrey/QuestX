@@ -1,10 +1,10 @@
 package com.adamki11s.ai.dataset;
 
+import java.lang.ref.SoftReference;
 import java.util.ArrayList;
 import java.util.Random;
 
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 
@@ -30,7 +30,9 @@ public class MovementData {
 											// will move from the root location
 	}
 
-	final int failsafeIterations = 1000000;
+	final int failsafeIterations = 100000;
+	
+	SoftReference<ArrayList<Offset>> offsetCache = new SoftReference<ArrayList<Offset>>(new ArrayList<Offset>());
 
 	public void generate() {
 		Random r = new Random();
@@ -38,7 +40,12 @@ public class MovementData {
 		World w = this.rootPoint.getWorld();
 		int it = 0;
 
-		ArrayList<Offset> blackList = new ArrayList<Offset>();
+		ArrayList<Offset> blackList;
+		
+		//check if our weak reference no longer has a hold on the object, if not recreate it
+		if((blackList = offsetCache.get()) == null){
+			blackList = new ArrayList<Offset>();
+		}
 
 		boolean allow = false;
 
