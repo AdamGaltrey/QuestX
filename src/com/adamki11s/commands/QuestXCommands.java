@@ -60,6 +60,26 @@ public class QuestXCommands implements CommandExecutor {
 				return true;
 			} else {
 				Player p = (Player) sender;
+				
+				/*
+				 * Developer commands
+				 */
+				
+				if(args.length == 2 && args[0].equalsIgnoreCase("debug")){
+					String npcName = args[1];
+					SimpleNPC npc = this.handle.getSimpleNPCByName(npcName);
+					if(npc == null){
+						QuestX.logChat(p, "No npc by this name.");
+						return true;
+					} else {
+						QuestX.logChat(p, "moveable = " + npc.isMoveable());
+						QuestX.logChat(p, "spawned = " + npc.isNPCSpawned());
+						QuestX.logChat(p, "under attack = " + npc.isUnderAttack());
+						QuestX.logChat(p, "conversing = " + npc.isConversing());
+						return true;
+					}
+				}
+				
 
 				if (args.length >= 1 && (args[0].equalsIgnoreCase("help") || args[0].equalsIgnoreCase("?"))) {
 					HelpDispatcher.helpDispatcher(p, args);
