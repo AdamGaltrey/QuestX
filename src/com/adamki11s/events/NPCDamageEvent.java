@@ -28,7 +28,7 @@ public class NPCDamageEvent implements Listener {
 		if (evt.getDamager() instanceof Player && handle.getNPCManager().isNPC(evt.getEntity())) {
 			// Player attacking NPC
 
-			if (evt.getDamager().getLocation().distance(evt.getEntity().getLocation()) < 4.5) {
+			if (evt.getDamager().getLocation().distance(evt.getEntity().getLocation()) < 5) {
 
 				Player damager = (Player) evt.getDamager();
 				SimpleNPC attacked = handle.getSimpleNPCByEntity(evt.getEntity());
