@@ -136,7 +136,7 @@ public class SimpleNPC {
 	public void updateUntouchedTicks(int ticks) {
 		if (this.isSpawned && !this.isSpawnFixed) {
 			this.untouchedTicks += ticks;
-			if(this.shouldBeDespawned()){
+			if (this.shouldBeDespawned()) {
 				this.despawnNPC();
 			}
 		}
@@ -181,6 +181,18 @@ public class SimpleNPC {
 
 	public ItemStackDrop getInventory() {
 		return inventory;
+	}
+
+	public void stopPathFinding() {
+		this.npc.stopPathFind();
+	}
+
+	public void setMovementUnscheduled() {
+		this.randMovement.setMovementScheduled(false);
+	}
+
+	public boolean isPathFindingComplete() {
+		return this.npc.isPathFindComplete();
 	}
 
 	public int getWaitedSpawnTicks() {
@@ -239,6 +251,7 @@ public class SimpleNPC {
 	}
 
 	public void unAggro() {
+		this.setMovementUnscheduled();
 		this.aggressor = null;
 		this.underAttack = false;
 	}
@@ -333,6 +346,10 @@ public class SimpleNPC {
 
 		this.setTouched();
 
+		if (!this.isPathFindingComplete()) {
+			this.stopPathFinding();
+		}
+
 		if (!this.isConversing() && !this.isUnderAttack()) {
 
 			if (this.doesLinkToQuest()) {
@@ -421,6 +438,12 @@ public class SimpleNPC {
 					QuestX.logChatError(p, "There was an error parsing the dialogue file for this NPC. Please check the server log for more information.");
 				}
 			}
+		} else {
+			if (c.getConvoData().getPlayer().getName().equalsIgnoreCase(p.getName())) {
+				QuestX.logChat(p, ChatColor.RED + "You are already talking to this NPC.");
+			} else {
+				QuestX.logChat(p, ChatColor.RED + "This NPC is already talking to another player.");
+			}
 		}
 	}
 
@@ -495,13 +518,16 @@ public class SimpleNPC {
 	}
 
 	public void moveTick() {
-		if (this.isMoveable() && this.isNPCSpawned() && !this.isMovementScheduled()) {
-			this.randMovement.move();
-		}
+		this.randMovement.move();
 	}
 
 	public void moveTo(Location l) {
-		this.npc.walkTo(l);
+		// QuestX.logMSG("moving npc " + this.getName() + " to location " +
+		// l.getBlock().getType().toString()));
+		if (!this.isPathFindingComplete()) {
+			this.stopPathFinding();
+		}
+		this.npc.pathFindTo(this.getNpc().getBukkitEntity().getLocation().subtract(0, 1, 0), l);
 	}
 
 	public void lookAt(Location l) {
