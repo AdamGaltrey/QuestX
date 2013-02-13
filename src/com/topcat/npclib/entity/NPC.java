@@ -1,29 +1,26 @@
 package com.topcat.npclib.entity;
 
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.LinkedList;
 
 import net.minecraft.server.v1_4_R1.Entity;
 import net.minecraft.server.v1_4_R1.EntityPlayer;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Effect;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.entity.LivingEntity;
 
+import com.adamki11s.pathing.AStar;
+import com.adamki11s.pathing.Tile;
+import com.adamki11s.questx.QuestX;
 import com.topcat.npclib.NPCManager;
-import com.topcat.npclib.pathing.NPCPath;
-import com.topcat.npclib.pathing.NPCPathFinder;
-import com.topcat.npclib.pathing.Node;
-import com.topcat.npclib.pathing.PathReturn;
 
 public class NPC {
 
 	private Entity entity;
-	private NPCPathFinder path;
-	private Iterator<Node> pathIterator;
-	private Node last;
-	private NPCPath runningPath;
 	private int taskid;
-	private Runnable onFail;
+	private Location e;
 
 	public NPC(Entity entity) {
 		this.entity = entity;
@@ -45,96 +42,145 @@ public class NPC {
 		return entity.getBukkitEntity();
 	}
 
-	public void moveTo(Location l) {
+	public void teleportTo(Location l) {
 		getBukkitEntity().teleport(l);
 	}
 
-	public void pathFindTo(Location l, PathReturn callback) {
-		pathFindTo(l, 3000, callback);
-	}
+	private LinkedList<Tile> walkNodes = new LinkedList<Tile>();
 
-	public void pathFindTo(Location l, int maxIterations, PathReturn callback) {
-		if (path != null) {
-			path.cancel = true;
-		}
-		if (l.getWorld() != getBukkitEntity().getWorld()) {
-			ArrayList<Node> pathList = new ArrayList<Node>();
-			pathList.add(new Node(l.getBlock()));
-			callback.run(new NPCPath(null, pathList, l));
+	private void move(Location i) {
+
+		if (walkNodes == null) {
+			this.stopPathFind();
+			QuestX.logDebug("walk nodes are null");
+		} else if (i == null) {
+			this.stopPathFind();
+			QuestX.logDebug("Location init is null");
 		} else {
-			path = new NPCPathFinder(getBukkitEntity().getLocation(), l, maxIterations, callback);
-			path.start();
+
+			QuestX.logDebug("Running " + walkNodes.size() + " nodes...");
+
+			if (walkNodes != null && walkNodes.size() > 0) {
+
+				Tile t = walkNodes.removeFirst();
+
+				Location target = new Location(i.getWorld(), t.getX(i), t.getY(i) + 1, t.getZ(i));
+
+				Tile lookTile;
+
+				if (walkNodes.size() > 2) {
+					lookTile = walkNodes.get(2);
+				} else if (walkNodes.size() != 0) {
+					lookTile = walkNodes.getLast();
+				} else {
+					lookTile = null;
+				}
+
+				i.getWorld().playEffect(target, Effect.STEP_SOUND, Material.AIR.getId());
+
+				double newYaw = 0, newPitch = 0;
+				
+				if (lookTile != null && e != null) {
+					
+					
+					
+					Location npcLoc = ((LivingEntity) getEntity().getBukkitEntity()).getEyeLocation();
+					double xDiff = lookTile.getX(i) - npcLoc.getX();
+					double yDiff = lookTile.getY(i) - (npcLoc.getY() - 1);
+					double zDiff = lookTile.getZ(i) - npcLoc.getZ();
+					double DistanceXZ = Math.sqrt(xDiff * xDiff + zDiff * zDiff);
+					double DistanceY = Math.sqrt(DistanceXZ * DistanceXZ + yDiff * yDiff);
+					 newYaw = Math.acos(xDiff / DistanceXZ) * 180 / Math.PI;
+					newPitch = Math.acos(yDiff / DistanceY) * 180 / Math.PI - 90;
+					if (zDiff < 0.0) {
+						newYaw = newYaw + Math.abs(180 - newYaw) * 2;
+					}
+				}
+
+				if (walkNodes != null && walkNodes.size() != 0) {
+					getEntity().setPositionRotation(target.getX() + 0.5, target.getY(), target.getZ() + 0.5, (float)newPitch, (float)newYaw);
+				} else {
+					getEntity().setPositionRotation(target.getX() + 0.5, target.getY(), target.getZ() + 0.5, (float)newPitch, (float)newYaw);
+				}
+				
+				getEntity().yaw = (float) (newYaw - 90);
+				getEntity().pitch = (float) newPitch;
+
+				((EntityPlayer) getEntity()).az =(float) (newYaw - 90);
+
+			} else {
+				this.stopPathFind();
+				QuestX.logDebug("walk nodes expended");
+			}
+
 		}
 	}
 
-	public void walkTo(Location l) {
-		walkTo(l, 3000);
+	public boolean isPathFindComplete() {
+		if (this.walkNodes == null || e == null) {
+			return true;
+		}
+		return (this.walkNodes.size() == 0);
 	}
 
-	public void walkTo(final Location l, final int maxIterations) {
-		pathFindTo(l, maxIterations, new PathReturn() {
-			@Override
-			public void run(NPCPath path) {
-				usePath(path, new Runnable() {
-					@Override
-					public void run() {
-						walkTo(l, maxIterations);
-					}
-				});
-			}
-		});
+	public Location getEndLocation() {
+		return this.e;
 	}
 
-	public void usePath(NPCPath path) {
-		usePath(path, new Runnable() {
+	public void stopPathFind() {
+		Bukkit.getServer().getScheduler().cancelTask(taskid);
+		taskid = 0;
+		e = null;
+		this.walkNodes = null;
+	}
+
+	private int endCode;
+
+	public int getEndCode() {
+		return this.endCode;
+	}
+
+	public synchronized void pathFindTo(final Location init, Location end) {
+
+		if (taskid != 0) {
+			this.stopPathFind();
+			//QuestX.logError("Task did not cancel correctly.");
+			return;
+		}
+
+		if (!this.isPathFindComplete()) {
+			//QuestX.logError("Cannot start movement, old path is incomplete.");
+			return;
+		}
+
+		while (init.getBlock().getTypeId() == 0) {
+			init.subtract(0, 1, 0);
+		}
+
+		while (end.getBlock().getTypeId() == 0) {
+			end.subtract(0, 1, 0);
+		}
+
+		AStar astarPath = new AStar(init, end, 2000);
+		walkNodes = astarPath.iterate();
+
+		endCode = astarPath.getEndCode();
+
+		if (endCode == -1 || endCode == -2 || walkNodes == null) {
+			//QuestX.logError("other path error.");
+			return;
+		}
+
+
+		e = end;
+
+		taskid = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(NPCManager.plugin, new Runnable() {
 			@Override
 			public void run() {
-				walkTo(runningPath.getEnd(), 3000);
+				// moveToNextTile(init);
+				move(init);
 			}
-		});
-	}
-
-	public void usePath(NPCPath path, Runnable onFail) {
-		if (taskid == 0) {
-			taskid = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(NPCManager.plugin, new Runnable() {
-				@Override
-				public void run() {
-					pathStep();
-				}
-			}, 6L, 6L);
-		}
-		pathIterator = path.getPath().iterator();
-		runningPath = path;
-		this.onFail = onFail;
-	}
-
-	private void pathStep() {
-		if (pathIterator.hasNext()) {
-			Node n = pathIterator.next();
-			if (n.b.getWorld() != getBukkitEntity().getWorld()) {
-				getBukkitEntity().teleport(n.b.getLocation());
-			} else {
-				float angle = getEntity().yaw;
-				float look = getEntity().pitch;
-				if (last == null || runningPath.checkPath(n, last, true)) {
-					if (last != null) {
-						angle = (float) Math.toDegrees(Math.atan2(last.b.getX() - n.b.getX(), n.b.getZ() - last.b.getZ()));
-						look = (float) (Math.toDegrees(Math.asin(last.b.getY() - n.b.getY())) / 2);
-					}
-					getEntity().setPositionRotation(n.b.getX() + 0.5, n.b.getY(), n.b.getZ() + 0.5, angle, look);
-					((EntityPlayer)getEntity()).az = angle;
-				} else {
-					onFail.run();
-				}
-			}
-			last = n;
-		} else {
-			getEntity().setPositionRotation(runningPath.getEnd().getX(), runningPath.getEnd().getY(), runningPath.getEnd().getZ(), runningPath.getEnd().getYaw(), runningPath.getEnd().getPitch());
-			
-			((EntityPlayer)getEntity()).az = runningPath.getEnd().getYaw();
-			Bukkit.getServer().getScheduler().cancelTask(taskid);
-			taskid = 0;
-		}
+		}, 0L, 5L);
 	}
 
 }
