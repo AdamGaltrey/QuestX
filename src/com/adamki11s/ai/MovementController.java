@@ -1,7 +1,10 @@
 package com.adamki11s.ai;
 
+import java.util.ArrayList;
+
 import com.adamki11s.npcs.NPCHandler;
 import com.adamki11s.npcs.SimpleNPC;
+import com.adamki11s.questx.QuestX;
 
 public class MovementController {
 	
@@ -11,11 +14,17 @@ public class MovementController {
 		this.handle = handle;
 	}
 	
-	public synchronized void run(){
+	public void run(){
+		ArrayList<SimpleNPC> process = new ArrayList<SimpleNPC>();
 		for(SimpleNPC npc : handle.getNPCs()){
+			
 			if(!npc.isMovementScheduled() && npc.isMoveable() && npc.isNPCSpawned() && !npc.isUnderAttack() && !npc.isConversing()){
-				npc.moveTick();
+				process.add(npc);
 			}
+		}
+		
+		for(SimpleNPC npc : process){
+			npc.moveTick();
 		}
 	}
 
