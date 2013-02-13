@@ -146,6 +146,17 @@ public class SimpleNPC {
 		int despawnUTicks = WorldConfigData.getUntouchedDespawnMinutes() * (20 * 60);
 		return (this.untouchedTicks >= despawnUTicks);
 	}
+	
+	public void restoreHealth(int amount){
+		if((amount + this.getHealth()) > this.getMaxHealth()){
+			this.health = this.getMaxHealth();
+		} else {
+			if(amount < 0){
+				amount *= -1;
+			}
+			this.health += amount;
+		}
+	}
 
 	public Location getFixedLocation() {
 		return this.fixedLocation;

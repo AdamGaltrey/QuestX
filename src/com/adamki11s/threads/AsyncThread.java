@@ -2,6 +2,7 @@ package com.adamki11s.threads;
 
 import com.adamki11s.ai.AttackController;
 import com.adamki11s.ai.DespawnController;
+import com.adamki11s.ai.HealthController;
 import com.adamki11s.ai.MovementController;
 import com.adamki11s.ai.RespawnController;
 import com.adamki11s.io.DatabaseConfigData;
@@ -16,6 +17,7 @@ public class AsyncThread implements Runnable {
 	final AttackController aControl;
 	final PopulationDensityThread pdThread;
 	final DespawnController dControl;
+	final HealthController hControl;
 	final int tickRate;
 
 	private volatile boolean running = true;
@@ -27,6 +29,7 @@ public class AsyncThread implements Runnable {
 		aControl = new AttackController(handle);
 		pdThread = new PopulationDensityThread();
 		dControl = new DespawnController(handle);
+		hControl = new HealthController(handle);
 		this.tickRate = tickRate;
 		this.running = true;
 	}
@@ -36,12 +39,13 @@ public class AsyncThread implements Runnable {
 		this.pdThread.terminateSQL();
 	}
 
-	int tickOver = 0, denstiyCalculationTickOver = 0;
+	int secondTickOver = 0, denstiyCalculationTickOver = 0, twoSecondTickOver = 0;
 
 	@Override
 	public void run() {
 		if (running) {
-			tickOver += tickRate;
+			secondTickOver += tickRate;
+			twoSecondTickOver += tickRate;
 			denstiyCalculationTickOver += tickRate;
 			// if(denstiyCalculationTickOver > (20 * 60 * 5)){ 5minutes
 			if (denstiyCalculationTickOver > (20 * 60 * DatabaseConfigData.getUpdateMinutes())) { // 60
@@ -55,11 +59,17 @@ public class AsyncThread implements Runnable {
 				this.pdThread.run();
 			}
 			// run every second
-			if (tickOver % 20 == 0) {
+			if (secondTickOver % 20 == 0 || secondTickOver > 20) {
 				this.mControl.run();
 				this.rControl.run(tickRate);
 				this.dControl.run(tickRate);
-				tickOver = 0;
+				secondTickOver = 0;
+			}
+			
+			//run every 2 seconds
+			if(twoSecondTickOver % 40 == 0 || twoSecondTickOver > 40){
+				this.hControl.run();
+				this.twoSecondTickOver = 0;
 			}
 			aControl.run();
 		}
