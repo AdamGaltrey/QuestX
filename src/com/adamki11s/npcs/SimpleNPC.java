@@ -24,7 +24,7 @@ import com.adamki11s.npcs.population.HotspotManager;
 import com.adamki11s.npcs.tasks.Fireworks;
 import com.adamki11s.npcs.tasks.TaskManager;
 import com.adamki11s.npcs.tasks.TaskRegister;
-import com.adamki11s.npcs.triggers.DeathTrigger;
+import com.adamki11s.npcs.triggers.DeathAction;
 import com.adamki11s.quests.QuestLoader;
 import com.adamki11s.quests.QuestManager;
 import com.adamki11s.quests.QuestTask;
@@ -60,7 +60,7 @@ public class SimpleNPC {
 
 	final ItemStack[] gear;// boots 1, legs 2, chest 3, head 4, arm 5
 
-	private DeathTrigger deathTrigger;
+	private DeathAction deathAction;
 
 	public SimpleNPC(NPCHandler handle, String name, boolean moveable, boolean attackable, int minPauseTicks, int maxPauseTicks, int maxVariation, int health, int respawnTicks,
 			ItemStackDrop inventory, ItemStack[] gear, int damageMod, double retalliationMultiplier) throws MissingDeathTriggerPropertyException {
@@ -96,8 +96,8 @@ public class SimpleNPC {
 			this.questName = "null";
 		}
 
-		deathTrigger = new DeathTrigger(name);
-		deathTrigger.load();
+		deathAction = new DeathAction(name);
+		deathAction.load();
 
 		handle.registerNPC(this);
 	}
@@ -306,8 +306,8 @@ public class SimpleNPC {
 
 			QuestX.logChat(p, ChatColor.RED + "You killed NPC '" + this.name + "'");
 
-			if (this.deathTrigger != null) {
-				this.deathTrigger.execute(p);
+			if (this.deathAction != null) {
+				this.deathAction.execute(p);
 			} else {
 				QuestX.logError("Death trigger was not triggered for NPC '" + this.name + "', because it loaded incorrectly.");
 			}

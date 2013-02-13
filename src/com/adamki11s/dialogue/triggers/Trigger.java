@@ -17,7 +17,7 @@ public abstract class Trigger {
 	}
 	
 	public boolean doesTriggerHaveScript(){
-		return (this.type == TriggerType.QUEST || this.type == TriggerType.TASK);
+		return (this.type == TriggerType.QUEST || this.type == TriggerType.TASK || this.type == TriggerType.CUSTOM);
 	}
 	
 	public File getTriggerScript(){
