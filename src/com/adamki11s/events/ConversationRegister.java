@@ -58,6 +58,7 @@ public class ConversationRegister implements Listener {
 			if (c != null) {
 				if (c.getConvoData().getPlayer().getName().equalsIgnoreCase(p.getName())) {
 					c.endConversation();
+					c.getConvoData().getSimpleNpc().setMovementUnscheduled();
 					return;
 				}
 			}
