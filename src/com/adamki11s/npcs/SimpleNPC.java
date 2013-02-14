@@ -24,6 +24,7 @@ import com.adamki11s.npcs.population.HotspotManager;
 import com.adamki11s.npcs.tasks.Fireworks;
 import com.adamki11s.npcs.tasks.TaskManager;
 import com.adamki11s.npcs.tasks.TaskRegister;
+import com.adamki11s.npcs.triggers.CustomAction;
 import com.adamki11s.npcs.triggers.DeathAction;
 import com.adamki11s.quests.QuestLoader;
 import com.adamki11s.quests.QuestManager;
@@ -47,6 +48,8 @@ public class SimpleNPC {
 	RandomMovement randMovement;
 
 	Conversation c;
+	
+	final CustomAction customActions;
 
 	HashSet<Integer> completeQuestNodes = new HashSet<Integer>();
 
@@ -78,6 +81,9 @@ public class SimpleNPC {
 		this.gear = gear;
 		this.damageMod = damageMod;
 		this.retalliationMultiplier = retalliationMultiplier;
+		
+		this.customActions = new CustomAction(name);
+		this.customActions.load(handle);
 
 		File fLink = FileLocator.getNPCQuestLinkFile(name);
 		SyncConfiguration cfg = new SyncConfiguration(fLink);
@@ -100,6 +106,10 @@ public class SimpleNPC {
 		deathAction.load();
 
 		handle.registerNPC(this);
+	}
+	
+	public void invokeCustomActions(Player p){
+		this.customActions.invokeActions(p);
 	}
 
 	public HashSet<Integer> getCompleteQuestNodes() {

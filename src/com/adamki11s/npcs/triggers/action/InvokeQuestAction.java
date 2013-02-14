@@ -22,10 +22,84 @@ public class InvokeQuestAction implements Action {
 		this.handle = handle;
 		this.npc = npc;
 	}
+	
+	public boolean canPlayerTriggerQuest(Player p){
+		SimpleNPC npc = this.handle.getSimpleNPCByName(this.npc);
+		if (npc == null) {
+			this.isActive = false;
+			QuestX.logError("Null npc for custom_trigger quest invokation " + this.npc);
+			return false;
+		} else {
+			if (npc.doesLinkToQuest()) {
+
+				String qName = npc.getQuestName();
+
+				if (QuestManager.hasQuestBeenSetup(qName)) {
+
+					if (!QuestManager.doesPlayerHaveQuest(p.getName())) {
+						// start a quest
+						QuestX.logDebug("Player does not have quest!");
+						if (!QuestManager.isQuestLoaded(qName)) {
+							QuestManager.loadQuest(qName);
+						}
+						QuestX.logDebug("QUEST LOADED ############");
+						QuestLoader ql = QuestManager.getQuestLoader(qName);
+						ql.loadAndCheckPlayerProgress(p.getName());
+						if (ql.isQuestComplete(p.getName())) {
+							QuestX.logChat(p, "You have already completed this quest!");
+							return false;
+						} else {
+							return true;
+						}
+					} else {
+						
+						if (npc.doesLinkToQuest()) {
+
+							QuestTask qt = QuestManager.getCurrentQuestTask(p.getName());
+
+							if (qt.isTalkNPC()) {
+								QuestLoader ql = QuestManager.getQuestLoader(QuestManager.getCurrentQuestName(p.getName()));
+								int curNode = ql.getCurrentQuestNode(p.getName());
+								NPCTalkTracker track = (NPCTalkTracker) qt.getData();
+								if (npc.getCompleteQuestNodes().contains(curNode)) {
+									// npc can complete
+
+									if (track.getNPCName().equalsIgnoreCase(npc.getName())) {
+										// correct npc
+										return true;
+									} else {
+										QuestX.logChat(p, "You need to speak to '" + track.getNPCName() + "' to complete this part of your quest.");
+										return false;
+										// wrong npc
+									}
+
+								} else {
+									QuestX.logChat(p, "You need to speak to '" + track.getNPCName() + "' to complete this part of your quest.");
+									return false;
+								}
+							}
+
+						} else {
+							return false;
+						}
+
+						// player already has quest
+					}
+				} else {
+					// quest has not been setup
+					QuestX.logChat(p, "This quest has not yet been setup. /q setup " + qName);
+					return false;
+				}
+			} else {
+				QuestX.logDebug("NPC has no link to a quest");
+				return false;
+			}
+			return false;
+		}
+	}
 
 	@Override
 	public void implement(Player p) {
-		QuestX.logDebug("Inside quest code");
 		SimpleNPC npc = this.handle.getSimpleNPCByName(this.npc);
 		if (npc == null) {
 			this.isActive = false;

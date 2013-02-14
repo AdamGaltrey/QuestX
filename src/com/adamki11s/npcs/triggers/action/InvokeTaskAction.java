@@ -19,6 +19,21 @@ public class InvokeTaskAction implements Action{
 	public InvokeTaskAction(String npc){
 		this.npc = npc;
 	}
+	
+	public boolean canPlayerTriggerTask(Player p){
+		boolean alreadyDone = TaskRegister.hasPlayerCompletedTask(this.npc, p.getName());
+		if (alreadyDone) {
+			QuestX.logChat(p, "You have already completed this task!");
+			return false;
+		}
+		if (TaskRegister.doesPlayerHaveTask(p.getName())) {
+			QuestX.logChat(p, ChatColor.RED + "You already have a task assigned!");
+			QuestX.logChat(p, ChatColor.WHITE + "/questx task cancel" + ChatColor.RED + " to cancel current task.");
+			return false;
+		} else {
+			return true;
+		}
+	}
 
 	@Override
 	public void implement(Player p) {

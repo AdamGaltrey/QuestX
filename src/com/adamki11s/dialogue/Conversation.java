@@ -245,7 +245,8 @@ public class Conversation {
 				}
 				this.endConversation();
 			} else if(selTrigger.getTriggerType() == TriggerType.CUSTOM){
-				
+				this.convoData.getSimpleNpc().invokeCustomActions(p);
+				this.endConversation();
 			}
 			else {
 				this.displaySpeechOptions();
