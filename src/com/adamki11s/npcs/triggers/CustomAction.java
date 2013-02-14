@@ -56,7 +56,7 @@ public class CustomAction {
 	public void load(NPCHandler handle) {
 		File f = FileLocator.getCustomTriggerFile(this.npcName);
 		SyncConfiguration io = new SyncConfiguration(f);
-		io.read();
+		
 
 		if (!f.exists()) {
 			try {
@@ -65,6 +65,8 @@ public class CustomAction {
 				e.printStackTrace();
 			}
 		} else {
+			
+			io.read();
 
 			if (io.doesKeyExist("DAMAGE_PLAYER")) {
 				Action a = new DamagePlayerAction(npcName, io.getString("DAMAGE_PLAYER"));
