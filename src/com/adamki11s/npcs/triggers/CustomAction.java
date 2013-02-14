@@ -25,13 +25,9 @@ public class CustomAction {
 		/*
 		 * Properties
 		 * 
-	
-		 * 
 		 * PLAYER_GIVE_ITEMS:<id>,<data>,<quantity>#etc...
 		 * 
 		 * DAMAGE_PLAYER:<amount>
-		 * 
-		 * PLAYER_POTION_EFFECT:<effect>#<clear previous effects AS boolean>
 		 * 
 		 * SET_VELOCITY:x,y,z
 		 */
