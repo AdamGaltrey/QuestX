@@ -26,10 +26,10 @@ public class LightningAction implements Action {
 			isDamaging = Boolean.parseBoolean(components[3]);
 		} catch (NumberFormatException nfe) {
 			isActive = false;
-			QuestX.logError("Error parsing value for 'LIGHTNING' for NPC '" + npc + "'. Setting disabled");
+			QuestX.logError("Error parsing value for 'LIGHTNING' for NPC '" + npc + "' in custom_trigger. Setting disabled");
 		} catch (Exception e) {
 			isActive = false;
-			QuestX.logError("Invalid parameters for 'LIGHTNING' for NPC '" + npc + "'. Setting disabled.");
+			QuestX.logError("Invalid parameters for 'LIGHTNING' for NPC '" + npc + "' in custom_trigger. Setting disabled.");
 		}
 	}
 
