@@ -25,17 +25,7 @@ public class CustomAction {
 		/*
 		 * Properties
 		 * 
-		 * LIGHTNING:<STRIKES>#<RANGE>#<TICK_DELAY>#damage player
-		 * 
-		 * SPAWN_MOBS:<MOB NAME>,<QUANTITY>#etc...
-		 * SPAWN_MOB_RANGE:<BLOCK RANGE>
-		 * SPAWN_COOLDOWN_MINUTES:<minutes>
-		 * DESPAWN_MOB_SECONDS:<ticks>
-		 * MOBS_TARGET_PLAYER:<Boolean>
-		 * 
-		 * TELEPORT_PLAYER:<world>,<x>,<y>,<z>#delay
-		 * 
-		 * NPC_ATTACK_PLAYER:<Boolean>
+	
 		 * 
 		 * PLAYER_GIVE_ITEMS:<id>,<data>,<quantity>#etc...
 		 * 
@@ -44,9 +34,6 @@ public class CustomAction {
 		 * PLAYER_POTION_EFFECT:<effect>#<clear previous effects AS boolean>
 		 * 
 		 * SET_VELOCITY:x,y,z
-		 * 
-		 * INVOKE_QUEST:<boolean>
-		 * INVOKE_TASK:<boolean>
 		 */
 	}
 
