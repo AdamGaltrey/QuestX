@@ -27,8 +27,6 @@ public class CustomAction {
 		 * 
 		 * PLAYER_GIVE_ITEMS:<id>,<data>,<quantity>#etc...
 		 * 
-		 * DAMAGE_PLAYER:<amount>
-		 * 
 		 * SET_VELOCITY:x,y,z
 		 */
 	}
