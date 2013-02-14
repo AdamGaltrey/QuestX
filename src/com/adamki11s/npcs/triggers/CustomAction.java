@@ -25,11 +25,13 @@ public class CustomAction {
 		/*
 		 * Properties
 		 * 
-		 * LIGHTNING:<STRIKES>#<RANGE>#<TICK_DELAY>
+		 * LIGHTNING:<STRIKES>#<RANGE>#<TICK_DELAY>#damage player
 		 * 
-		 * SPAWN:<MOB NAME>,<QUANTITY>#etc...
-		 * SPAWN_RANGE:<BLOCK RANGE>
-		 * TARGET_PLAYER:<Boolean>
+		 * SPAWN_MOBS:<MOB NAME>,<QUANTITY>#etc...
+		 * SPAWN_MOB_RANGE:<BLOCK RANGE>
+		 * SPAWN_COOLDOWN_MINUTES:<minutes>
+		 * DESPAWN_MOB_SECONDS:<ticks>
+		 * MOBS_TARGET_PLAYER:<Boolean>
 		 * 
 		 * TELEPORT_PLAYER:<world>,<x>,<y>,<z>#delay
 		 * 
