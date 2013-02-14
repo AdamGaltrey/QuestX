@@ -262,9 +262,16 @@ public class SimpleNPC {
 	}
 
 	public void unAggro() {
+		this.setTouched();
 		this.setMovementUnscheduled();
 		this.aggressor = null;
 		this.underAttack = false;
+	}
+	
+	public void setAggro(Player p){
+		this.setTouched();
+		this.aggressor = p;
+		this.underAttack = true;
 	}
 
 	public void damageNPC(Player p, int damage) {
