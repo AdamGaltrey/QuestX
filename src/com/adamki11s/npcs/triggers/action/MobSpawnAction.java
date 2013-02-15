@@ -83,15 +83,18 @@ public class MobSpawnAction implements Action {
 		if (this.cooldownMinutes != 0) {
 			if (timestamp == -1) {
 				timestamp = System.currentTimeMillis();
+				this.spawn(p);
 				// execute
 			} else {
 				long curTime = System.currentTimeMillis();
 				long timeDifSeconds = ((curTime - timestamp) / 1000);
-				int minuteDifference = (int) Math.floor((timeDifSeconds / 60));
-				if (minuteDifference > this.cooldownMinutes) {
+				int minuteDifference = (int) Math.floor(( (double) timeDifSeconds / 60D));
+				if (minuteDifference >= this.cooldownMinutes) {
 					this.spawn(p);
 					// execute
 				} else {
+					p.sendMessage("Cooldown not complete, only " + timeDifSeconds + " elapsed");
+					p.sendMessage("Minutes elapsed = " + ( (double) timeDifSeconds / 60D) + ", floored = " + (int) Math.floor(( (double) timeDifSeconds / 60D)));
 					// cooldown not completed, return
 					return;
 				}
@@ -108,14 +111,14 @@ public class MobSpawnAction implements Action {
 	 * DESPAWN_MOB_SECONDS:<ticks> MOBS_TARGET_PLAYER:<Boolean>
 	 */
 
-	private void spawn(Player p) {
+	private void spawn(final Player p) {
 		final World w = p.getWorld();
 		final ArrayList<Entity> spawnedEntities = new ArrayList<Entity>();
 		for (Entry<EntityType, Integer> e : this.mobs.entrySet()) {
 			int a = e.getValue();
 			for (int cur = 0; cur < a; cur++) {
-				Entity bukEntity = w.spawnEntity(this.getRandomLocation(p.getLocation()), e.getKey());
-				if(this.targetPlayer){
+				Entity bukEntity = w.spawnEntity(this.getRandomLocation(p.getLocation()).add(0, 2, 0), e.getKey());
+				if (this.targetPlayer) {
 					Creature creature = (Creature) bukEntity;
 					creature.setTarget(p);
 				}
@@ -127,15 +130,16 @@ public class MobSpawnAction implements Action {
 
 		if (this.despawnSeconds > 0) {
 			Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(QuestX.p, new Runnable() {
-				
+
 				public void run() {
-					for(Entity e : spawnedEntities){
-						if(e != null && !e.isDead()){
+					for (Entity e : spawnedEntities) {
+						if (e != null && !e.isDead()) {
+
 							e.remove();
 						}
 					}
 				}
-				
+
 			}, (this.despawnSeconds * 20));
 		}
 	}
@@ -146,12 +150,16 @@ public class MobSpawnAction implements Action {
 		MovementData md = new MovementData(l, 0, 0, this.blockRange);
 		md.generate();
 		Location target;
-		while((target = md.getEndPoint()) == null){
+		while ((target = md.getEndPoint()) == null) {
 			md.generate();
 		}
 		return target;
-		/*int xO = r.nextInt(blockRange * 2) - blockRange, yO = r.nextInt(blockRange * 2) - blockRange, zO = r.nextInt(blockRange * 2) - blockRange;
-		return new Location(l.getWorld(), l.getBlockX() + xO, l.getBlockY() + yO, l.getBlockZ() + zO);*/
+		/*
+		 * int xO = r.nextInt(blockRange * 2) - blockRange, yO =
+		 * r.nextInt(blockRange * 2) - blockRange, zO = r.nextInt(blockRange *
+		 * 2) - blockRange; return new Location(l.getWorld(), l.getBlockX() +
+		 * xO, l.getBlockY() + yO, l.getBlockZ() + zO);
+		 */
 	}
 
 	@Override
