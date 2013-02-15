@@ -93,8 +93,6 @@ public class MobSpawnAction implements Action {
 					this.spawn(p);
 					// execute
 				} else {
-					p.sendMessage("Cooldown not complete, only " + timeDifSeconds + " elapsed");
-					p.sendMessage("Minutes elapsed = " + ( (double) timeDifSeconds / 60D) + ", floored = " + (int) Math.floor(( (double) timeDifSeconds / 60D)));
 					// cooldown not completed, return
 					return;
 				}
