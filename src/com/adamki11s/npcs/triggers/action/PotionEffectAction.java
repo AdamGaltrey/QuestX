@@ -51,7 +51,7 @@ public class PotionEffectAction implements Action {
 						this.isActive = false;
 						return;
 					}
-					PotionEffect eff = new PotionEffect(type, duration, amplitude);
+					PotionEffect eff = new PotionEffect(type, (duration * 20), amplitude);
 					this.effects.add(eff);
 				}
 			}
@@ -62,6 +62,7 @@ public class PotionEffectAction implements Action {
 	public void implement(Player p) {
 		for(PotionEffect ef : this.effects){
 			//remove conflicting effects
+			p.sendMessage("Potion effect added : " + ef.toString());
 			p.addPotionEffect(ef, true);
 		}
 	}

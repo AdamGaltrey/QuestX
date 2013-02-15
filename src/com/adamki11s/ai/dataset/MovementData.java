@@ -31,7 +31,7 @@ public class MovementData {
 	}
 
 	final int failsafeIterations = 100000;
-	
+
 	SoftReference<ArrayList<Offset>> offsetCache = new SoftReference<ArrayList<Offset>>(new ArrayList<Offset>());
 
 	public void generate() {
@@ -41,9 +41,10 @@ public class MovementData {
 		int it = 0;
 
 		ArrayList<Offset> blackList;
-		
-		//check if our weak reference no longer has a hold on the object, if not recreate it
-		if((blackList = offsetCache.get()) == null){
+
+		// check if our weak reference no longer has a hold on the object, if
+		// not recreate it
+		if ((blackList = offsetCache.get()) == null) {
 			blackList = new ArrayList<Offset>();
 		}
 
@@ -88,7 +89,11 @@ public class MovementData {
 		} else {
 			QuestX.logDebug("Generated movement after " + it + " iterations");
 			this.endPoint = new Location(w, (rx + dx), (ry + dy), (rz + dz));
-			this.pauseTicks = r.nextInt(maxPauseTicks - minPauseTicks) + minPauseTicks;
+			if (this.maxPauseTicks == 0 && this.minPauseTicks == 0) {
+				this.pauseTicks = 0;
+			} else {
+				this.pauseTicks = r.nextInt(maxPauseTicks - minPauseTicks) + minPauseTicks;
+			}
 		}
 	}
 
