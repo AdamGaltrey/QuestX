@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import com.adamki11s.ai.dataset.MovementData;
 import com.adamki11s.questx.QuestX;
 
 public class LightningAction implements Action {
@@ -50,6 +51,7 @@ public class LightningAction implements Action {
 				if (sCount <= strikes) {
 					short xO = (short) (r.nextInt(range * 2) - range), yO = (short) (r.nextInt(range * 2) - range), zO = (short) (r.nextInt(range * 2) - range);
 					Location hit = new Location(c.getWorld(), c.getX() + xO, c.getY() + yO, c.getZ() + zO);
+					//Location hit = getRandomLocation(c);
 					if (isDamaging) {
 						hit.getWorld().strikeLightning(hit);
 					} else {
@@ -62,6 +64,18 @@ public class LightningAction implements Action {
 			}
 
 		}, tickDelay, tickDelay);
+	}
+	
+	private Location getRandomLocation(Location l) {
+		MovementData md = new MovementData(l, 0, 0, this.range);
+		md.generate();
+		Location target;
+		while((target = md.getEndPoint()) == null){
+			md.generate();
+		}
+		return target;
+		/*int xO = r.nextInt(blockRange * 2) - blockRange, yO = r.nextInt(blockRange * 2) - blockRange, zO = r.nextInt(blockRange * 2) - blockRange;
+		return new Location(l.getWorld(), l.getBlockX() + xO, l.getBlockY() + yO, l.getBlockZ() + zO);*/
 	}
 
 	@Override
