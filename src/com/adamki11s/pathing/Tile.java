@@ -81,17 +81,9 @@ public class Tile {
 
 				int dx = currentTile.getX() - currentParent.getX(), dy = currentTile.getY() - currentParent.getY(), dz = currentTile.getZ() - currentParent.getZ();
 				
-				if(dx < 0){
-					dx *= -1;
-				}
-				
-				if(dy < 0){
-					dy *= -1;
-				}
-				
-				if(dz < 0){
-					dz *= -1;
-				}
+				dx = abs(dx);
+				dy = abs(dy);
+				dz = abs(dz);
 				
 				if (dx == 1 && dy == 1 && dz == 1) {
 					gCost += 1.7;
@@ -128,16 +120,18 @@ public class Tile {
 
 	private double getManhattanDistance(int sx, int sy, int sz, int ex, int ey, int ez) {
 		double dx = sx - ex, dy = sy - ey, dz = sz - ez;
-		if (dx < 0) {
-			dx *= -1;
-		}
-		if (dy < 0) {
-			dy *= -1;
-		}
-		if (dz < 0) {
-			dz *= -1;
-		}
+		dx = abs(dx);
+		dy = abs(dy);
+		dz = abs(dz);
 		return (dx + dy + dz);
+	}
+	
+	private int abs(int i){
+		return (i < 0 ? -i : i);
+	}
+	
+	private double abs(double i){
+		return (i < 0 ? -i : i);
 	}
 
 }
