@@ -2,6 +2,7 @@ package com.adamki11s.threads;
 
 import com.adamki11s.ai.AttackController;
 import com.adamki11s.ai.DespawnController;
+import com.adamki11s.ai.GotoLocationThreadController;
 import com.adamki11s.ai.HealthController;
 import com.adamki11s.ai.MovementController;
 import com.adamki11s.ai.RespawnController;
@@ -18,6 +19,7 @@ public class AsyncThread implements Runnable {
 	final PopulationDensityThread pdThread;
 	final DespawnController dControl;
 	final HealthController hControl;
+	final GotoLocationThreadController glThread = new GotoLocationThreadController();
 	final int tickRate;
 
 	private volatile boolean running = true;
@@ -71,7 +73,10 @@ public class AsyncThread implements Runnable {
 				this.hControl.run();
 				this.twoSecondTickOver = 0;
 			}
+			
 			aControl.run();
+			glThread.run(tickRate);
+			
 		}
 	}
 
