@@ -47,9 +47,7 @@ public class CustomAction {
 		}
 
 		for (Action a : actions) {
-			p.sendMessage("Looping through " + actions.size() + " actions.");
 			if (a.isActive()) {
-				p.sendMessage("Implementing " + a.getClass().toString());
 				a.implement(p);
 			}
 		}
