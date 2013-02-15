@@ -28,10 +28,10 @@ public class CustomAction {
 	}
 
 	public void invokeActions(Player p) {
-		if(this.actions.size() == 0){
+		if (this.actions.size() == 0) {
 			return;
 		}
-		
+
 		if (invokesTorQ) {
 			if (isTask) {
 				InvokeTaskAction a = (InvokeTaskAction) invoke;
@@ -58,7 +58,6 @@ public class CustomAction {
 	public void load(NPCHandler handle) {
 		File f = FileLocator.getCustomTriggerFile(this.npcName);
 		SyncConfiguration io = new SyncConfiguration(f);
-		
 
 		if (!f.exists()) {
 			try {
@@ -67,7 +66,7 @@ public class CustomAction {
 				e.printStackTrace();
 			}
 		} else {
-			
+
 			io.read();
 
 			if (io.doesKeyExist("DAMAGE_PLAYER")) {
@@ -144,14 +143,29 @@ public class CustomAction {
 					actions.add(a);
 				}
 			}
-			
+
 			// PLAY_RECORD:<record block id>,<range>
-			
-			if(io.doesKeyExist("PLAY_RECORD")){
+
+			if (io.doesKeyExist("PLAY_RECORD")) {
 				Action a = new PlayRecordAction(npcName, io.getString("PLAY_RECORD"));
-				if(a.isActive()){
+				if (a.isActive()) {
 					actions.add(a);
 				}
+			}
+
+			// EXECUTE_PLAYER_CMD:command 1#command 2
+			// EXECUTE_SERVER_CMD:command 1#command 2
+
+			if (io.doesKeyExist("EXECUTE_PLAYER_CMD")) {
+				// active always return true for cmds
+				Action a = new ExecuteCMDAction(io.getString("EXECUTE_PLAYER_CMD"), true);
+				actions.add(a);
+			}
+			
+			if (io.doesKeyExist("EXECUTE_SERVER_CMD")) {
+				// active always return true for cmds
+				Action a = new ExecuteCMDAction(io.getString("EXECUTE_SERVER_CMD"), false);
+				actions.add(a);
 			}
 
 		}
