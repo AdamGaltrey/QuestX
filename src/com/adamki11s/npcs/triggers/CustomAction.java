@@ -47,7 +47,9 @@ public class CustomAction {
 		}
 
 		for (Action a : actions) {
+			p.sendMessage("Looping through " + actions.size() + " actions.");
 			if (a.isActive()) {
+				p.sendMessage("Implementing " + a.getClass().toString());
 				a.implement(p);
 			}
 		}
@@ -94,7 +96,7 @@ public class CustomAction {
 			}
 
 			if (io.doesKeyExist("LIGHTNING")) {
-				Action a = new DamagePlayerAction(npcName, io.getString("LIGHTNING"));
+				Action a = new LightningAction(npcName, io.getString("LIGHTNING"));
 				if (a.isActive()) {
 					actions.add(a);
 				}
@@ -139,6 +141,15 @@ public class CustomAction {
 			if (io.doesKeyExist("TELEPORT_PLAYER")) {
 				Action a = new TeleportAction(npcName, io.getString("TELEPORT_PLAYER"));
 				if (a.isActive()) {
+					actions.add(a);
+				}
+			}
+			
+			// PLAY_RECORD:<record block id>,<range>
+			
+			if(io.doesKeyExist("PLAY_RECORD")){
+				Action a = new PlayRecordAction(npcName, io.getString("PLAY_RECORD"));
+				if(a.isActive()){
 					actions.add(a);
 				}
 			}
