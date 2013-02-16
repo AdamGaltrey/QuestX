@@ -51,7 +51,7 @@ public class FixedLoadingTable {
 			String npcName = wrapper.getTag();
 			if (FileLocator.doesNPCNameExist(npcName)) {
 				SyncLocation sl = (SyncLocation) wrapper.getObject();
-				Location spawnLocation = sl.getBukkitLocation().add(0, 1, 0);
+				Location spawnLocation = sl.getBukkitLocation();
 				LoadNPCTemplate tempLoader = new LoadNPCTemplate(npcName);
 				try {
 					tempLoader.loadProperties();
@@ -74,7 +74,7 @@ public class FixedLoadingTable {
 	public static void spawnFixedNPC(NPCHandler handle, String name) {
 		loader.read();
 		SyncLocation sl = (SyncLocation) loader.getObject(name);
-		Location spawnLocation = sl.getBukkitLocation().add(0, 1, 0);
+		Location spawnLocation = sl.getBukkitLocation();
 		LoadNPCTemplate tempLoader = new LoadNPCTemplate(name);
 		try {
 			tempLoader.loadProperties();
@@ -148,6 +148,16 @@ public class FixedLoadingTable {
 				loader.write();
 				loader.clearReadArray();
 				loader.clearWriteArray();
+				
+				LoadNPCTemplate tmp = new LoadNPCTemplate(npcName);
+				try {
+					tmp.loadProperties();
+					tmp.getLoadedNPCTemplate().registerSimpleNPCFixedSpawn(handle, p.getLocation());
+				} catch (MissingPropertyException e) {
+					e.printErrorReason();
+				} catch (MissingDeathTriggerPropertyException e) {
+					e.printErrorReason();
+				}
 
 				if (p != null) {
 					QuestX.logChat(p, "The fixed spawn for NPC '" + npcName + "' was changed to your current location.");
