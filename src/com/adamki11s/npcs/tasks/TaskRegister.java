@@ -1,6 +1,8 @@
 package com.adamki11s.npcs.tasks;
 
 import java.io.File;
+import java.lang.ref.SoftReference;
+import java.util.HashMap;
 import java.util.HashSet;
 
 import org.bukkit.ChatColor;
@@ -8,7 +10,7 @@ import org.bukkit.entity.Player;
 
 import com.adamki11s.io.FileLocator;
 import com.adamki11s.questx.QuestX;
-
+import com.adamki11s.sync.io.configuration.SyncConfiguration;
 
 public class TaskRegister {
 
@@ -18,15 +20,15 @@ public class TaskRegister {
 		managers.add(tm);
 		QuestX.logDebug("Task added to Register");
 	}
-	
-	public static void unRegisterTask(TaskManager tm){
-		if(managers.contains(tm)){
+
+	public static void unRegisterTask(TaskManager tm) {
+		if (managers.contains(tm)) {
 			managers.remove(tm);
 		}
 	}
-	
-	public static void cancelPlayerTask(Player p){
-		if(doesPlayerHaveTask(p.getName())){
+
+	public static void cancelPlayerTask(Player p) {
+		if (doesPlayerHaveTask(p.getName())) {
 			TaskManager tm = getTaskManager(p.getName());
 			unRegisterTask(tm);
 			QuestX.logChat(p, ChatColor.GREEN + "Task cancelled!");
@@ -34,14 +36,53 @@ public class TaskRegister {
 			QuestX.logChat(p, ChatColor.RED + "You do not have a task to cancel.");
 		}
 	}
-	
-	public static TaskManager getTaskManager(String pName){
+
+	public static TaskManager getTaskManager(String pName) {
 		for (TaskManager tm : managers) {
 			if (tm.getPlayerName().equalsIgnoreCase(pName)) {
 				return tm;
 			}
 		}
 		return null;
+	}
+
+	private static SoftReference<HashMap<String, Boolean>> enabledTasks = new SoftReference<HashMap<String, Boolean>>(new HashMap<String, Boolean>());
+
+	public static boolean isTaskEnabled(String npc) {
+
+		HashMap<String, Boolean> map;
+
+		boolean mapContainsTask = false;
+
+		if ((map = enabledTasks.get()) == null) {
+			map = new HashMap<String, Boolean>();
+		} else {
+			if (map.containsKey(npc)) {
+				mapContainsTask = true;
+			}
+		}
+
+		if (mapContainsTask) {
+			return map.get(npc);
+		} else {
+			// load into map and return
+			File f = FileLocator.getNPCTaskFile(npc);
+			SyncConfiguration cfg = new SyncConfiguration(f);
+			cfg.read();
+
+			boolean en = true;
+
+			if (cfg.doesKeyExist("ENABLED")) {
+				en = cfg.getBoolean("ENABLED");
+			} else {
+				cfg.add("ENABLED", true);
+				cfg.MergeRWArrays();
+				cfg.write();
+			}
+
+			return en;
+		}
+
 	}
 
 	public static boolean doesPlayerHaveTask(String player) {
@@ -52,8 +93,8 @@ public class TaskRegister {
 		}
 		return false;
 	}
-	
-	public static boolean doesPlayerHaveTaskFromNPC(String player, String npcName){
+
+	public static boolean doesPlayerHaveTaskFromNPC(String player, String npcName) {
 		for (TaskManager tm : managers) {
 			if (tm.getPlayerName().equalsIgnoreCase(player) && tm.getTaskLoader().getNpcName().equalsIgnoreCase(npcName)) {
 				return true;
@@ -77,10 +118,10 @@ public class TaskRegister {
 			return true;
 		}
 	}
-	
-	public static boolean hasPlayerCompletedTask(String npcName, String playerName){
+
+	public static boolean hasPlayerCompletedTask(String npcName, String playerName) {
 		File f = FileLocator.getNPCTaskProgressionPlayerFile(npcName, playerName);
-		if(f == null){
+		if (f == null) {
 			return false;
 		} else {
 			return f.exists();
