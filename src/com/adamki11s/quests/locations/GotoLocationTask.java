@@ -88,9 +88,7 @@ public class GotoLocationTask {
 	private int markCheckCount = 0;
 
 	public boolean isMarked() {
-		if (this.isMarked()) {
-			markCheckCount++;
-		}
+		markCheckCount++;
 		if (markCheckCount > 10) {
 			// set chunk to be remarked in case the player has deviated from the
 			// search area
