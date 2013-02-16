@@ -1,3 +1,7 @@
+/*
+ * By @Adamki11s
+ */
+
 package com.adamki11s.pathing;
 
 import java.util.ArrayList;
@@ -5,21 +9,16 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 
-import net.minecraft.server.v1_4_R1.AxisAlignedBB;
-
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_4_R1.CraftWorld;
-import org.bukkit.entity.Player;
-
-import com.adamki11s.questx.QuestX;
 
 public class AStar {
 
 	private final int sx, sy, sz, ex, ey, ez;
 	private final World w;
-	private int endCode;
+
+	private PathingResult result;
 
 	private ArrayList<Tile> open = new ArrayList<Tile>();
 	private ArrayList<Tile> closed = new ArrayList<Tile>();
@@ -56,7 +55,13 @@ public class AStar {
 
 	private final int maxIterations;
 
-	public AStar(Location start, Location end, int maxIterations) {
+	public AStar(Location start, Location end, int maxIterations) throws InvalidPathException {
+
+		boolean s = true, e = true;
+		
+		if (!(s = this.isLocationWalkable(start)) || !(e = this.isLocationWalkable(end))) {
+			throw new InvalidPathException(s, e);
+		}
 
 		this.w = start.getWorld();
 		this.sx = start.getBlockX();
@@ -68,19 +73,19 @@ public class AStar {
 
 		this.maxIterations = maxIterations;
 
-		short s = 0;
-		Tile t = new Tile(s, s, s, null);
+		short sh = 0;
+		Tile t = new Tile(sh, sh, sh, null);
 		t.calculateBoth(sx, sy, sz, ex, ey, ez, true);
 		this.open.add(t);
 		this.processAdjacentTiles(t);
 	}
-	
-	public Location getEndLocation(){
+
+	public Location getEndLocation() {
 		return new Location(w, ex, ey, ez);
 	}
-	
-	public int getEndCode(){
-		return this.endCode;
+
+	public PathingResult getPathingResult() {
+		return this.result;
 	}
 
 	public LinkedList<Tile> iterate() {
@@ -94,8 +99,7 @@ public class AStar {
 			iterations++;
 
 			if (iterations > this.maxIterations) {
-				this.endCode = -2;
-				QuestX.logDebug("Pathinder exceeded max iterations!");
+				this.result = PathingResult.ITERATIONS_EXCEEDED;
 				break;
 			}
 
@@ -106,9 +110,7 @@ public class AStar {
 			this.processAdjacentTiles(current);
 		}
 
-		if (endCode == -1 || endCode == -2) {
-			// no path found = -1
-			// max iterations exceeded = -2
+		if (this.result != PathingResult.SUCCESS) {
 			return null;
 		} else {
 			// path found
@@ -131,13 +133,13 @@ public class AStar {
 	private boolean canContinue() {
 		// check if open list is empty, if it is no path has been found
 		if (open.size() == 0) {
-			endCode = -1;
+			this.result = PathingResult.NO_PATH;
 			return false;
 		} else {
 			for (Tile c : closed) {
 				if (((c.getX() + sx) == ex) && ((c.getY() + sy) == ey) && ((c.getZ() + sz) == ez)) {
 					// end tile is on closed list
-					endCode = 0;
+					this.result = PathingResult.SUCCESS;
 					return false;
 				}
 			}
@@ -273,9 +275,52 @@ public class AStar {
 			return false;
 		}
 	}
-	
-	private boolean canBlockBeWalkedThrough(int id){
-		return(id == 0 || id == 6 || id == 50 || id == 63 || id == 30 || id == 31 || id == 32 || id == 37 || id == 38 || id == 39 || id == 40 || id == 55 || id == 66 || id == 75 || id == 76 || id == 78);
+
+	private boolean isLocationWalkable(Location l) {
+		Block b = l.getBlock();
+		int i = b.getTypeId();
+
+		if (i != 10 && i != 11 && i != 51 && i != 59 && i != 65 && i != 0 && !canBlockBeWalkedThrough(i)) {
+			// make sure the blocks above are air or can be walked through
+			return (canBlockBeWalkedThrough(b.getRelative(0, 1, 0).getTypeId()) && b.getRelative(0, 2, 0).getTypeId() == 0);
+		} else {
+			return false;
+		}
+	}
+
+	private boolean canBlockBeWalkedThrough(int id) {
+		return (id == 0 || id == 6 || id == 50 || id == 63 || id == 30 || id == 31 || id == 32 || id == 37 || id == 38 || id == 39 || id == 40 || id == 55 || id == 66 || id == 75
+				|| id == 76 || id == 78);
+	}
+
+	@SuppressWarnings("serial")
+	public class InvalidPathException extends Exception {
+
+		private final boolean s, e;
+
+		public InvalidPathException(boolean s, boolean e) {
+			this.s = s;
+			this.e = e;
+		}
+
+		public String getErrorReason() {
+			StringBuilder sb = new StringBuilder();
+			if (!s) {
+				sb.append("Start Location was air. ");
+			}
+			if (!e) {
+				sb.append("End Location was air.");
+			}
+			return sb.toString();
+		}
+		
+		public boolean isStartNotSolid(){
+			return (!s);
+		}
+		
+		public boolean isEndNotSolid(){
+			return (!e);
+		}
 	}
 
 }

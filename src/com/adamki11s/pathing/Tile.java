@@ -1,3 +1,7 @@
+/*
+ * By @Adamki11s
+ */
+
 package com.adamki11s.pathing;
 
 import org.bukkit.Location;
@@ -20,6 +24,10 @@ public class Tile {
 
 	public void setParent(Tile parent) {
 		this.parent = parent;
+	}
+	
+	public Location getLocation(Location start){
+		return new Location(start.getWorld(), start.getBlockX() + x, start.getBlockY() + y, start.getBlockZ() + z);
 	}
 
 	public Tile getParent() {
