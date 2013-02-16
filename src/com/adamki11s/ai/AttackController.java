@@ -37,21 +37,19 @@ public class AttackController {
 
 	synchronized void retalliate(Player p, SimpleNPC npc) {
 		// if(p is inside npc area) then attack
-		
-		if(p == null || npc == null){
+
+		if (p == null || npc == null) {
 			return;
 		}
 
 		Location loc = p.getLocation();
 		double var = ((double) npc.getMaxVariation()) * (npc.getRetalliationMultiplier());
-		
+
 		Location root = npc.getSpawnedLocation();
 		Location bl = new Location(loc.getWorld(), root.getBlockX() - var, root.getBlockY() - var, root.getBlockZ() - var), tr = new Location(loc.getWorld(), root.getBlockX() + var,
 				root.getBlockY() + var, root.getBlockZ() + var);
 
 		Location target = p.getLocation().subtract(0, 1, 0);
-		
-		
 
 		if (loc.getBlockX() > bl.getBlockX() && loc.getBlockY() > bl.getBlockY() && loc.getBlockZ() > bl.getBlockZ() && loc.getBlockX() < tr.getBlockX() && loc.getBlockY() < tr.getBlockY()
 				&& loc.getBlockZ() < tr.getBlockZ()) {
@@ -59,73 +57,89 @@ public class AttackController {
 			// QuestX.logChat(p, "In attack zone! Size = " +
 			// npc.getRetalliationMultiplier() + ", var = " + var);
 
-			/*if (npc.getHumanNPC().isPathFindComplete()) {
-				npc.moveTo(p.getLocation().subtract(0, 1, 0));
-			}*/
-			
-			//npc.moveTo(target);
-			
+			/*
+			 * if (npc.getHumanNPC().isPathFindComplete()) {
+			 * npc.moveTo(p.getLocation().subtract(0, 1, 0)); }
+			 */
+
+			// npc.moveTo(target);
+
 			int eCode = npc.getHumanNPC().getEndCode();
-			
-			//if can't find path cancel
-			if(eCode == -1 || eCode == -2){
-				//QuestX.logChat(p, "Path not found, cancelling attack");
+
+			// if can't find path cancel
+			if (eCode == -1 || eCode == -2) {
+				// QuestX.logChat(p, "Path not found, cancelling attack");
 				npc.unAggro();
-				npc.moveTick();
+				if (npc.isMoveable()) {
+					npc.moveTick();
+				}
 				return;
 			}
-			
-			if(npc.isPathFindingComplete()){
-				npc.moveTo(target);
-			} else {
-				Location e = npc.getHumanNPC().getEndLocation();
-				if(e == null){
-					npc.stopPathFinding();
+
+			if (npc.isMoveable()) {
+				if (npc.isPathFindingComplete()) {
 					npc.moveTo(target);
 				} else {
-					double dist = target.distance(e);
-					if(dist > 2){
-						//if distance between end and player is too large re-calculate.
+					Location e = npc.getHumanNPC().getEndLocation();
+					if (e == null) {
 						npc.stopPathFinding();
 						npc.moveTo(target);
 					} else {
-						//do nothing
+						double dist = target.distance(e);
+						if (dist > 2) {
+							// if distance between end and player is too large
+							// re-calculate.
+							npc.stopPathFinding();
+							npc.moveTo(target);
+						} else {
+							// do nothing
+						}
 					}
 				}
 			}
-			
+
 			Location l = p.getLocation();
 			l.add(0, 1, 0);
-			
+
 			npc.lookAt(l);
-			
-				
-			//npc.lookAt(target.add(0, 1, 0));	
+
+			// npc.lookAt(target.add(0, 1, 0));
 
 			if (npc.getHumanNPC().getBukkitEntity().getLocation().distance(p.getLocation()) < 2.5) {
 				// QuestX.logChat(p, "NPC HIT YOU");
 				npc.getHumanNPC().animateArmSwing();
-				
-				if((p.getHealth() - npc.getDamageMod()) <= 0){
-					if(!npc.isPathFindingComplete()){
+
+				if ((p.getHealth() - npc.getDamageMod()) <= 0) {
+					npc.unAggro();
+
+					if (npc.isMoveable()) {
+						if (!npc.isPathFindingComplete()) {
+							npc.stopPathFinding();
+						}
+						npc.moveTick();
+					}
+				}
+
+				p.damage(npc.getDamageMod());
+
+				if (npc.isMoveable()) {
+					if (!npc.isPathFindingComplete()) {
 						npc.stopPathFinding();
 					}
-					npc.unAggro();
-					npc.moveTick();
 				}
-				
-				p.damage(npc.getDamageMod());
-				
-				if(!npc.isPathFindingComplete()){
-					npc.stopPathFinding();
+			} else {
+				if(!npc.isMoveable()){
+					npc.unAggro();
 				}
 			}
 
 		} else {
 			// QuestX.logChat(p, "Left attack zone NPC aggro lost!");
 			npc.unAggro();
-			npc.moveTick();
-			
+			if (npc.isMoveable()) {
+				npc.moveTick();
+			}
+
 		}
 
 		// else if aggressor has left area stop attacking
