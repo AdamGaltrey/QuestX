@@ -1,4 +1,4 @@
-package com.adamki11s.commands;
+package com.adamki11s.commands.help;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
