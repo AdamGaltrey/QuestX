@@ -8,6 +8,7 @@ import com.adamki11s.npcs.tasks.EntityKillTracker;
 import com.adamki11s.npcs.tasks.ISAParser;
 import com.adamki11s.npcs.tasks.NPCKillTracker;
 import com.adamki11s.npcs.tasks.NPCTalkTracker;
+import com.adamki11s.quests.locations.GotoLocationTask;
 import com.adamki11s.questx.QuestX;
 
 public class QuestTaskParser {
@@ -30,6 +31,8 @@ public class QuestTaskParser {
 			o = getEntityKillObject(inputData);
 		} else if (type == QType.KILL_NPC) {
 			o = getNPCKillObject(inputData);
+		} else if (type == QType.GOTO) {
+			o = getLocationObject(inputData);
 		} else {
 			o = new NPCTalkTracker(inputData);
 		}
@@ -51,6 +54,11 @@ public class QuestTaskParser {
 
 	static NPCKillTracker getNPCKillObject(String input) {
 		return new NPCKillTracker(input);
+	}
+	
+	static GotoLocationTask getLocationObject(String input){
+		//TODO
+		return null;
 	}
 
 }
