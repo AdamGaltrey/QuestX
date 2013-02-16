@@ -12,6 +12,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.adamki11s.ai.RandomMovement;
+import com.adamki11s.commands.help.HelpDispatcher;
 import com.adamki11s.display.FixedSpawnsDisplay;
 import com.adamki11s.display.Pages;
 import com.adamki11s.display.QuestDisplay;
