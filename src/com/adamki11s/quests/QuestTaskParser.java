@@ -4,6 +4,7 @@ import org.bukkit.inventory.ItemStack;
 
 import com.adamki11s.exceptions.InvalidISAException;
 import com.adamki11s.exceptions.InvalidKillTrackerException;
+import com.adamki11s.exceptions.InvalidQuestException;
 import com.adamki11s.npcs.tasks.EntityKillTracker;
 import com.adamki11s.npcs.tasks.ISAParser;
 import com.adamki11s.npcs.tasks.NPCKillTracker;
@@ -13,7 +14,7 @@ import com.adamki11s.questx.QuestX;
 
 public class QuestTaskParser {
 
-	public static synchronized QuestTask getTaskObject(String input, QType type, String cause) throws InvalidKillTrackerException, InvalidISAException {
+	public static synchronized QuestTask getTaskObject(String quest, String input, QType type, String cause) throws InvalidKillTrackerException, InvalidISAException, InvalidQuestException {
 		Object o = null;
 		QuestX.logDebug("QTYPE = " + type.toString());
 		QuestX.logDebug("ENTERING SWITCH");
@@ -32,7 +33,7 @@ public class QuestTaskParser {
 		} else if (type == QType.KILL_NPC) {
 			o = getNPCKillObject(inputData);
 		} else if (type == QType.GOTO) {
-			o = getLocationObject(inputData);
+			o = getLocationObject(quest, inputData);
 		} else {
 			o = new NPCTalkTracker(inputData);
 		}
@@ -56,9 +57,8 @@ public class QuestTaskParser {
 		return new NPCKillTracker(input);
 	}
 	
-	static GotoLocationTask getLocationObject(String input){
-		//TODO
-		return null;
+	static GotoLocationTask getLocationObject(String quest, String input) throws InvalidQuestException{
+		return new GotoLocationTask(quest, input);
 	}
 
 }

@@ -8,6 +8,7 @@ import com.adamki11s.extras.inventory.ExtrasInventory;
 import com.adamki11s.npcs.tasks.EntityKillTracker;
 import com.adamki11s.npcs.tasks.NPCKillTracker;
 import com.adamki11s.npcs.tasks.NPCTalkTracker;
+import com.adamki11s.quests.locations.GotoLocationTask;
 import com.adamki11s.questx.QuestX;
 
 public class QuestTask {
@@ -91,6 +92,10 @@ public class QuestTask {
 
 	public boolean isTalkNPC() {
 		return (this.taskData instanceof NPCTalkTracker);
+	}
+	
+	public boolean isGoto(){
+		return (this.taskData instanceof GotoLocationTask);
 	}
 
 	public String getCompleteTaskText() {

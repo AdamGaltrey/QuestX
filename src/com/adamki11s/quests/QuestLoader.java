@@ -18,6 +18,8 @@ import com.adamki11s.npcs.tasks.EntityKillTracker;
 import com.adamki11s.npcs.tasks.Fireworks;
 import com.adamki11s.npcs.tasks.ISAParser;
 import com.adamki11s.npcs.tasks.NPCKillTracker;
+import com.adamki11s.quests.locations.GotoLocationController;
+import com.adamki11s.quests.locations.GotoLocationTask;
 import com.adamki11s.questx.QuestX;
 import com.adamki11s.reputation.ReputationManager;
 import com.adamki11s.sync.io.configuration.SyncConfiguration;
@@ -195,11 +197,16 @@ public class QuestLoader {
 			QuestX.logDebug("dataString = " + dataString);
 
 			try {
-				this.tasks[c - 1] = QuestTaskParser.getTaskObject(dataString, qType, this.questName);
+				this.tasks[c - 1] = QuestTaskParser.getTaskObject(questName, dataString, qType, this.questName);
 			} catch (InvalidKillTrackerException e) {
-				e.printCustomErrorReason(true, this.questName);
+				e.printCustomErrorReason(true, questName);
+				throw new InvalidQuestException(raw, "QuestType '" + qtypeEnum + "' was incorrectly formatted!", this.questName);
 			} catch (InvalidISAException e) {
 				e.printErrorReason();
+				throw new InvalidQuestException(raw, "QuestType '" + qtypeEnum + "' was incorrectly formatted!", this.questName);
+			} catch (InvalidQuestException q) {
+				q.printErrorReason();
+				throw new InvalidQuestException(raw, "QuestType '" + qtypeEnum + "' was incorrectly formatted!", this.questName);
 			}
 
 			// this.tasks[c - 1] = new
@@ -411,6 +418,11 @@ public class QuestLoader {
 
 	void setPlayerTask(String p) {
 		this.currentTask.put(p, this.tasks[this.playerProgress.get(p) - 1].getClonedInstance());
+		QuestTask qtLocal = this.currentTask.get(p);
+		if (qtLocal.isGoto()) {
+			QuestX.logMSG("GOTO TASK LOADED!");
+			GotoLocationController.addLocationTask(p, (GotoLocationTask) qtLocal.getData());
+		}
 	}
 
 	public synchronized void setTaskComplete(Player player) {
