@@ -70,13 +70,46 @@ public class Conversation {
 	public void startConversation() {
 		Player p = this.getConvoData().getPlayer();
 		StringBuilder build = new StringBuilder();
-		build.append("Conversing with ").append(this.getConvoData().getSimpleNpc().getName()).append(" TASK:");
-		if (TaskRegister.hasPlayerCompletedTask(this.getConvoData().getSimpleNpc().getName(), p.getName())) {
-			build.append(ChatColor.GREEN).append("Complete");
-		} else {
-			build.append(ChatColor.DARK_RED).append("Incomplete");
+
+		String npcName = this.convoData.getSimpleNpc().getName();
+
+		boolean taskEnabled = TaskRegister.isTaskEnabled(npcName), questEnabled = this.convoData.getSimpleNpc().doesLinkToQuest();
+
+		QuestX.logChat(p, ChatColor.GREEN + "Conversation started with NPC " + ChatColor.ITALIC + "" + ChatColor.YELLOW + npcName);
+
+		if (taskEnabled) {
+			build.append("Task : ");
+			if (TaskRegister.hasPlayerCompletedTask(npcName, p.getName())) {
+				build.append(ChatColor.GREEN).append("Complete ");
+			} else {
+				build.append(ChatColor.DARK_RED).append("Incomplete ");
+			}
 		}
-		QuestX.logChat(p, build.toString());
+
+		if (questEnabled) {
+			build.append(ChatColor.RESET).append("Quest : ");
+
+			String qName = this.convoData.getSimpleNpc().getQuestName();
+
+			if (QuestManager.hasQuestBeenSetup(qName)) {
+				if (!QuestManager.isQuestLoaded(qName)) {
+					QuestManager.loadQuest(qName);
+				}
+				QuestLoader ql = QuestManager.getQuestLoader(qName);
+				ql.loadAndCheckPlayerProgress(p.getName());
+				if (ql.isQuestComplete(p.getName())) {
+					build.append(ChatColor.GREEN).append("Complete");
+				} else {
+					build.append(ChatColor.DARK_RED).append("Incomplete");
+				}
+			} else {
+				build.append(ChatColor.DARK_RED).append("Not Setup");
+			}
+		}
+
+		if (build.toString().length() > 5) {
+			QuestX.logChat(p, build.toString());
+		}
 		this.conversing = true;
 		this.displaySpeechOptions();
 		ConversationRegister.playersConversing.add(this);
@@ -124,13 +157,14 @@ public class Conversation {
 		}
 		DialogueItem selected = items[index - 1];
 		Player p = this.convoData.getPlayer();
+		String npcName = this.convoData.getSimpleNpc().getName();
 		if (selected.doesPlayerHaveRequiredRepLevel(p.getName())) {
 			Trigger selTrigger = selected.getTrigger();
-			QuestX.logChat(p, ChatColor.ITALIC + "" + ChatColor.BLUE + "Response " + ChatColor.RESET + StaticStrings.separator.substring(8));
+			QuestX.logChat(p, ChatColor.ITALIC + "" + ChatColor.YELLOW + "Response " + ChatColor.RESET + StaticStrings.separator.substring(8));
 			if (selTrigger.getTriggerType() != TriggerType.QUEST) {
 				DialogueResponse dr = d.getResponse();
 				String response = dr.getResponses()[index - 1];
-				QuestX.logChat(p, "[" + this.convoData.getSimpleNpc().getName() + "] " + response);
+				QuestX.logChat(p, response);
 			}
 
 			this.currentNode = this.currentNode + index;
@@ -138,32 +172,40 @@ public class Conversation {
 				this.endConversation();
 				return;
 			} else if (selTrigger.getTriggerType() == TriggerType.TASK) {
-				boolean alreadyDone = TaskRegister.hasPlayerCompletedTask(this.getConvoData().getSimpleNpc().getName(), p.getName());
-				if (alreadyDone) {
-					QuestX.logChat(p, "You have already completed this task!");
-					this.endConversation();
-					return;
-				}
-				if (TaskRegister.doesPlayerHaveTask(p.getName())) {
-					QuestX.logChat(p, ChatColor.RED + "You already have a task assigned!");
-					QuestX.logChat(p, ChatColor.WHITE + "/questx task cancel" + ChatColor.RED + " to cancel current task.");
-					this.endConversation();
-					return;
-				} else {
-					TaskLoader tl = new TaskLoader(FileLocator.getNPCTaskFile(this.getConvoData().getSimpleNpc().getName()), this.getConvoData().getSimpleNpc().getName());
-					QuestX.logDebug("Loading task...");
-					try {
-						tl.load();
-						QuestX.logDebug("Task Loaded!");
-						TaskManager manage = new TaskManager(p.getName(), tl);
-						TaskRegister.registerTask(manage);
-						QuestX.logChat(p, ChatColor.ITALIC + tl.getTaskName() + ChatColor.RESET + ChatColor.GREEN + " task started!");
-						QuestX.logChat(p, "Task description : " + tl.getTaskDescription());
-					} catch (MissingTaskPropertyException e) {
-						e.printErrorReason();
-						QuestX.logChat(p, "Task failed to load, task file is incorrectly formatted. Check the server log for details.");
+				if (TaskRegister.isTaskEnabled(npcName)) {
+
+					boolean alreadyDone = TaskRegister.hasPlayerCompletedTask(npcName, p.getName());
+					if (alreadyDone) {
+						QuestX.logChat(p, "You have already completed this task!");
+						this.endConversation();
+						return;
+					}
+					if (TaskRegister.doesPlayerHaveTask(p.getName())) {
+						QuestX.logChat(p, ChatColor.RED + "You already have a task assigned!");
+						QuestX.logChat(p, ChatColor.WHITE + "/questx task cancel" + ChatColor.RED + " to cancel current task.");
+						this.endConversation();
+						return;
+					} else {
+						TaskLoader tl = new TaskLoader(FileLocator.getNPCTaskFile(npcName), npcName);
+						QuestX.logDebug("Loading task...");
+						try {
+							tl.load();
+							QuestX.logDebug("Task Loaded!");
+							TaskManager manage = new TaskManager(p.getName(), tl);
+							TaskRegister.registerTask(manage);
+							QuestX.logChat(p, ChatColor.ITALIC + tl.getTaskName() + ChatColor.RESET + ChatColor.GREEN + " task started!");
+							QuestX.logChat(p, "Task description : " + tl.getTaskDescription());
+						} catch (MissingTaskPropertyException e) {
+							e.printErrorReason();
+							QuestX.logChat(p, "Task failed to load, task file is incorrectly formatted. Check the server log for details.");
+						}
+
+						this.endConversation();
+						return;
 					}
 
+				} else {
+					QuestX.logChat(p, ChatColor.RED + "This task is not enabled.");
 					this.endConversation();
 					return;
 				}
@@ -244,11 +286,10 @@ public class Conversation {
 					QuestX.logDebug("NPC has no link to a quest");
 				}
 				this.endConversation();
-			} else if(selTrigger.getTriggerType() == TriggerType.CUSTOM){
+			} else if (selTrigger.getTriggerType() == TriggerType.CUSTOM) {
 				this.convoData.getSimpleNpc().invokeCustomActions(p);
 				this.endConversation();
-			}
-			else {
+			} else {
 				this.displaySpeechOptions();
 			}
 		} else {
