@@ -2,6 +2,7 @@ package com.adamki11s.quests;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.Map.Entry;
 
 import org.bukkit.Location;
 import org.bukkit.entity.ExperienceOrb;
@@ -296,6 +297,21 @@ public class QuestLoader {
 																	// change
 																	// anything
 	}
+	
+	private synchronized void playerFinishedQuest(String p){
+		File cur = FileLocator.getCurrentQuestFile();
+		SyncConfiguration cfg = new SyncConfiguration(cur);
+		cfg.read();
+		
+		for(Entry<String, Object> e : cfg.getReadableData().entrySet()){
+			String n = e.getKey();
+			if(!n.equalsIgnoreCase(p)){
+				cfg.add(n, e.getValue());
+			} 
+		}
+		
+		cfg.write();
+	}
 
 	public int getRewardExp() {
 		return this.rewardExp;
@@ -318,6 +334,10 @@ public class QuestLoader {
 	}
 
 	public synchronized void awardPlayerOnQuestComplete(Player p) {
+		
+		//remove fromm current list
+		this.playerFinishedQuest(p.getName());
+		
 		if (this.isAwardingItems()) {
 			ItemStack[] rewardItems = this.rewardItems;
 			for (ItemStack i : rewardItems) {
@@ -341,7 +361,7 @@ public class QuestLoader {
 		if (this.isAwardRep()) {
 
 			int awardRep = this.getRewardRep();
-			QuestX.logChat(p, "Trying to award rep = " + awardRep);
+			//QuestX.logChat(p, "Trying to award rep = " + awardRep);
 			ReputationManager.updateReputation(p.getName(), awardRep);
 			// adjust rep
 		}
