@@ -206,7 +206,9 @@ public class SimpleNPC {
 	}
 
 	public void setMovementUnscheduled() {
-		this.randMovement.setMovementScheduled(false);
+		if (this.isMoveable() && this.randMovement != null) {
+			this.randMovement.setMovementScheduled(false);
+		}
 	}
 
 	public boolean isPathFindingComplete() {
