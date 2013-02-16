@@ -118,20 +118,28 @@ public class QuestX extends JavaPlugin {
 
 		version = this.getDescription().getVersion();
 		f = this.getFile();
+		
+		Plugin vault = this.getServer().getPluginManager().getPlugin("Vault");
+		
+		if(vault != null){
+			boolean perms = this.setupPermissions();
+			if (perms) {
+				QuestX.logMSG("Hooked into Vault permissions successfully.");
+			} else {
+				QuestX.logMSG("There was an error hooking into Vault permissions!");
+			}
 
-		boolean perms = this.setupPermissions();
-		if (perms) {
-			QuestX.logMSG("Hooked into Vault permissions successfully.");
+			boolean econ = this.setupEconomy();
+			if (econ) {
+				QuestX.logMSG("Hooked into Vault Economy successfully.");
+			} else {
+				QuestX.logMSG("There was an error hooking into Vault economy!");
+			}
 		} else {
-			QuestX.logMSG("There was an error hooking into Vault permissions!");
+			QuestX.logMSG("Vault is not installed, permission and economy support is disabled.");
 		}
 
-		boolean econ = this.setupEconomy();
-		if (econ) {
-			QuestX.logMSG("Hooked into Vault Economy successfully.");
-		} else {
-			QuestX.logMSG("There was an error hooking into Vault economy!");
-		}
+		
 
 		Plugin plug = Bukkit.getPluginManager().getPlugin("TagAPI");
 		if (plug != null) {
