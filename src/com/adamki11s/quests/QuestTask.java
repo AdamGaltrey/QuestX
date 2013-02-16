@@ -50,6 +50,9 @@ public class QuestTask {
 			return ((EntityKillTracker) this.taskData).areRequiredEntitiesKilled();
 		} else if (this.isKillNPC()) {
 			return ((NPCKillTracker) this.taskData).areRequiredNPCSKilled();
+		} else if (this.isGoto()) {
+			//location controller will automatically set to true when location is reached
+			return false;
 		} else {
 			return ((NPCTalkTracker) this.taskData).isCompleted();
 		}
@@ -93,8 +96,8 @@ public class QuestTask {
 	public boolean isTalkNPC() {
 		return (this.taskData instanceof NPCTalkTracker);
 	}
-	
-	public boolean isGoto(){
+
+	public boolean isGoto() {
 		return (this.taskData instanceof GotoLocationTask);
 	}
 
@@ -115,15 +118,18 @@ public class QuestTask {
 		} else if (this.isTalkNPC()) {
 			QuestX.logChat(p, ((NPCTalkTracker) this.taskData).sendWhoToTalkTo());
 			return;
+		} else if(this.isGoto()){
+			//add location text
+			return;
 		}
 		QuestX.logChat(p, "Looks like there was an error? You have no task.");
 	}
-	
-	public void removeItems(Player p){
+
+	public void removeItems(Player p) {
 		ExtrasInventory ei = new ExtrasInventory();
 
 		if (this.isItemStacks()) {
-			for (ItemStack is : ((ItemStack[])this.taskData)) {
+			for (ItemStack is : ((ItemStack[]) this.taskData)) {
 				ei.removeFromInventory(p, is.getTypeId(), is.getAmount());
 			}
 		}
