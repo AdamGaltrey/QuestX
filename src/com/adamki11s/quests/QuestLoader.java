@@ -186,7 +186,7 @@ public class QuestLoader {
 			QuestX.logDebug("READING---------------");
 			QType qType = QType.parseType(qtypeEnum);
 			if (qType == null) {
-				throw new InvalidQuestException(raw, "QuestType was invalid! Got '" + qtypeEnum + "', expected (FETCH_ITEMS, KILL_ENTITIES, KILL_NPC OR TALK_NPC)", this.questName);
+				throw new InvalidQuestException(raw, "QuestType was invalid! Got '" + qtypeEnum + "', expected (FETCH_ITEMS, KILL_ENTITIES, KILL_NPC, GOTO OR TALK_NPC)", this.questName);
 			} else {
 				QuestX.logDebug("Quest Type = '" + qType.toString() + "'");
 			}
