@@ -48,7 +48,7 @@ public class SimpleNPC {
 	RandomMovement randMovement;
 
 	Conversation c;
-	
+
 	final CustomAction customActions;
 
 	HashSet<Integer> completeQuestNodes = new HashSet<Integer>();
@@ -81,7 +81,7 @@ public class SimpleNPC {
 		this.gear = gear;
 		this.damageMod = damageMod;
 		this.retalliationMultiplier = retalliationMultiplier;
-		
+
 		this.customActions = new CustomAction(name);
 		this.customActions.load(handle);
 
@@ -107,8 +107,8 @@ public class SimpleNPC {
 
 		handle.registerNPC(this);
 	}
-	
-	public void invokeCustomActions(Player p){
+
+	public void invokeCustomActions(Player p) {
 		this.customActions.invokeActions(p);
 	}
 
@@ -156,12 +156,12 @@ public class SimpleNPC {
 		int despawnUTicks = WorldConfigData.getUntouchedDespawnMinutes() * (20 * 60);
 		return (this.untouchedTicks >= despawnUTicks);
 	}
-	
-	public void restoreHealth(int amount){
-		if((amount + this.getHealth()) > this.getMaxHealth()){
+
+	public void restoreHealth(int amount) {
+		if ((amount + this.getHealth()) > this.getMaxHealth()) {
 			this.health = this.getMaxHealth();
 		} else {
-			if(amount < 0){
+			if (amount < 0) {
 				amount *= -1;
 			}
 			this.health += amount;
@@ -277,8 +277,8 @@ public class SimpleNPC {
 		this.aggressor = null;
 		this.underAttack = false;
 	}
-	
-	public void setAggro(Player p){
+
+	public void setAggro(Player p) {
 		this.setTouched();
 		this.aggressor = p;
 		this.underAttack = true;
@@ -397,7 +397,7 @@ public class SimpleNPC {
 								// do complete check
 								if (t.isTaskComplete(p)) {
 									ql.incrementTaskProgress(p);
-									QuestX.logChat(p, t.getCompleteTaskText());
+
 									if (ql.isQuestComplete(p.getName())) {
 										QuestX.logChat(p, ql.getEndText());
 										/*
@@ -406,9 +406,10 @@ public class SimpleNPC {
 										 * f.circularDisplay();
 										 */
 										QuestManager.removeCurrentPlayerQuest(ql.getName(), p.getName());
+									} else {
+										QuestX.logChat(p, t.getCompleteTaskText());
 									}
 								} else {
-									QuestX.logChat(p, "[Quest Task]");
 									t.sendWhatIsLeftToDo(p);
 								}
 								return;

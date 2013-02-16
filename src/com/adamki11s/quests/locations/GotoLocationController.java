@@ -99,6 +99,9 @@ public class GotoLocationController {
 	}
 
 	private static void completeTask(String p) {
+		
+		QuestX.logMSG("Completing quest for player : " + p);
+		
 		QuestLoader ql = QuestManager.getQuestLoader(QuestManager.getCurrentQuestName(p));
 		QuestTask qt = QuestManager.getCurrentQuestTask(p);
 
@@ -108,11 +111,13 @@ public class GotoLocationController {
 
 			ql.incrementTaskProgress(player);
 
-			QuestX.logChat(player, qt.getCompleteTaskText());
+			
 
 			if (ql.isQuestComplete(p)) {
 				QuestX.logChat(player, ql.getEndText());
 				QuestManager.removeCurrentPlayerQuest(ql.getName(), p);
+			} else {
+				QuestX.logChat(player, qt.getCompleteTaskText());
 			}
 
 		}
