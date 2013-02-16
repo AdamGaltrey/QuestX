@@ -1,38 +1,64 @@
 package com.adamki11s.quests.locations;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
+import org.bukkit.World;
+
+import com.adamki11s.exceptions.InvalidQuestException;
 
 public class GotoLocationTask {
 
-	private final int x, z, range, rangeCheckVariation;
+	private final double x, y, z, range, rangeCheckVariation;
 	private final String world;
 	
 	//marked as in chunk range
 	private boolean marked;
 
-	public GotoLocationTask(Location l, int range) {
-		Chunk c = l.getChunk();
-
-		this.x = c.getX();
-		this.z = c.getZ();
-
-		this.world = l.getWorld().getName();
-
-		this.range = range;
+	public GotoLocationTask(String quest, String data) throws InvalidQuestException {
 		
-		this.rangeCheckVariation = (int) (Math.ceil((double)range / 16D) * 2);
+		String[] parts = data.split("#");
+		
+		String[] locs = parts[0].split(",");
+		
+		this.world = locs[0];
+		
+		double lX = 0, lY = 0, lZ = 0;
+		
+		try{
+			lX = Double.parseDouble(locs[1]);
+			lY = Double.parseDouble(locs[2]);
+			lZ = Double.parseDouble(locs[3]);
+			this.range = Integer.parseInt(parts[1]);
+		} catch (NumberFormatException nfe){
+			throw new InvalidQuestException(data, "Invalid number for location or range was encountered.", quest);
+		}
+		
+		World w = Bukkit.getServer().getWorld(world);
+		
+		if(w == null){
+			throw new InvalidQuestException(data, "World '" + world + "' could not be loaded. World name may be invalid or wolrd is not loaded", quest);
+		} else {
+			this.x = lX;
+			this.y = lY;
+			this.z = lZ;
+			
+			this.rangeCheckVariation = (int) (Math.ceil((double)range / 16D) * 2);
+		}
 	}
 
 	public boolean isAtLocation(Location l) {
-		int tx = l.getBlockX() + range, ty = l.getBlockY() + range, tz = l.getBlockZ() + range, bx = l.getBlockX() - range, by = l.getBlockY() - range, bz = l.getBlockZ() - range;
-		return (l.getWorld().getName().equalsIgnoreCase(world) && tx >= l.getBlockX() && l.getBlockX() >= bx && ty >= l.getBlockY() && l.getBlockY() >= by && tz >= l.getBlockZ() && l
-				.getBlockZ() >= bz);
+		double tx = x + range, ty = y + range, tz = z + range, bx = x - range, by = y - range, bz = z - range;
+		double lx = l.getX(), ly = l.getY(), lz = l.getZ();
+		
+		return ( lx < tx && lx > bx && ly < ty && ly > by && lz < tz && lz > bz );
 	}
 
 	public boolean isInCheckRange(Location l) {
-		Chunk c = l.getChunk();
-		int xDist = this.abs(c.getX() - x), zDist = this.abs(c.getZ() - z);
+		World w = Bukkit.getServer().getWorld(world);
+		Chunk c = w.getChunkAt((int)x, (int)z),
+		target = l.getChunk();
+		double xDist = this.abs(c.getX() - target.getX()) / 16D, zDist = this.abs(c.getZ() - target.getZ()) / 16D;
 		//start checking if within double the range
 		return (rangeCheckVariation > (xDist + zDist));
 	}
@@ -52,7 +78,7 @@ public class GotoLocationTask {
 		this.marked = mark;
 	}
 
-	private int abs(int i) {
+	private double abs(double i) {
 		return (i < 0 ? -i : i);
 	}
 
