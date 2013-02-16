@@ -4,14 +4,16 @@ import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.entity.Player;
 
+import com.adamki11s.dialogue.dynamic.DynamicStrings;
 import com.adamki11s.exceptions.InvalidQuestException;
 import com.adamki11s.questx.QuestX;
 
 public class GotoLocationTask {
 
 	private final double x, y, z, range, rangeCheckVariation;
-	private final String world;
+	private final String world, description;
 
 	// marked as in chunk range
 	private boolean marked;
@@ -23,6 +25,7 @@ public class GotoLocationTask {
 		String[] locs = parts[0].split(",");
 
 		this.world = locs[0];
+		this.description = parts[2];
 
 		double lX = 0, lY = 0, lZ = 0;
 
@@ -98,6 +101,10 @@ public class GotoLocationTask {
 			this.markCheckCount = 0;
 		}
 		return this.marked;
+	}
+	
+	public String getDescription(String p){
+		return (DynamicStrings.getDynamicReplacement(this.description, p));
 	}
 
 	public void setMarked(boolean mark) {
