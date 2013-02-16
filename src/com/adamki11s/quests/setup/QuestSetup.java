@@ -65,10 +65,8 @@ public class QuestSetup {
 		}
 
 		
-		boolean suc = FixedLoadingTable.addFixedNPCSpawn(p, npcName, p.getLocation(), handle);
-		if (suc) {
-			FixedLoadingTable.spawnFixedNPC(handle, npcName);
-		}
+		FixedLoadingTable.addFixedNPCSpawn(p, npcName, p.getLocation(), handle);
+		
 		this.currentNode++;
 	}
 
