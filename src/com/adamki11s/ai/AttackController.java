@@ -84,7 +84,7 @@ public class AttackController {
 					npc.moveTo(target);
 				} else {
 					double dist = target.distance(e);
-					if(dist > 1.8){
+					if(dist > 2){
 						//if distance between end and player is too large re-calculate.
 						npc.stopPathFinding();
 						npc.moveTo(target);
