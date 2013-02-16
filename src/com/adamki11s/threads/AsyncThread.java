@@ -63,8 +63,8 @@ public class AsyncThread implements Runnable {
 			// run every second
 			if (secondTickOver % 20 == 0 || secondTickOver > 20) {
 				this.mControl.run();
-				this.rControl.run(tickRate);
-				this.dControl.run(tickRate);
+				this.rControl.run(20);
+				this.dControl.run(20);
 				secondTickOver = 0;
 			}
 			

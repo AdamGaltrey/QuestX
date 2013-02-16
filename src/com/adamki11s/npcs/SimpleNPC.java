@@ -146,9 +146,6 @@ public class SimpleNPC {
 	public void updateUntouchedTicks(int ticks) {
 		if (this.isSpawned && !this.isSpawnFixed) {
 			this.untouchedTicks += ticks;
-			if (this.shouldBeDespawned()) {
-				this.despawnNPC();
-			}
 		}
 	}
 
