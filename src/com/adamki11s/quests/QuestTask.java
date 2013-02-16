@@ -120,6 +120,7 @@ public class QuestTask {
 			return;
 		} else if(this.isGoto()){
 			//add location text
+			QuestX.logChat(p, ((GotoLocationTask) this.taskData).getDescription(p.getName()));
 			return;
 		}
 		QuestX.logChat(p, "Looks like there was an error? You have no task.");
