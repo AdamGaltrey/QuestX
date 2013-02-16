@@ -416,7 +416,7 @@ public class QuestLoader {
 		if (f.exists()) {
 			c.read();
 			this.playerProgress.put(p, c.getInt("P"));
-			QuestX.logMSG("'" + p + "' progress loaded = " + c.getInt("P"));
+			//QuestX.logMSG("'" + p + "' progress loaded = " + c.getInt("P"));
 		} else {
 			c.createFileIfNeeded();
 			c.add("P", 1);
