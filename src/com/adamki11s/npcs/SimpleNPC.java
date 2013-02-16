@@ -546,7 +546,9 @@ public class SimpleNPC {
 	}
 
 	public void moveTick() {
-		this.randMovement.move();
+		if (this.randMovement != null) {
+			this.randMovement.move();
+		}
 	}
 
 	public void moveTo(Location l) {
