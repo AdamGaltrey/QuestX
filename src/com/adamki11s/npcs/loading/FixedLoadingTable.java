@@ -51,7 +51,7 @@ public class FixedLoadingTable {
 			String npcName = wrapper.getTag();
 			if (FileLocator.doesNPCNameExist(npcName)) {
 				SyncLocation sl = (SyncLocation) wrapper.getObject();
-				Location spawnLocation = sl.getBukkitLocation();
+				Location spawnLocation = sl.getBukkitLocation().add(0, 1, 0);
 				LoadNPCTemplate tempLoader = new LoadNPCTemplate(npcName);
 				try {
 					tempLoader.loadProperties();
@@ -74,7 +74,7 @@ public class FixedLoadingTable {
 	public static void spawnFixedNPC(NPCHandler handle, String name) {
 		loader.read();
 		SyncLocation sl = (SyncLocation) loader.getObject(name);
-		Location spawnLocation = sl.getBukkitLocation();
+		Location spawnLocation = sl.getBukkitLocation().add(0, 1, 0);
 		LoadNPCTemplate tempLoader = new LoadNPCTemplate(name);
 		try {
 			tempLoader.loadProperties();
@@ -87,8 +87,8 @@ public class FixedLoadingTable {
 		}
 
 	}
-	
-	public static boolean doesNPCHaveFixedSpawn(String npc){
+
+	public static boolean doesNPCHaveFixedSpawn(String npc) {
 		return fixedSpawns.containsKey(npc);
 	}
 
@@ -187,6 +187,8 @@ public class FixedLoadingTable {
 				loader.write();
 				loader.clearReadArray();
 				loader.clearWriteArray();
+
+				fixedSpawns.remove(npcName);
 
 				if (p != null) {
 					QuestX.logChat(p, "The fixed spawn for NPC '" + npcName + "' was removed.");
