@@ -245,7 +245,6 @@ public class Conversation {
 				}
 				this.endConversation();
 			} else if(selTrigger.getTriggerType() == TriggerType.CUSTOM){
-				p.sendMessage("Invoking custom triggers...");
 				this.convoData.getSimpleNpc().invokeCustomActions(p);
 				this.endConversation();
 			}
