@@ -9,6 +9,7 @@ import com.adamki11s.ai.RespawnController;
 import com.adamki11s.io.DatabaseConfigData;
 import com.adamki11s.npcs.NPCHandler;
 import com.adamki11s.npcs.population.PopulationDensityThread;
+import com.adamki11s.pathing.decision.DecisionController;
 
 public class AsyncThread implements Runnable {
 
@@ -19,6 +20,7 @@ public class AsyncThread implements Runnable {
 	final PopulationDensityThread pdThread;
 	final DespawnController dControl;
 	final HealthController hControl;
+	final DecisionController decisionControl;
 	final GotoLocationThreadController glThread = new GotoLocationThreadController();
 	final int tickRate;
 
@@ -32,6 +34,7 @@ public class AsyncThread implements Runnable {
 		pdThread = new PopulationDensityThread();
 		dControl = new DespawnController(handle);
 		hControl = new HealthController(handle);
+		decisionControl = new DecisionController(handle);
 		this.tickRate = tickRate;
 		this.running = true;
 	}
@@ -41,16 +44,17 @@ public class AsyncThread implements Runnable {
 		this.pdThread.terminateSQL();
 	}
 
-	int secondTickOver = 0, denstiyCalculationTickOver = 0, twoSecondTickOver = 0;
+	int secondTickOver = 0, denstiyCalculationTickOver = 0, twoSecondTickOver = 0, thirtySecTickOver = 0;
 
 	@Override
 	public void run() {
 		if (running) {
 			secondTickOver += tickRate;
 			twoSecondTickOver += tickRate;
+			thirtySecTickOver += tickRate;
 			denstiyCalculationTickOver += tickRate;
 			// if(denstiyCalculationTickOver > (20 * 60 * 5)){ 5minutes
-			if (denstiyCalculationTickOver > (20 * 60 * DatabaseConfigData.getUpdateMinutes())) { // 60
+			if (denstiyCalculationTickOver >= (20 * 60 * DatabaseConfigData.getUpdateMinutes())) { // 60
 																									// secs
 																									// *
 																									// x
@@ -61,7 +65,7 @@ public class AsyncThread implements Runnable {
 				this.pdThread.run();
 			}
 			// run every second
-			if (secondTickOver % 20 == 0 || secondTickOver > 20) {
+			if (secondTickOver >= 20) {
 				this.mControl.run();
 				this.rControl.run(20);
 				this.dControl.run(20);
@@ -69,9 +73,15 @@ public class AsyncThread implements Runnable {
 			}
 			
 			//run every 2 seconds
-			if(twoSecondTickOver % 40 == 0 || twoSecondTickOver > 40){
+			if(twoSecondTickOver >= 40){
 				this.hControl.run();
 				this.twoSecondTickOver = 0;
+			}
+			
+			//30 secs = 600 ticks
+			if(thirtySecTickOver >= 200){
+				thirtySecTickOver = 0;
+				this.decisionControl.run();
 			}
 			
 			aControl.run();

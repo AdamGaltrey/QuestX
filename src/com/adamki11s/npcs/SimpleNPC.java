@@ -61,7 +61,7 @@ public class SimpleNPC {
 	boolean isSpawnFixed = false;
 
 	HumanNPC npc;
-	boolean isSpawned = false, underAttack = false;
+	boolean isSpawned = false, underAttack = false, isPathing = true;
 
 	final ItemStack[] gear;// boots 1, legs 2, chest 3, head 4, arm 5
 
@@ -121,6 +121,14 @@ public class SimpleNPC {
 		CustomAction ca = new CustomAction(name, f);
 		ca.load(handle);
 		this.customDefActions.add(ca);
+	}
+	
+	public void invertPathingState(){
+		this.isPathing ^= true;
+	}
+	
+	public boolean isAllowedToPathFind(){
+		return this.isPathing;
 	}
 	
 	public void invokeCustomDefAction(Player p, File f){
@@ -571,7 +579,7 @@ public class SimpleNPC {
 	}
 
 	public void moveTick() {
-		if (this.randMovement != null) {
+		if (this.randMovement != null && this.isAllowedToPathFind()) {
 			this.randMovement.move();
 		}
 	}
