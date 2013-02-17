@@ -136,8 +136,8 @@ public class CustomAction {
 				}
 			}
 
-			if (io.doesKeyExist("PLAYER_GIVE_ITEMS")) {
-				Action a = new PlayerGiveItemsAction(npcName, io.getString("PLAYER_GIVE_ITEMS"));
+			if (io.doesKeyExist("PLAYER_GIVE_ITEMS") && io.doesKeyExist("GIVE_ITEMS_COOLDOWN_MINUTES")) {
+				Action a = new PlayerGiveItemsAction(npcName, io.getString("PLAYER_GIVE_ITEMS"), io.getInt("GIVE_ITEMS_COOLDOWN_MINUTES"));
 				if (a.isActive()) {
 					actions.add(a);
 				}
