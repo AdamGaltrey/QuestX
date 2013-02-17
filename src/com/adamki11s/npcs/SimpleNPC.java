@@ -127,6 +127,10 @@ public class SimpleNPC {
 		this.isPathing ^= true;
 	}
 	
+	public void setPathingState(boolean pathing){
+		this.isPathing = pathing;
+	}
+	
 	public boolean isAllowedToPathFind(){
 		return this.isPathing;
 	}
