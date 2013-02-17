@@ -22,26 +22,34 @@ public class DecisionController {
 	// location cache, update every 30 seconds.
 	SoftReference<ArrayList<SmallLocation>> plCache = new SoftReference<ArrayList<SmallLocation>>(new ArrayList<SmallLocation>());
 
+	private Object lock = new Object();
+
 	public void run() {
 
-		ArrayList<SmallLocation> cache = this.updateCache();
+		synchronized (lock) {
 
-		for (SimpleNPC npc : handle.getNPCs()) {
-			if (npc.isNPCSpawned()) {
-				Location l = npc.getHumanNPC().getBukkitEntity().getLocation();
+			ArrayList<SmallLocation> cache = this.updateCache();
 
-				small_check: for (SmallLocation sl : cache) {
-					boolean inPathRange = sl.isLocationInPathingRange(l);
-					//QuestX.logMSG("NPC " + npc.getName() + " is in range ? = " + inPathRange + ". Current state = " + npc.isAllowedToPathFind());
-					if (npc.isAllowedToPathFind() != inPathRange) {
-						// flip the boolean flag
-						npc.invertPathingState();
-						// break out, we don't need any more checks
-						break small_check;
+			for (SimpleNPC npc : handle.getNPCs()) {
+				if (npc.isNPCSpawned()) {
+					Location l = npc.getHumanNPC().getBukkitEntity().getLocation();
+
+					small_check: for (SmallLocation sl : cache) {
+						boolean inPathRange = sl.isLocationInPathingRange(l);
+						// QuestX.logMSG("NPC " + npc.getName() +
+						// " is in range ? = " + inPathRange +
+						// ". Current state = " + npc.isAllowedToPathFind());
+						if (npc.isAllowedToPathFind() != inPathRange) {
+							// flip the boolean flag
+							npc.invertPathingState();
+							// break out, we don't need any more checks
+							break small_check;
+						}
 					}
-				}
 
+				}
 			}
+
 		}
 	}
 
@@ -49,7 +57,7 @@ public class DecisionController {
 		ArrayList<SmallLocation> cache;
 
 		if ((cache = plCache.get()) == null) {
-			//QuestX.logMSG("Cache not found, populating");
+			// QuestX.logMSG("Cache not found, populating");
 			cache = new ArrayList<SmallLocation>();
 			for (Player p : Bukkit.getServer().getOnlinePlayers()) {
 				cache.add(new SmallLocation(p.getLocation()));
@@ -57,13 +65,13 @@ public class DecisionController {
 
 			plCache = new SoftReference<ArrayList<SmallLocation>>(cache);
 
-			//QuestX.logMSG("New cache size = " + cache.size());
+			// QuestX.logMSG("New cache size = " + cache.size());
 			return cache;
 		} else {
 			// we don't care which small location is mapped to which player,
 			// just where they are.
 
-			//QuestX.logMSG("Cache exists, current size = " + cache.size());
+			// QuestX.logMSG("Cache exists, current size = " + cache.size());
 
 			int index = 0, cacheIndexes = cache.size() - 1;
 			for (Player p : Bukkit.getServer().getOnlinePlayers()) {
@@ -79,10 +87,21 @@ public class DecisionController {
 
 			plCache = new SoftReference<ArrayList<SmallLocation>>(cache);
 
-			//QuestX.logMSG("Cache updated, new size = " + cache.size());
+			// QuestX.logMSG("Cache updated, new size = " + cache.size());
 
 			return cache;
 
+		}
+	}
+
+	public void serverNoPlayersAction() {
+		// caled if there are 0 players on the server.
+		synchronized(lock){
+			this.plCache.clear();
+			//stop all npc's from pathing and clear cache
+			for(SimpleNPC npc : handle.getNPCs()){
+				npc.setPathingState(false);
+			}
 		}
 	}
 

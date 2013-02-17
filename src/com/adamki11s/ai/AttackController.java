@@ -11,6 +11,7 @@ import com.adamki11s.npcs.SimpleNPC;
 import com.adamki11s.pathing.PathingResult;
 import com.adamki11s.questx.QuestX;
 import com.adamki11s.reputation.Reputation;
+import com.adamki11s.threads.AsyncThread;
 import com.topcat.npclib.entity.HumanNPC;
 
 public class AttackController {
@@ -144,5 +145,9 @@ public class AttackController {
 		}
 
 		// else if aggressor has left area stop attacking
+	}
+	
+	public void serverNoPlayersAction(){
+		this.target.clear();
 	}
 }
