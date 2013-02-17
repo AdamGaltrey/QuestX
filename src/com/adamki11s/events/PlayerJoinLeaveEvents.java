@@ -10,6 +10,7 @@ import org.bukkit.plugin.Plugin;
 import com.adamki11s.io.GeneralConfigData;
 import com.adamki11s.quests.QuestManager;
 import com.adamki11s.reputation.ReputationManager;
+import com.adamki11s.threads.AsyncThread;
 import com.adamki11s.updates.UpdateNotifier;
 
 public class PlayerJoinLeaveEvents implements Listener{
@@ -20,6 +21,7 @@ public class PlayerJoinLeaveEvents implements Listener{
 	
 	@EventHandler
 	public void playerJoin(final PlayerJoinEvent evt){
+		AsyncThread.playerJoined();
 		if(GeneralConfigData.isNotifyAdmin()){
 			UpdateNotifier.onPlayerLogin(evt.getPlayer());
 		}
@@ -29,6 +31,7 @@ public class PlayerJoinLeaveEvents implements Listener{
 	
 	@EventHandler
 	public void playerQuit(final PlayerQuitEvent evt){
+		AsyncThread.playerLeft();
 		ReputationManager.unloadPlayerReputation(evt.getPlayer().getName());
 		QuestManager.unloadPlayerQuestData(evt.getPlayer().getName());
 	}
