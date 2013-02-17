@@ -1,5 +1,9 @@
 package com.adamki11s.threads;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
+import org.bukkit.Bukkit;
+
 import com.adamki11s.ai.AttackController;
 import com.adamki11s.ai.DespawnController;
 import com.adamki11s.ai.GotoLocationThreadController;
@@ -10,6 +14,7 @@ import com.adamki11s.io.DatabaseConfigData;
 import com.adamki11s.npcs.NPCHandler;
 import com.adamki11s.npcs.population.PopulationDensityThread;
 import com.adamki11s.pathing.decision.DecisionController;
+import com.adamki11s.questx.QuestX;
 
 public class AsyncThread implements Runnable {
 
@@ -25,6 +30,25 @@ public class AsyncThread implements Runnable {
 	final int tickRate;
 
 	private volatile boolean running = true;
+
+	private static AtomicInteger playerCount = new AtomicInteger(Bukkit.getServer().getOnlinePlayers().length);
+
+	private static boolean playersOnline = true;
+
+	public static void playerJoined() {
+		if (playerCount.get() == 0) {
+			// first player on the server ?
+			if (!playersOnline) {
+				//set boolean to true
+				playersOnline ^= true;
+			}
+		}
+		playerCount.incrementAndGet();
+	}
+
+	public static void playerLeft() {
+		playerCount.decrementAndGet();
+	}
 
 	AsyncThread(NPCHandler handle, int tickRate) {
 		this.handle = handle;
@@ -49,44 +73,59 @@ public class AsyncThread implements Runnable {
 	@Override
 	public void run() {
 		if (running) {
-			secondTickOver += tickRate;
-			twoSecondTickOver += tickRate;
-			thirtySecTickOver += tickRate;
-			denstiyCalculationTickOver += tickRate;
-			// if(denstiyCalculationTickOver > (20 * 60 * 5)){ 5minutes
-			if (denstiyCalculationTickOver >= (20 * 60 * DatabaseConfigData.getUpdateMinutes())) { // 60
-																									// secs
-																									// *
-																									// x
-																									// minutes
-																									// between
-																									// updates
-				this.denstiyCalculationTickOver = 0;
-				this.pdThread.run();
+
+			if (playerCount.get() != 0) {
+
+				secondTickOver += tickRate;
+				twoSecondTickOver += tickRate;
+				thirtySecTickOver += tickRate;
+				denstiyCalculationTickOver += tickRate;
+				// if(denstiyCalculationTickOver > (20 * 60 * 5)){ 5minutes
+				if (denstiyCalculationTickOver >= (20 * 60 * DatabaseConfigData.getUpdateMinutes())) { // 60
+																										// secs
+																										// *
+																										// x
+																										// minutes
+																										// between
+																										// updates
+					this.denstiyCalculationTickOver = 0;
+					this.pdThread.run();
+				}
+				// run every second
+				if (secondTickOver >= 20) {
+					this.mControl.run();
+					this.rControl.run(20);
+					this.dControl.run(20);
+					secondTickOver = 0;
+				}
+
+				// run every 2 seconds
+				if (twoSecondTickOver >= 40) {
+					this.hControl.run();
+					this.twoSecondTickOver = 0;
+				}
+
+				// 30 secs = 600 ticks
+				if (thirtySecTickOver >= 200) {
+					thirtySecTickOver = 0;
+					this.decisionControl.run();
+				}
+
+				aControl.run();
+				glThread.run(tickRate);
+
+			} else {
+				
+				// 0 players online
+				if (playersOnline) {
+					// invert boolean
+					playersOnline ^= true;
+					// run shutdown (clears memory)
+					this.decisionControl.serverNoPlayersAction();
+					this.aControl.serverNoPlayersAction();
+				}
 			}
-			// run every second
-			if (secondTickOver >= 20) {
-				this.mControl.run();
-				this.rControl.run(20);
-				this.dControl.run(20);
-				secondTickOver = 0;
-			}
-			
-			//run every 2 seconds
-			if(twoSecondTickOver >= 40){
-				this.hControl.run();
-				this.twoSecondTickOver = 0;
-			}
-			
-			//30 secs = 600 ticks
-			if(thirtySecTickOver >= 200){
-				thirtySecTickOver = 0;
-				this.decisionControl.run();
-			}
-			
-			aControl.run();
-			glThread.run(tickRate);
-			
+
 		}
 	}
 
