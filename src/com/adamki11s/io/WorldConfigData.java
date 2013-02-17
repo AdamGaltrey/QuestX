@@ -8,7 +8,7 @@ import com.adamki11s.sync.io.configuration.SyncConfiguration;
 public class WorldConfigData {
 
 	static String[] worlds;
-	static int maxSpawnsPerChunk, maxSpawnsPerWorld, untouchedDespawnMinutes;
+	static int maxSpawnsPerChunk, maxSpawnsPerWorld, untouchedDespawnMinutes, npcActvityRange = 40;
 
 
 	public static void loadWorldConfigData() {
@@ -30,6 +30,14 @@ public class WorldConfigData {
 		maxSpawnsPerWorld = conf.getInt("MAX_SPAWNS_PER_WORLD");
 		untouchedDespawnMinutes = conf.getInt("DESPAWN_IFUNTOUCHED_MINUTES");
 		
+		if(!conf.doesKeyExist("NPC_ACTIVITY_RANGE")){
+			conf.add("NPC_ACTIVITY_RANGE", 80);
+			conf.MergeRWArrays();
+			conf.write();
+		} else {
+			npcActvityRange = conf.getInt("NPC_ACTIVITY_RANGE");
+		}
+		
 		QuestX.logDebug("Max spawns per world = " + maxSpawnsPerWorld);
 	}
 
@@ -48,7 +56,9 @@ public class WorldConfigData {
 	public static int getUntouchedDespawnMinutes() {
 		return untouchedDespawnMinutes;
 	}
-	
-	
+
+	public static int getNpcActvityRange() {
+		return npcActvityRange;
+	}
 
 }

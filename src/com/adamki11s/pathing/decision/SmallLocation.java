@@ -2,6 +2,8 @@ package com.adamki11s.pathing.decision;
 
 import org.bukkit.Location;
 
+import com.adamki11s.io.WorldConfigData;
+
 public class SmallLocation {
 
 	private int x, z;
@@ -31,7 +33,6 @@ public class SmallLocation {
 	}
 	
 	
-	//lets set pathing range to be < 2 chunks which is < 32 blocks
 	public boolean isLocationInPathingRange(Location l){
 		//false if different worlds
 		if(!this.world.equalsIgnoreCase(l.getWorld().getName())){
@@ -39,8 +40,8 @@ public class SmallLocation {
 		} else {
 			int dx = this.abs(l.getBlockX() - x), dz = this.abs(l.getBlockZ() - z);
 			int dist = (int) Math.sqrt((dx * dx) + (dz * dz));
-			//if within 2 chunks then set to path
-			return dist < 32;
+			//default is 80 blocks of x-z distance euclidean
+			return dist < WorldConfigData.getNpcActvityRange();
 		}
 	}
 	

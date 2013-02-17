@@ -69,7 +69,7 @@ public class AsyncThread implements Runnable {
 		this.pdThread.terminateSQL();
 	}
 
-	int secondTickOver = 0, denstiyCalculationTickOver = 0, twoSecondTickOver = 0, thirtySecTickOver = 0;
+	int secondTickOver = 0, denstiyCalculationTickOver = 0, twoSecondTickOver = 0, fifteenSecTickOver = 0;
 
 	@Override
 	public void run() {
@@ -79,7 +79,7 @@ public class AsyncThread implements Runnable {
 
 				secondTickOver += tickRate;
 				twoSecondTickOver += tickRate;
-				thirtySecTickOver += tickRate;
+				fifteenSecTickOver += tickRate;
 				denstiyCalculationTickOver += tickRate;
 				// if(denstiyCalculationTickOver > (20 * 60 * 5)){ 5minutes
 				if (denstiyCalculationTickOver >= (20 * 60 * DatabaseConfigData.getUpdateMinutes())) { // 60
@@ -107,8 +107,8 @@ public class AsyncThread implements Runnable {
 				}
 
 				// 30 secs = 600 ticks
-				if (thirtySecTickOver >= 200) {
-					thirtySecTickOver = 0;
+				if (fifteenSecTickOver >= 300) {
+					fifteenSecTickOver = 0;
 					this.decisionControl.run();
 				}
 
