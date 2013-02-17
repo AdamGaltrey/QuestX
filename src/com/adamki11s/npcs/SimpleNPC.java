@@ -50,7 +50,7 @@ public class SimpleNPC {
 	Conversation c;
 
 	final CustomAction customActions;
-	
+
 	HashSet<CustomAction> customDefActions = new HashSet<CustomAction>();
 
 	HashSet<Integer> completeQuestNodes = new HashSet<Integer>();
@@ -66,9 +66,11 @@ public class SimpleNPC {
 	final ItemStack[] gear;// boots 1, legs 2, chest 3, head 4, arm 5
 
 	private DeathAction deathAction;
-	
-	public void purgeCachedData(){
-		this.randMovement.purgeCache();
+
+	public void purgeCachedData() {
+		if (this.randMovement != null) {
+			this.randMovement.purgeCache();
+		}
 	}
 
 	public SimpleNPC(NPCHandler handle, String name, boolean moveable, boolean attackable, int minPauseTicks, int maxPauseTicks, int maxVariation, int health, int respawnTicks,
@@ -113,36 +115,36 @@ public class SimpleNPC {
 
 		handle.registerNPC(this);
 	}
-	
-	private void preloadCustomActionIfNeeded(File f){
-		for(CustomAction ca : this.customDefActions){
-			if(ca.getFileName().equalsIgnoreCase(f.getName())){
-				//stop if duplicate
+
+	private void preloadCustomActionIfNeeded(File f) {
+		for (CustomAction ca : this.customDefActions) {
+			if (ca.getFileName().equalsIgnoreCase(f.getName())) {
+				// stop if duplicate
 				return;
 			}
 		}
-		
+
 		CustomAction ca = new CustomAction(name, f);
 		ca.load(handle);
 		this.customDefActions.add(ca);
 	}
-	
-	public void invertPathingState(){
+
+	public void invertPathingState() {
 		this.isPathing ^= true;
 	}
-	
-	public void setPathingState(boolean pathing){
+
+	public void setPathingState(boolean pathing) {
 		this.isPathing = pathing;
 	}
-	
-	public boolean isAllowedToPathFind(){
+
+	public boolean isAllowedToPathFind() {
 		return this.isPathing;
 	}
-	
-	public void invokeCustomDefAction(Player p, File f){
+
+	public void invokeCustomDefAction(Player p, File f) {
 		this.preloadCustomActionIfNeeded(f);
-		for(CustomAction ca : this.customDefActions){
-			if(ca.getFileName().equalsIgnoreCase(f.getName())){
+		for (CustomAction ca : this.customDefActions) {
+			if (ca.getFileName().equalsIgnoreCase(f.getName())) {
 				ca.invokeActions(p);
 				break;
 			}
