@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import com.adamki11s.npcs.NPCHandler;
 import com.adamki11s.npcs.SimpleNPC;
-import com.adamki11s.questx.QuestX;
 
 public class MovementController {
 	
@@ -18,7 +17,7 @@ public class MovementController {
 		ArrayList<SimpleNPC> process = new ArrayList<SimpleNPC>();
 		for(SimpleNPC npc : handle.getNPCs()){
 			
-			if(!npc.isMovementScheduled() && npc.isMoveable() && npc.isNPCSpawned() && !npc.isUnderAttack() && !npc.isConversing()){
+			if(!npc.isMovementScheduled() && npc.isAllowedToPathFind() && npc.isMoveable() && npc.isNPCSpawned() && !npc.isUnderAttack() && !npc.isConversing()){
 				process.add(npc);
 			}
 		}
