@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 
 import com.adamki11s.npcs.NPCHandler;
 import com.adamki11s.npcs.SimpleNPC;
+import com.adamki11s.pathing.PathingResult;
 import com.adamki11s.questx.QuestX;
 import com.adamki11s.reputation.Reputation;
 import com.topcat.npclib.entity.HumanNPC;
@@ -64,10 +65,10 @@ public class AttackController {
 
 			// npc.moveTo(target);
 
-			int eCode = npc.getHumanNPC().getEndCode();
+			PathingResult res = npc.getHumanNPC().getPathingResult();
 
 			// if can't find path cancel
-			if (eCode == -1 || eCode == -2) {
+			if (res != PathingResult.SUCCESS) {
 				// QuestX.logChat(p, "Path not found, cancelling attack");
 				npc.unAggro();
 				if (npc.isMoveable()) {
