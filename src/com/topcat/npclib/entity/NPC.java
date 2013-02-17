@@ -1,6 +1,6 @@
 package com.topcat.npclib.entity;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 
 import net.minecraft.server.v1_4_R1.Entity;
 import net.minecraft.server.v1_4_R1.EntityPlayer;
@@ -48,7 +48,8 @@ public class NPC {
 		getBukkitEntity().teleport(l);
 	}
 
-	private LinkedList<Tile> walkNodes = new LinkedList<Tile>();
+	private ArrayList<Tile> walkNodes = new ArrayList<Tile>();
+	
 
 	private void move(Location i) {
 
@@ -64,7 +65,9 @@ public class NPC {
 
 			if (walkNodes != null && walkNodes.size() > 0) {
 
-				Tile t = walkNodes.removeFirst();
+				Tile t = walkNodes.get(0);
+				
+				walkNodes.remove(0);		
 
 				Location target = new Location(i.getWorld(), t.getX(i), t.getY(i) + 1, t.getZ(i));
 
@@ -73,7 +76,7 @@ public class NPC {
 				if (walkNodes.size() > 2) {
 					lookTile = walkNodes.get(2);
 				} else if (walkNodes.size() != 0) {
-					lookTile = walkNodes.getLast();
+					lookTile = walkNodes.get(walkNodes.size() - 1);
 				} else {
 					lookTile = null;
 				}
@@ -109,6 +112,8 @@ public class NPC {
 				getEntity().pitch = (float) newPitch;
 
 				((EntityPlayer) getEntity()).az =(float) (newYaw - 90);
+				
+			
 
 			} else {
 				this.stopPathFind();

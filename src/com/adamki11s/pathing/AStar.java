@@ -88,7 +88,7 @@ public class AStar {
 		return this.result;
 	}
 
-	public LinkedList<Tile> iterate() {
+	public ArrayList<Tile> iterate() {
 		// while not at end
 		Tile current = null;
 
@@ -125,8 +125,10 @@ public class AStar {
 			}
 
 			Collections.reverse(routeTrace);
+			
+			return new ArrayList<Tile>(routeTrace);
 
-			return routeTrace;
+			//return routeTrace;
 		}
 	}
 

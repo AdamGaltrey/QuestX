@@ -71,7 +71,7 @@ public class Tile {
 		// only update if h hasn't been calculated or if forced
 		if ((!update && h == -1) || update) {
 			int hx = sx + x, hy = sy + y, hz = sz + z;
-			this.h = this.getManhattanDistance(hx, hy, hz, ex, ey, ez);
+			this.h = this.getEuclideanDistance(hx, hy, hz, ex, ey, ez);
 		}
 	}
 
@@ -126,19 +126,12 @@ public class Tile {
 		return (h + g);
 	}
 
-	private double getManhattanDistance(int sx, int sy, int sz, int ex, int ey, int ez) {
+	private double getEuclideanDistance(int sx, int sy, int sz, int ex, int ey, int ez) {
 		double dx = sx - ex, dy = sy - ey, dz = sz - ez;
-		dx = abs(dx);
-		dy = abs(dy);
-		dz = abs(dz);
-		return (dx + dy + dz);
+		return Math.sqrt((dx * dx) + (dy * dy) + (dz * dz));
 	}
 	
 	private int abs(int i){
-		return (i < 0 ? -i : i);
-	}
-	
-	private double abs(double i){
 		return (i < 0 ? -i : i);
 	}
 
