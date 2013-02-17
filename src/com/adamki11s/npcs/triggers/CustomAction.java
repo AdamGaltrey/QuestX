@@ -6,14 +6,25 @@ import java.util.ArrayList;
 
 import org.bukkit.entity.Player;
 
-import com.adamki11s.io.FileLocator;
 import com.adamki11s.npcs.NPCHandler;
-import com.adamki11s.npcs.triggers.action.*;
+import com.adamki11s.npcs.triggers.action.Action;
+import com.adamki11s.npcs.triggers.action.DamagePlayerAction;
+import com.adamki11s.npcs.triggers.action.ExecuteCMDAction;
+import com.adamki11s.npcs.triggers.action.InvokeQuestAction;
+import com.adamki11s.npcs.triggers.action.InvokeTaskAction;
+import com.adamki11s.npcs.triggers.action.LightningAction;
+import com.adamki11s.npcs.triggers.action.MobSpawnAction;
+import com.adamki11s.npcs.triggers.action.NPCAttackPlayerAction;
+import com.adamki11s.npcs.triggers.action.PlayRecordAction;
+import com.adamki11s.npcs.triggers.action.PlayerGiveItemsAction;
+import com.adamki11s.npcs.triggers.action.PotionEffectAction;
+import com.adamki11s.npcs.triggers.action.TeleportAction;
 import com.adamki11s.sync.io.configuration.SyncConfiguration;
 
 public class CustomAction {
 
 	final String npcName;
+	final File f;
 
 	private ArrayList<Action> actions = new ArrayList<Action>();
 
@@ -23,8 +34,13 @@ public class CustomAction {
 
 	// auto ends conversation using this trigger
 
-	public CustomAction(String npcName) {
+	public CustomAction(String npcName, File f) {
 		this.npcName = npcName;
+		this.f = f;
+	}
+	
+	public String getFileName(){
+		return f.getName();
 	}
 
 	public void invokeActions(Player p) {
@@ -54,7 +70,6 @@ public class CustomAction {
 	}
 
 	public void load(NPCHandler handle) {
-		File f = FileLocator.getCustomTriggerFile(this.npcName);
 		SyncConfiguration io = new SyncConfiguration(f);
 
 		if (!f.exists()) {

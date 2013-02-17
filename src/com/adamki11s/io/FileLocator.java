@@ -53,6 +53,12 @@ public class FileLocator {
 		return new File(npc_data_root + File.separator + npcName + File.separator + customScript);
 	}
 	
+	public static File getCustomTriggerDefFile(String npcName, String rawFormat){
+		String fileName = rawFormat.substring(2, rawFormat.length() - 1);
+		QuestX.logMSG("Getting custom trigger def " + fileName);
+		return new File(npc_data_root + File.separator + npcName + File.separator + fileName);
+	}
+	
 	public static File getNPCDeathTriggerFile(String npcName){
 		return new File(npc_data_root + File.separator + npcName + File.separator + dtFile);
 	}

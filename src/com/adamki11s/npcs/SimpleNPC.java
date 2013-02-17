@@ -50,6 +50,8 @@ public class SimpleNPC {
 	Conversation c;
 
 	final CustomAction customActions;
+	
+	HashSet<CustomAction> customDefActions = new HashSet<CustomAction>();
 
 	HashSet<Integer> completeQuestNodes = new HashSet<Integer>();
 
@@ -82,7 +84,7 @@ public class SimpleNPC {
 		this.damageMod = damageMod;
 		this.retalliationMultiplier = retalliationMultiplier;
 
-		this.customActions = new CustomAction(name);
+		this.customActions = new CustomAction(name, FileLocator.getCustomTriggerFile(this.name));
 		this.customActions.load(handle);
 
 		File fLink = FileLocator.getNPCQuestLinkFile(name);
@@ -106,6 +108,29 @@ public class SimpleNPC {
 		deathAction.load();
 
 		handle.registerNPC(this);
+	}
+	
+	private void preloadCustomActionIfNeeded(File f){
+		for(CustomAction ca : this.customDefActions){
+			if(ca.getFileName().equalsIgnoreCase(f.getName())){
+				//stop if duplicate
+				return;
+			}
+		}
+		
+		CustomAction ca = new CustomAction(name, f);
+		ca.load(handle);
+		this.customDefActions.add(ca);
+	}
+	
+	public void invokeCustomDefAction(Player p, File f){
+		this.preloadCustomActionIfNeeded(f);
+		for(CustomAction ca : this.customDefActions){
+			if(ca.getFileName().equalsIgnoreCase(f.getName())){
+				ca.invokeActions(p);
+				break;
+			}
+		}
 	}
 
 	public void invokeCustomActions(Player p) {

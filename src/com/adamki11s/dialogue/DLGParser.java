@@ -103,6 +103,8 @@ public class DLGParser {
 					// - 1], gRepLevels[i - 1], triggerTypes[i - 1]);
 				}
 
+				String npcName = c.getConvoData().getSimpleNpc().getName();
+
 				for (int i = 1; i <= options; i++) {
 					TriggerType tt = triggerTypes[i - 1];
 					if (tt == TriggerType.NONE) {
@@ -110,11 +112,13 @@ public class DLGParser {
 					} else if (tt == TriggerType.END) {
 						realTriggers[i - 1] = new EndTrigger(tt);
 					} else if (tt == TriggerType.TASK) {
-						realTriggers[i - 1] = new TaskTrigger(tt, FileLocator.getNPCTaskFile(c.getConvoData().getSimpleNpc().getName()));
+						realTriggers[i - 1] = new TaskTrigger(tt, FileLocator.getNPCTaskFile(npcName));
 					} else if (tt == TriggerType.CUSTOM) {
-						realTriggers[i - 1] = new CustomTrigger(tt, FileLocator.getCustomTriggerFile(c.getConvoData().getSimpleNpc().getName()));
+						realTriggers[i - 1] = new CustomTrigger(tt, FileLocator.getCustomTriggerFile(npcName));
+					} else if (tt == TriggerType.CUSTOM_DEFINED) {
+						realTriggers[i - 1] = new CustomTrigger(tt, FileLocator.getCustomTriggerDefFile(npcName, trigIds[i - 1]));
 					} else {
-						realTriggers[i - 1] = new QuestTrigger(tt, FileLocator.getNPCQuestLinkFile(c.getConvoData().getSimpleNpc().getName()));
+						realTriggers[i - 1] = new QuestTrigger(tt, FileLocator.getNPCQuestLinkFile(npcName));
 					}
 				}
 

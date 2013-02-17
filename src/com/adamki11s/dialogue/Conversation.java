@@ -289,6 +289,11 @@ public class Conversation {
 			} else if (selTrigger.getTriggerType() == TriggerType.CUSTOM) {
 				this.convoData.getSimpleNpc().invokeCustomActions(p);
 				this.endConversation();
+			} else if (selTrigger.getTriggerType() == TriggerType.CUSTOM_DEFINED) {
+				QuestX.logChat(p, "Invoking custom trigger DEF, fName = " + selTrigger.getTriggerScript().getName());
+				this.convoData.getSimpleNpc().invokeCustomDefAction(p, selTrigger.getTriggerScript());
+				this.endConversation();
+				//load and cache custom actions
 			} else {
 				this.displaySpeechOptions();
 			}
