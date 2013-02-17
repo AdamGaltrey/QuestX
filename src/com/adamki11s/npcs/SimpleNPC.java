@@ -66,6 +66,10 @@ public class SimpleNPC {
 	final ItemStack[] gear;// boots 1, legs 2, chest 3, head 4, arm 5
 
 	private DeathAction deathAction;
+	
+	public void purgeCachedData(){
+		this.randMovement.purgeCache();
+	}
 
 	public SimpleNPC(NPCHandler handle, String name, boolean moveable, boolean attackable, int minPauseTicks, int maxPauseTicks, int maxVariation, int health, int respawnTicks,
 			ItemStackDrop inventory, ItemStack[] gear, int damageMod, double retalliationMultiplier) throws MissingDeathTriggerPropertyException {

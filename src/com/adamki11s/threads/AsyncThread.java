@@ -12,6 +12,7 @@ import com.adamki11s.ai.MovementController;
 import com.adamki11s.ai.RespawnController;
 import com.adamki11s.io.DatabaseConfigData;
 import com.adamki11s.npcs.NPCHandler;
+import com.adamki11s.npcs.SimpleNPC;
 import com.adamki11s.npcs.population.PopulationDensityThread;
 import com.adamki11s.pathing.decision.DecisionController;
 import com.adamki11s.questx.QuestX;
@@ -121,6 +122,11 @@ public class AsyncThread implements Runnable {
 					// invert boolean
 					playersOnline ^= true;
 					// run shutdown (clears memory)
+					
+					for(SimpleNPC npc : handle.getNPCs()){
+						npc.purgeCachedData();
+					}
+					
 					this.decisionControl.serverNoPlayersAction();
 					this.aControl.serverNoPlayersAction();
 				}

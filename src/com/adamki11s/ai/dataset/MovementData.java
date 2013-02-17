@@ -33,6 +33,10 @@ public class MovementData {
 	final int failsafeIterations = 100000;
 
 	SoftReference<ArrayList<Offset>> offsetCache = new SoftReference<ArrayList<Offset>>(new ArrayList<Offset>());
+	
+	public void purgeCache(){
+		this.offsetCache.clear();
+	}
 
 	public void generate() {
 		Random r = new Random();

@@ -31,6 +31,10 @@ public class RandomMovement {
 		this.maxVariation = maxVariation;
 		this.generateNewMovement();// link to null
 	}
+	
+	public void purgeCache(){
+		this.md.purgeCache();
+	}
 
 	public synchronized void move() {
 		this.currentPoint = this.npc.getHumanNPC().getBukkitEntity().getLocation();
