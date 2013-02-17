@@ -49,9 +49,9 @@ public class LightningAction implements Action {
 			public void run() {
 				sCount++;
 				if (sCount <= strikes) {
-					short xO = (short) (r.nextInt(range * 2) - range), yO = (short) (r.nextInt(range * 2) - range), zO = (short) (r.nextInt(range * 2) - range);
-					Location hit = new Location(c.getWorld(), c.getX() + xO, c.getY() + yO, c.getZ() + zO);
-					//Location hit = getRandomLocation(c);
+					//short xO = (short) (r.nextInt(range * 2) - range), yO = (short) (r.nextInt(range * 2) - range), zO = (short) (r.nextInt(range * 2) - range);
+					//Location hit = new Location(c.getWorld(), c.getX() + xO, c.getY() + yO, c.getZ() + zO);
+					Location hit = getRandomLocation(c);
 					if (isDamaging) {
 						hit.getWorld().strikeLightning(hit);
 					} else {
