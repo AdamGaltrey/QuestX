@@ -61,6 +61,32 @@ public class QuestXCommands implements CommandExecutor {
 				return true;
 			} else {
 				Player p = (Player) sender;
+				
+				/*
+				 * Debug commands
+				 */
+				
+				if(args.length == 2 && args[0].equalsIgnoreCase("debug")){
+					String n = args[1];
+					SimpleNPC npc = handle.getSimpleNPCByName(n);
+					if(npc == null){
+						QuestX.logChatError(p, "There is no npc with this name loaded.");
+					} else {
+						QuestX.logChat(p, "Displaying debug info for NPC '" + n + "'");
+						QuestX.logChat(p, "Is allowed to pathfind = " + npc.isAllowedToPathFind());
+						Location npcL = npc.getHumanNPC().getBukkitEntity().getLocation(), pL = p.getLocation();
+						int dx = npcL.getBlockX() - pL.getBlockX(), dz = npcL.getBlockZ() - pL.getBlockZ();
+						dx = (dx < 0 ? -dx : dx);
+						dz = (dz < 0 ? -dz : dz);
+						QuestX.logChat(p, "XZ Distance between you and NPC = " + (int) Math.sqrt((dx * dx) + (dz * dz)));
+					}
+					return true;
+				}
+				
+				
+				/*
+				 * Debug commands (END)
+				 */
 
 				if (args.length >= 1 && (args[0].equalsIgnoreCase("help") || args[0].equalsIgnoreCase("?"))) {
 					HelpDispatcher.helpDispatcher(p, args);
