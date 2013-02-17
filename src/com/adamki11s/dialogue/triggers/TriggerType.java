@@ -20,7 +20,6 @@ public enum TriggerType {
 		} else if (s.equalsIgnoreCase("c") || s.equalsIgnoreCase("custom")) {
 			return CUSTOM;
 		} else if (s.matches(customTriggerDef)) {
-			System.out.println("Custom trigger def detected! : " + s);
 			return CUSTOM_DEFINED;
 		} else {
 			return null;
