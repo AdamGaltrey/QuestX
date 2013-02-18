@@ -28,6 +28,7 @@ public class HelpDispatcher {
 		"/questx npc find <npcname>",
 		"/questx npc tele <npcname>"},
 		questCMDs = new String[]{"/questx quest info",
+		"/questx quest cancel",
 		"/questx quest unpack <name>",
 		"/questx quest setup <name>",
 		"/questx quest next"},
