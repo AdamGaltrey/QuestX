@@ -3,7 +3,6 @@ package com.adamki11s.events;
 import java.util.HashSet;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -14,7 +13,6 @@ import org.bukkit.plugin.Plugin;
 
 import com.adamki11s.dialogue.Conversation;
 import com.adamki11s.npcs.NPCHandler;
-import com.adamki11s.questx.QuestX;
 
 
 public class ConversationRegister implements Listener {
