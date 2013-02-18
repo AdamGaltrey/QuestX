@@ -59,6 +59,10 @@ public class InitialSetup {
 		if (!wConfig.exists()) {
 			fileSetup(wConfig);
 			SyncConfiguration conf = new SyncConfiguration(wConfig);
+			conf.add("NPC_ACTIVITY_RANGE", 80);
+			conf.addComment("The distance within which NPCs will undergo pathfinding if a Player is within this distance. Every 15 seconds the locations of all players are "
+					+ "compared to the locations of NPCs. If any distance between a player and an NPC is less than the activity range then the NPC will be allowed to pathfind, "
+					+ "that is walk around. Else the NPC will not pathfind as there is no need since there would be no players around to see it.");
 			conf.add("MAX_SPAWNS_PER_CHUNK", 2);
 			conf.add("MAX_SPAWNS_PER_WORLD", 200);
 			conf.addComment("Whether QuestX will colour player name tags depending on their reputation level");
