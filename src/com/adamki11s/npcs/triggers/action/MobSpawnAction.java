@@ -6,6 +6,7 @@ import java.util.Map.Entry;
 import java.util.Random;
 
 import org.bukkit.Bukkit;
+import org.bukkit.EntityEffect;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Creature;
@@ -127,12 +128,17 @@ public class MobSpawnAction implements Action {
 		}
 
 		if (this.despawnSeconds > 0) {
-			Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(QuestX.p, new Runnable() {
+			Bukkit.getServer().getScheduler().runTaskLaterAsynchronously(QuestX.p, new Runnable() {
 
 				public void run() {
 					for (Entity e : spawnedEntities) {
 						if (e != null && !e.isDead()) {
-
+							e.playEffect(EntityEffect.DEATH);
+							try {
+								Thread.sleep(300);
+							} catch (InterruptedException e1) {
+								Thread.currentThread().interrupt();
+							}
 							e.remove();
 						}
 					}
