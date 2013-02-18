@@ -26,6 +26,7 @@ import com.adamki11s.npcs.loading.FixedLoadingTable;
 import com.adamki11s.npcs.population.Hotspot;
 import com.adamki11s.npcs.population.HotspotManager;
 import com.adamki11s.npcs.tasks.TaskRegister;
+import com.adamki11s.quests.QuestLoader;
 import com.adamki11s.quests.QuestManager;
 import com.adamki11s.quests.setup.QuestSetup;
 import com.adamki11s.quests.setup.QuestUnpacker;
@@ -109,6 +110,16 @@ public class QuestXCommands implements CommandExecutor {
 
 				if (args.length == 2 && args[0].equalsIgnoreCase("quest") && args[1].equalsIgnoreCase("info")) {
 						QuestDisplay.displayCurrentQuestInfo(p);
+					return true;
+				}
+				
+				if(args.length == 2 && args[0].equalsIgnoreCase("quest") && args[1].equalsIgnoreCase("cancel")){
+					if (!QuestManager.doesPlayerHaveQuest(p.getName())) {
+						QuestX.logChat(p, ChatColor.RED + "You do not currently have a quest.");
+					} else {
+						QuestManager.cancelCurrentQuest(p.getName());
+						QuestX.logChat(p, "Quest cancelled, your progress has been saved.");
+					}
 					return true;
 				}
 				
@@ -291,7 +302,7 @@ public class QuestXCommands implements CommandExecutor {
 						return true;
 					} else {
 						p.teleport(npc.getHumanNPC().getBukkitEntity().getLocation());
-						QuestX.logChat(p, "Teleported to NPC '" + npc + "'.");
+						QuestX.logChat(p, "Teleported to NPC '" + npc.getName() + "'.");
 						return true;
 					}
 				}
