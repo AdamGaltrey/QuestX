@@ -2,6 +2,7 @@ package com.adamki11s.quests;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import org.bukkit.Location;
@@ -281,12 +282,15 @@ public class QuestLoader {
 		File cur = FileLocator.getCurrentQuestFile();
 		SyncConfiguration cfg = new SyncConfiguration(cur);
 		cfg.read();
-		cfg.MergeRWArrays();
-		cfg.add(p, this.getName());
-		cfg.write();
+
+		if (!cfg.doesKeyExist(p)) {
+			cfg.MergeRWArrays();
+			cfg.add(p, this.getName());
+			cfg.write();
+		}
 
 		this.loadAndCheckPlayerProgress(p);
-		this.currentTask.put(p, this.tasks[0].getClonedInstance());// We only
+		this.currentTask.put(p, this.tasks[playerProgress.get(p) - 1].getClonedInstance());// We only
 																	// want to
 																	// use the
 																	// initial
@@ -297,19 +301,19 @@ public class QuestLoader {
 																	// change
 																	// anything
 	}
-	
-	private synchronized void playerFinishedQuest(String p){
+
+	private synchronized void playerFinishedQuest(String p) {
 		File cur = FileLocator.getCurrentQuestFile();
 		SyncConfiguration cfg = new SyncConfiguration(cur);
 		cfg.read();
-		
-		for(Entry<String, Object> e : cfg.getReadableData().entrySet()){
+
+		for (Entry<String, Object> e : cfg.getReadableData().entrySet()) {
 			String n = e.getKey();
-			if(!n.equalsIgnoreCase(p)){
+			if (!n.equalsIgnoreCase(p)) {
 				cfg.add(n, e.getValue());
-			} 
+			}
 		}
-		
+
 		cfg.write();
 	}
 
@@ -334,10 +338,10 @@ public class QuestLoader {
 	}
 
 	public synchronized void awardPlayerOnQuestComplete(Player p) {
-		
-		//remove fromm current list
+
+		// remove fromm current list
 		this.playerFinishedQuest(p.getName());
-		
+
 		if (this.isAwardingItems()) {
 			ItemStack[] rewardItems = this.rewardItems;
 			for (ItemStack i : rewardItems) {
@@ -361,7 +365,7 @@ public class QuestLoader {
 		if (this.isAwardRep()) {
 
 			int awardRep = this.getRewardRep();
-			//QuestX.logChat(p, "Trying to award rep = " + awardRep);
+			// QuestX.logChat(p, "Trying to award rep = " + awardRep);
 			ReputationManager.updateReputation(p.getName(), awardRep);
 			// adjust rep
 		}
@@ -416,7 +420,7 @@ public class QuestLoader {
 		if (f.exists()) {
 			c.read();
 			this.playerProgress.put(p, c.getInt("P"));
-			//QuestX.logMSG("'" + p + "' progress loaded = " + c.getInt("P"));
+			// QuestX.logMSG("'" + p + "' progress loaded = " + c.getInt("P"));
 		} else {
 			c.createFileIfNeeded();
 			c.add("P", 1);
@@ -426,6 +430,21 @@ public class QuestLoader {
 		if (!this.isQuestComplete(p)) {
 			this.setPlayerTask(p);
 		}
+	}
+
+	public void cancel(String p) {
+		File cur = FileLocator.getCurrentQuestFile();
+		SyncConfiguration cfg = new SyncConfiguration(cur);
+
+		cfg.read();
+
+		for (Entry<String, Object> val : cfg.getReadableData().entrySet()) {
+			if (!val.getKey().equalsIgnoreCase(p)) {
+				cfg.add(val.getKey(), val.getValue());
+			}
+		}
+
+		cfg.write();
 	}
 
 	public QuestTask getPlayerQuestTask(String p) {

@@ -16,22 +16,10 @@ public class QuestDisplay {
 			QuestX.logChat(p, ChatColor.RED + "You do not currently have a quest.");
 		} else {
 			String qName = QuestManager.getCurrentQuestName(pName);
-			QuestX.logChat(p, "Loading quest = " + qName);
 			QuestLoader ql = QuestManager.getQuestLoader(qName);
-			if(ql == null){
-				QuestX.logChat(p, "QuestLoader WAS NULL!");
-			} else {
-				QuestX.logChat(p, "QuestLoader was NOT NULL!");
-			}
 			QuestTask qt = ql.getPlayerQuestTask(pName);
-			if(qt == null){
-				QuestX.logChat(p, "QuestTask WAS NULL!");
-			} else {
-				QuestX.logChat(p, "QuestLoader was NOT NULL!");
-			}
-			
-			QuestX.logChat(p, "[Quest Info] Name = " + ql.getName() + ", Return to NPC " + qt.getNPCToCompleteName());
-			QuestX.logChat(p, ChatColor.ITALIC + qName + ChatColor.RESET + ChatColor.RED + ", progress " + ql.getProgress(pName));
+			QuestX.logChat(p, "[Quest Info] " + ChatColor.YELLOW + ql.getName() + ChatColor.RESET +  ", Return to NPC " + qt.getNPCToCompleteName());
+			QuestX.logChat(p, "Progress " + ql.getProgress(pName));
 			
 			qt.sendWhatIsLeftToDo(p);
 			QuestX.logChat(p, StaticStrings.separator);

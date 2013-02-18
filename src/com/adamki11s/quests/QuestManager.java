@@ -38,6 +38,15 @@ public class QuestManager {
 		}
 		return false;
 	}
+	
+	public static void cancelCurrentQuest(String p){
+		String qName = QuestManager.getCurrentQuestName(p);
+		QuestLoader ql = QuestManager.getQuestLoader(qName);
+		ql.cancel(p);
+		if(currentQuest.containsKey(p)){
+			currentQuest.remove(p);
+		}
+	}
 
 	public static boolean hasPlayerCompletedQuest(String qName, String player) {
 		QuestLoader ql = getQuestLoader(qName);
@@ -109,6 +118,7 @@ public class QuestManager {
 		String qName = currentQuest.get(player);
 		for (QuestLoader ql : quests) {
 			if (ql.getName().equalsIgnoreCase(qName)) {
+				ql.loadAndCheckPlayerProgress(player);
 				return ql.getPlayerQuestTask(player);
 			}
 		}

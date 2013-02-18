@@ -231,15 +231,11 @@ public class Conversation {
 								QuestX.logChat(p, "You have already completed this quest!");
 							} else {
 								QuestManager.setCurrentPlayerQuest(p.getName(), qName);
-								QuestX.logDebug(ql.getStartText() + "<<<<<< START TEXT");
-								QuestX.logChat(p, ql.getStartText());
-								QuestTask t = QuestManager.getCurrentQuestTask(p.getName());
-								if (t != null) {
-									QuestX.logDebug("Task in non-null");
-									// t.sendWhatIsLeftToDo(p);
-								} else {
-									QuestX.logDebug("Task is null!");
+								if (ql.getCurrentQuestNode(p.getName()) == 1) {
+									QuestX.logChat(p, ql.getStartText());
 								}
+								QuestTask t = ql.getPlayerQuestTask(p.getName());
+								t.sendWhatIsLeftToDo(p);
 							}
 							this.endConversation();
 						} else {
@@ -281,9 +277,11 @@ public class Conversation {
 					} else {
 						// quest has not been setup
 						QuestX.logChat(p, "This quest has not yet been setup. /q setup " + qName);
+						this.endConversation();
 					}
 				} else {
 					QuestX.logDebug("NPC has no link to a quest");
+					this.endConversation();
 				}
 				this.endConversation();
 			} else if (selTrigger.getTriggerType() == TriggerType.CUSTOM) {
@@ -293,7 +291,7 @@ public class Conversation {
 				QuestX.logChat(p, "Invoking custom trigger DEF, fName = " + selTrigger.getTriggerScript().getName());
 				this.convoData.getSimpleNpc().invokeCustomDefAction(p, selTrigger.getTriggerScript());
 				this.endConversation();
-				//load and cache custom actions
+				// load and cache custom actions
 			} else {
 				this.displaySpeechOptions();
 			}
