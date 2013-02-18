@@ -6,6 +6,7 @@ package com.adamki11s.pathing;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 
@@ -20,45 +21,32 @@ public class AStar {
 
 	private PathingResult result;
 
-	private ArrayList<Tile> open = new ArrayList<Tile>();
-	private ArrayList<Tile> closed = new ArrayList<Tile>();
+	private HashMap<String, Tile> open = new HashMap<String, Tile>();
+	private HashMap<String, Tile> closed = new HashMap<String, Tile>();
 
 	private void addToOpenList(Tile t, boolean modify) {
-		Tile mod = null;
-		for (Tile o : open) {
-			if (o.equals(t)) {
-				mod = o;
+		if (open.containsKey(t.getUID())) {
+			if (modify) {
+				open.put(t.getUID(), t);
 			}
-		}
-
-		if (mod == null) {
-			// not on list add as normal
-			t.calculateBoth(sx, sy, sz, ex, ey, ez, false);
-			open.add(t);
-		} else if (modify) {
-			// already on list, if we are forcibly modifying then add the newest
-			// copy
-			t.calculateBoth(sx, sy, sz, ex, ey, ez, true);
-			open.remove(mod);
-			open.add(t);
+		} else {
+			open.put(t.getUID(), t);
 		}
 	}
 
 	private void addToClosedList(Tile t) {
-		for (Tile c : closed) {
-			if (c.equals(t)) {
-				return;
-			}
+		if (!closed.containsKey(t.getUID())) {
+			closed.put(t.getUID(), t);
 		}
-		closed.add(t);
 	}
 
 	private final int maxIterations;
+	private final String endUID;
 
 	public AStar(Location start, Location end, int maxIterations) throws InvalidPathException {
 
 		boolean s = true, e = true;
-		
+
 		if (!(s = this.isLocationWalkable(start)) || !(e = this.isLocationWalkable(end))) {
 			throw new InvalidPathException(s, e);
 		}
@@ -76,8 +64,12 @@ public class AStar {
 		short sh = 0;
 		Tile t = new Tile(sh, sh, sh, null);
 		t.calculateBoth(sx, sy, sz, ex, ey, ez, true);
-		this.open.add(t);
+		this.open.put(t.getUID(), t);
 		this.processAdjacentTiles(t);
+
+		StringBuilder b = new StringBuilder();
+		b.append(ex - sx).append(ey - sy).append(ez - sz);
+		this.endUID = b.toString();
 	}
 
 	public Location getEndLocation() {
@@ -125,10 +117,8 @@ public class AStar {
 			}
 
 			Collections.reverse(routeTrace);
-			
-			return new ArrayList<Tile>(routeTrace);
 
-			//return routeTrace;
+			return new ArrayList<Tile>(routeTrace);
 		}
 	}
 
@@ -138,17 +128,12 @@ public class AStar {
 			this.result = PathingResult.NO_PATH;
 			return false;
 		} else {
-			for (Tile c : closed) {
-				if (((c.getX() + sx) == ex) && ((c.getY() + sy) == ey) && ((c.getZ() + sz) == ez)) {
-					// end tile is on closed list
-					this.result = PathingResult.SUCCESS;
-					return false;
-				}
+			if (closed.containsKey(this.endUID)) {
+				this.result = PathingResult.SUCCESS;
+				return false;
+			} else {
+				return true;
 			}
-
-			// tile is not on closed list and open list has items, keep
-			// searching...
-			return true;
 		}
 	}
 
@@ -157,7 +142,7 @@ public class AStar {
 		Tile drop = null;
 
 		// get lowest F cost square
-		for (Tile t : open) {
+		for (Tile t : open.values()) {
 			if (f == 0) {
 				t.calculateBoth(sx, sy, sz, ex, ey, ez, true);
 				f = t.getF();
@@ -173,20 +158,15 @@ public class AStar {
 		}
 
 		// drop from open list and add to closed
-		this.open.remove(drop);
 
+		this.open.remove(drop.getUID());
 		this.addToClosedList(drop);
 
 		return drop;
 	}
 
 	private boolean isOnClosedList(Tile t) {
-		for (Tile c : closed) {
-			if (c.equals(t)) {
-				return true;
-			}
-		}
-		return false;
+		return closed.containsKey(t.getUID());
 	}
 
 	// pass in the current tile as the parent
@@ -194,8 +174,6 @@ public class AStar {
 
 		// set of possible walk to locations adjacent to current tile
 		HashSet<Tile> possible = new HashSet<Tile>(26);
-
-		// System.out.println("Processing 3x3x3 grid.");
 
 		for (byte x = -1; x <= 1; x++) {
 			for (byte y = -1; y <= 1; y++) {
@@ -210,16 +188,12 @@ public class AStar {
 					if (this.isOnClosedList(t)) {
 						// ignore tile
 						continue;
-					} else {
-						// continue to further checks
 					}
 
 					// only process the tile if it can be walked on
 					if (this.isTileWalkable(t)) {
 						t.calculateBoth(sx, sy, sz, ex, ey, ez, true);
 						possible.add(t);
-					} else {
-						// tile is not walkable so ignore
 					}
 
 				}
@@ -235,15 +209,11 @@ public class AStar {
 			} else {
 				// is on open list, check if path to that square is better using
 				// G cost
-
 				if (t.getG() < openRef.getG()) {
-					// System.out.println("Tile on open list has worse G than current");
 					// if current path is better, change parent
 					openRef.setParent(current);
 					// force updates of F, G and H values.
 					openRef.calculateBoth(sx, sy, sz, ex, ey, ez, true);
-				} else {
-					// System.out.println("Tile on open list has better G than current, ignoring.");
 				}
 
 			}
@@ -252,12 +222,10 @@ public class AStar {
 	}
 
 	private Tile isOnOpenList(Tile t) {
-		for (Tile o : open) {
-			if (o.equals(t)) {
-				return o;
-			}
-		}
-		return null;
+		return (open.containsKey(t.getUID()) ? open.get(t.getUID()) : null);
+		/*
+		 * for (Tile o : open) { if (o.equals(t)) { return o; } } return null;
+		 */
 	}
 
 	private boolean isTileWalkable(Tile t) {
@@ -315,12 +283,12 @@ public class AStar {
 			}
 			return sb.toString();
 		}
-		
-		public boolean isStartNotSolid(){
+
+		public boolean isStartNotSolid() {
 			return (!s);
 		}
-		
-		public boolean isEndNotSolid(){
+
+		public boolean isEndNotSolid() {
 			return (!e);
 		}
 	}

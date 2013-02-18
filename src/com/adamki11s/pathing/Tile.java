@@ -15,18 +15,27 @@ public class Tile {
 
 	private Tile parent = null;
 
+	private final String uid;
+
 	public Tile(short x, short y, short z, Tile parent) {
 		this.x = x;
 		this.y = y;
 		this.z = z;
 		this.parent = parent;
+
+		StringBuilder b = new StringBuilder();
+		b.append(x);
+		b.append(y);
+		b.append(z);
+		uid = b.toString();
+
 	}
 
 	public void setParent(Tile parent) {
 		this.parent = parent;
 	}
-	
-	public Location getLocation(Location start){
+
+	public Location getLocation(Location start) {
 		return new Location(start.getWorld(), start.getBlockX() + x, start.getBlockY() + y, start.getBlockZ() + z);
 	}
 
@@ -37,25 +46,29 @@ public class Tile {
 	public short getX() {
 		return x;
 	}
-	
-	public int getX(Location i){
+
+	public int getX(Location i) {
 		return (i.getBlockX() + x);
 	}
 
 	public short getY() {
 		return y;
 	}
-	
-	public int getY(Location i){
+
+	public int getY(Location i) {
 		return (i.getBlockY() + y);
 	}
 
 	public short getZ() {
 		return z;
 	}
-	
-	public int getZ(Location i){
+
+	public int getZ(Location i) {
 		return (i.getBlockZ() + z);
+	}
+
+	public String getUID() {
+		return this.uid;
 	}
 
 	public boolean equals(Tile t) {
@@ -88,11 +101,11 @@ public class Tile {
 			while ((currentParent = currentTile.getParent()) != null) {
 
 				int dx = currentTile.getX() - currentParent.getX(), dy = currentTile.getY() - currentParent.getY(), dz = currentTile.getZ() - currentParent.getZ();
-				
+
 				dx = abs(dx);
 				dy = abs(dy);
 				dz = abs(dz);
-				
+
 				if (dx == 1 && dy == 1 && dz == 1) {
 					gCost += 1.7;
 				} else if (((dx == 1 || dz == 1) && dy == 1) || ((dx == 1 || dz == 1) && dy == 0)) {
@@ -104,11 +117,7 @@ public class Tile {
 				// move backwards a tile
 				currentTile = currentParent;
 			}
-
-			// System.out.println("Parents = " + parents);
-
 			this.g = gCost;
-
 		}
 
 	}
@@ -130,8 +139,8 @@ public class Tile {
 		double dx = sx - ex, dy = sy - ey, dz = sz - ez;
 		return Math.sqrt((dx * dx) + (dy * dy) + (dz * dz));
 	}
-	
-	private int abs(int i){
+
+	private int abs(int i) {
 		return (i < 0 ? -i : i);
 	}
 
