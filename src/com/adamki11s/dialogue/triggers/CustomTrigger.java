@@ -9,7 +9,6 @@ public class CustomTrigger extends Trigger {
 	public CustomTrigger(TriggerType type, File triggerScript) {
 		
 		super(type, triggerScript);
-		QuestX.logMSG("Custom type = " + type.toString() + ", file = " + triggerScript.getName());
 		// TODO Auto-generated constructor stub
 	}
 
