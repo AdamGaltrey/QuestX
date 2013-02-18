@@ -12,6 +12,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.adamki11s.ai.RandomMovement;
+import com.adamki11s.commands.help.HelpBook;
 import com.adamki11s.commands.help.HelpDispatcher;
 import com.adamki11s.display.FixedSpawnsDisplay;
 import com.adamki11s.display.Pages;
@@ -91,6 +92,7 @@ public class QuestXCommands implements CommandExecutor {
 
 				if (args.length >= 1 && (args[0].equalsIgnoreCase("help") || args[0].equalsIgnoreCase("?"))) {
 					HelpDispatcher.helpDispatcher(p, args);
+					HelpBook.giveHelpBook(p);
 					return true;
 				}
 
