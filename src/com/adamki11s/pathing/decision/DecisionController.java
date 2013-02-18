@@ -13,16 +13,16 @@ import com.adamki11s.questx.QuestX;
 
 public class DecisionController {
 
-	final NPCHandler handle;
+	private static NPCHandler handle;
 
-	public DecisionController(NPCHandler handle) {
-		this.handle = handle;
+	public DecisionController(NPCHandler h) {
+		handle = h;
 	}
 
 	// location cache, update every 30 seconds.
 	SoftReference<ArrayList<SmallLocation>> plCache = new SoftReference<ArrayList<SmallLocation>>(new ArrayList<SmallLocation>());
 
-	private Object lock = new Object();
+	private static Object lock = new Object();
 
 	public void run() {
 
@@ -94,12 +94,37 @@ public class DecisionController {
 		}
 	}
 
+	public static void forceUpdate(Location newL) {
+		
+		//only toggle states to true here, not false
+		
+		synchronized (lock) {
+
+			SmallLocation sl = new SmallLocation(newL);
+
+			for (SimpleNPC npc : handle.getNPCs()) {
+				if (npc.isNPCSpawned()) {
+					Location l = npc.getHumanNPC().getBukkitEntity().getLocation();
+
+					boolean inPathRange = sl.isLocationInPathingRange(l);
+
+					if (inPathRange && !npc.isAllowedToPathFind()) {
+						// flip the boolean flag to true
+						npc.invertPathingState();
+					}
+
+				}
+			}
+
+		}
+	}
+
 	public void serverNoPlayersAction() {
 		// caled if there are 0 players on the server.
-		synchronized(lock){
+		synchronized (lock) {
 			this.plCache.clear();
-			//stop all npc's from pathing and clear cache
-			for(SimpleNPC npc : handle.getNPCs()){
+			// stop all npc's from pathing and clear cache
+			for (SimpleNPC npc : handle.getNPCs()) {
 				npc.setPathingState(false);
 			}
 		}

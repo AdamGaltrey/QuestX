@@ -22,6 +22,7 @@ import com.adamki11s.events.MovementMonitor;
 import com.adamki11s.events.NPCDamageEvent;
 import com.adamki11s.events.NPCInteractEvent;
 import com.adamki11s.events.PlayerJoinLeaveEvents;
+import com.adamki11s.events.PlayerTeleportListener;
 import com.adamki11s.events.TagColourEvent;
 import com.adamki11s.io.GeneralConfigData;
 import com.adamki11s.io.InitialSetup;
@@ -54,6 +55,7 @@ public class QuestX extends JavaPlugin {
 	EntityDeathMonitor entityDeathMonitorEvent;
 	PlayerJoinLeaveEvents playerJLEvent;
 	TagColourEvent tagColourEvent;
+	PlayerTeleportListener teleEvent;
 
 	public static Plugin p;
 	public static String version;
@@ -196,6 +198,8 @@ public class QuestX extends JavaPlugin {
 		playerMoveEvent = new MovementMonitor(this, handle);
 		entityDeathMonitorEvent = new EntityDeathMonitor(this);
 		playerJLEvent = new PlayerJoinLeaveEvents(this);
+		teleEvent = new PlayerTeleportListener(this);
+		
 		if (tagAPIEnabled && GeneralConfigData.isTagAPISupported()) {
 			tagColourEvent = new TagColourEvent(this);
 		}

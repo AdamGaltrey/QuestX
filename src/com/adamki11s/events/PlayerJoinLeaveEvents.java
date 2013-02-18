@@ -8,6 +8,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.Plugin;
 
 import com.adamki11s.io.GeneralConfigData;
+import com.adamki11s.pathing.decision.DecisionController;
 import com.adamki11s.quests.QuestManager;
 import com.adamki11s.reputation.ReputationManager;
 import com.adamki11s.threads.AsyncThread;
