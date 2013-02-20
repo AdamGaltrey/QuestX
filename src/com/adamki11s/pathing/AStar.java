@@ -13,6 +13,7 @@ import java.util.LinkedList;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.material.Gate;
 
 public class AStar {
 
@@ -185,6 +186,15 @@ public class AStar {
 
 					Tile t = new Tile((short) (current.getX() + x), (short) (current.getY() + y), (short) (current.getZ() + z), current);
 
+					if (x != 0 && z != 0 && (y == 0 || y == 1)) {
+						// check to stop jumping through diagonal blocks
+						Tile xOff = new Tile((short) (current.getX() + x), (short) (current.getY() + y), (short) (current.getZ()), current), zOff = new Tile((short) (current.getX()),
+								(short) (current.getY() + y), (short) (current.getZ() + z), current);
+						if (!this.isTileWalkable(xOff) && !this.isTileWalkable(zOff)) {
+							continue;
+						}
+					}
+
 					if (this.isOnClosedList(t)) {
 						// ignore tile
 						continue;
@@ -234,13 +244,17 @@ public class AStar {
 		int i = b.getTypeId();
 
 		// lava, fire, wheat and ladders cannot be walked on, and of course air
-		if (i != 10 && i != 11 && i != 51 && i != 59 && i != 65 && i != 0 && !canBlockBeWalkedThrough(i)) {
+		// 85, 107 and 113 stops npcs climbing fences and fence gates
+		if (i != 10 && i != 11 && i != 51 && i != 59 && i != 65 && i != 0 && i != 85 && i != 107 && i != 113 && !canBlockBeWalkedThrough(i)) {
 			// make sure the blocks above are air
-			if (canBlockBeWalkedThrough(b.getRelative(0, 1, 0).getTypeId()) && b.getRelative(0, 2, 0).getTypeId() == 0) {
-				return true;
-			} else {
-				return false;
+			
+			if(b.getRelative(0, 1, 0).getTypeId() == 107){
+				//fench gate check, if closed continue
+				Gate g = new Gate(b.getRelative(0, 1, 0).getData());
+				return (g.isOpen() ? (b.getRelative(0, 2, 0).getTypeId() == 0) : false);
 			}
+			return (canBlockBeWalkedThrough(b.getRelative(0, 1, 0).getTypeId()) && b.getRelative(0, 2, 0).getTypeId() == 0);
+
 		} else {
 			return false;
 		}
