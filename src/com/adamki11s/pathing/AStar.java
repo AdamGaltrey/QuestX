@@ -4,16 +4,13 @@
 
 package com.adamki11s.pathing;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.material.Gate;
+import org.bukkit.material.Openable;
+
+import java.util.*;
 
 public class AStar {
 
@@ -245,15 +242,15 @@ public class AStar {
 
 		// lava, fire, wheat and ladders cannot be walked on, and of course air
 		// 85, 107 and 113 stops npcs climbing fences and fence gates
-		if (i != 10 && i != 11 && i != 51 && i != 59 && i != 65 && i != 0 && i != 85 && i != 107 && i != 113 && !canBlockBeWalkedThrough(i)) {
-			// make sure the blocks above are air
-			
+		if (i != 10 && i != 11 && i != 51 && i != 59 && i != 65 && i != 0 && i != 85 && i != 107 && i != 113 && !canBlockBeWalkedThrough(b)) {
+			// make sure the blocks above can be walked through
+
 			if(b.getRelative(0, 1, 0).getTypeId() == 107){
 				//fench gate check, if closed continue
 				Gate g = new Gate(b.getRelative(0, 1, 0).getData());
 				return (g.isOpen() ? (b.getRelative(0, 2, 0).getTypeId() == 0) : false);
 			}
-			return (canBlockBeWalkedThrough(b.getRelative(0, 1, 0).getTypeId()) && b.getRelative(0, 2, 0).getTypeId() == 0);
+			return (canBlockBeWalkedThrough(b.getRelative(0, 1, 0)) && canBlockBeWalkedThrough(b.getRelative(0, 2, 0)));
 
 		} else {
 			return false;
@@ -264,17 +261,60 @@ public class AStar {
 		Block b = l.getBlock();
 		int i = b.getTypeId();
 
-		if (i != 10 && i != 11 && i != 51 && i != 59 && i != 65 && i != 0 && !canBlockBeWalkedThrough(i)) {
-			// make sure the blocks above are air or can be walked through
-			return (canBlockBeWalkedThrough(b.getRelative(0, 1, 0).getTypeId()) && b.getRelative(0, 2, 0).getTypeId() == 0);
+		if (i != 10 && i != 11 && i != 51 && i != 59 && i != 65 && i != 0 && !canBlockBeWalkedThrough(b)) {
+			// make sure the blocks above can be walked through
+			return (canBlockBeWalkedThrough(b.getRelative(0, 1, 0)) && canBlockBeWalkedThrough(b.getRelative(0, 2, 0)));
 		} else {
 			return false;
 		}
 	}
 
-	private boolean canBlockBeWalkedThrough(int id) {
-		return (id == 0 || id == 6 || id == 50 || id == 63 || id == 30 || id == 31 || id == 32 || id == 37 || id == 38 || id == 39 || id == 40 || id == 55 || id == 66 || id == 75
-				|| id == 76 || id == 78);
+	private boolean canBlockBeWalkedThrough(Block block) {
+		switch (block.getType()) {
+			case AIR:
+			case SAPLING:
+			case POWERED_RAIL:
+			case DETECTOR_RAIL:
+			case LONG_GRASS:
+			case DEAD_BUSH:
+			case YELLOW_FLOWER:
+			case RED_ROSE:
+			case BROWN_MUSHROOM:
+			case RED_MUSHROOM:
+			case TORCH:
+			case REDSTONE_WIRE:
+			case CROPS:
+			case SIGN_POST:
+			case WALL_SIGN:
+			case RAILS:
+			case LEVER:
+			case STONE_PLATE:
+			case REDSTONE_TORCH_OFF:
+			case REDSTONE_TORCH_ON:
+			case STONE_BUTTON:
+			case WOOD_BUTTON:
+			case SUGAR_CANE_BLOCK:
+			case PUMPKIN_STEM:
+			case MELON_STEM:
+			case NETHER_WARTS:
+			case TRIPWIRE_HOOK:
+			case TRIPWIRE:
+			case VINE:
+			case CARROT:
+			case POTATO:
+			case PORTAL:
+			case ENDER_PORTAL:
+				return true;
+			case IRON_DOOR_BLOCK:
+			case WOODEN_DOOR:
+				if(block.getState().getData().getData() == 8) {
+					return canBlockBeWalkedThrough(block.getRelative(0, -1, 0));
+				}
+				return ((Openable) block.getState().getData()).isOpen();
+			case FENCE_GATE:
+				return ((Gate) block.getState().getData()).isOpen();
+		}
+		return false;
 	}
 
 	@SuppressWarnings("serial")
@@ -306,5 +346,4 @@ public class AStar {
 			return (!e);
 		}
 	}
-
 }
