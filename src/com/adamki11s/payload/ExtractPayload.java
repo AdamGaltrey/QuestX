@@ -3,17 +3,16 @@ package com.adamki11s.payload;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URI;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import com.adamki11s.io.FileLocator;
+import com.adamki11s.io.GeneralConfigData;
 import com.adamki11s.quests.setup.QuestUnpacker;
 import com.adamki11s.questx.QuestX;
 
@@ -27,98 +26,116 @@ public class ExtractPayload {
 			// invert boolean
 			startup ^= true;
 		} else {
-			// only check payload on server stars, not reloads.
+			// only check payload on server starts, not reloads.
 			return;
 		}
 
-		QuestX.logMSG("Checking payload state...");
+		
+
+		final String zipQ = FileLocator.quest_data_root + File.separator + "quest_payload.zip", zipNPC = FileLocator.npc_data_root + File.separator + "npc_payload.zip";
+		final File qFile = new File(zipQ), npcFile = new File(zipNPC);
 
 		final String fs = File.separator;
+
 		InputStream stream = ExtractPayload.class.getResourceAsStream("/res/npc_payload.zip");
 		OutputStream resStreamOut;
 		int readBytes;
 		byte[] buffer = new byte[4096];
 
-		if (stream == null) {
-			// breaks out of startup check if server reloads with a newer
-			// version
-			return;
-		}
+		if (GeneralConfigData.isExtractNPCPayload()) {
+			
+			QuestX.logMSG("Checking NPC payload state...");
 
-		try {
-			resStreamOut = new FileOutputStream(new File(FileLocator.npc_data_root + fs + "npc_payload.zip"));
-
-			while ((readBytes = stream.read(buffer)) > 0) {
-				resStreamOut.write(buffer, 0, readBytes);
+			if (stream == null) {
+				// breaks out of startup check if server reloads with a newer
+				// version
+				return;
 			}
-			resStreamOut.flush();
-			resStreamOut.close();
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+
+			try {
+				resStreamOut = new FileOutputStream(new File(FileLocator.npc_data_root + fs + "npc_payload.zip"));
+
+				while ((readBytes = stream.read(buffer)) > 0) {
+					resStreamOut.write(buffer, 0, readBytes);
+				}
+				resStreamOut.flush();
+				resStreamOut.close();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+
+			int npcMods = extractFolder(zipNPC, FileLocator.npc_data_root);
+
+			npcFile.delete();
+
+			if (npcMods != 0) {
+				QuestX.logMSG("NPC File modifications = " + npcMods);
+			} else {
+				QuestX.logMSG("NPC payload content is up to date.");
+			}
+
+		} else {
+			QuestX.logMSG("EXTRACT_NPC_PAYLOAD = false. Not checking.");
 		}
-
-		final String zipQ = FileLocator.quest_data_root + File.separator + "quest_payload.zip", zipNPC = FileLocator.npc_data_root + File.separator + "npc_payload.zip";
-		final File qFile = new File(zipQ), npcFile = new File(zipNPC);
-
-		int npcMods = extractFolder(zipNPC, FileLocator.npc_data_root);
-
-		npcFile.delete();
 
 		stream = ExtractPayload.class.getResourceAsStream("/res/quest_payload.zip");
 
 		if (stream == null) {
 			// breaks out of startup check if server reloads with a newer
 			// version
-			if (npcMods != 0) {
-				QuestX.logMSG("NPC File modifications = " + npcMods);
-			}
 			QuestX.logMSG("Payload is up to date.");
 			return;
 		}
 
-		try {
-			resStreamOut = new FileOutputStream(new File(FileLocator.quest_data_root + fs + "quest_payload.zip"));
-			while ((readBytes = stream.read(buffer)) > 0) {
-				resStreamOut.write(buffer, 0, readBytes);
-			}
-			resStreamOut.flush();
-			resStreamOut.close();
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		if (GeneralConfigData.isExtractQuestPayload()) {
+			
+			QuestX.logMSG("Checking Quest payload state...");
 
-		int questMods = extractFolder(zipQ, FileLocator.quest_data_root);
-
-		// delete original payload extract
-		qFile.delete();
-
-		// unpack quests
-		for (File f : new File(FileLocator.quest_data_root).listFiles()) {
-			if (f.getName().endsWith(".zip")) {
-				String qName = f.getName().substring(0, f.getName().lastIndexOf("."));
-
-				File questFileLocal = new File(FileLocator.quest_data_root + File.separator + qName);
-
-				if (questFileLocal.exists()) {
-					continue;
+			try {
+				resStreamOut = new FileOutputStream(new File(FileLocator.quest_data_root + fs + "quest_payload.zip"));
+				while ((readBytes = stream.read(buffer)) > 0) {
+					resStreamOut.write(buffer, 0, readBytes);
 				}
+				resStreamOut.flush();
+				resStreamOut.close();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 
-				QuestUnpacker upack = new QuestUnpacker(qName);
-				boolean suc = upack.unpackQuest();
-				if (!suc) {
-					QuestX.logError("Error unpacking quest " + qName);
+			int questMods = extractFolder(zipQ, FileLocator.quest_data_root);
+
+			// delete original payload extract
+			qFile.delete();
+
+			// unpack quests
+			for (File f : new File(FileLocator.quest_data_root).listFiles()) {
+				if (f.getName().endsWith(".zip")) {
+					String qName = f.getName().substring(0, f.getName().lastIndexOf("."));
+
+					File questFileLocal = new File(FileLocator.quest_data_root + File.separator + qName);
+
+					if (questFileLocal.exists()) {
+						continue;
+					}
+
+					QuestUnpacker upack = new QuestUnpacker(qName);
+					boolean suc = upack.unpackQuest();
+					if (!suc) {
+						QuestX.logError("Error unpacking quest " + qName);
+					}
 				}
 			}
-		}
+			
+			if (questMods != 0) {
+				QuestX.logMSG("Quest File modifications = " + questMods);
+			} else {
+				QuestX.logMSG("Quest payload content is up to date.");
+			}
 
-		if (questMods == 0 && npcMods == 0) {
-			// everything went fine
-			QuestX.logMSG("Payload is up to date.");
 		} else {
-			QuestX.logMSG("Payload updated. NPC File Modifications = " + npcMods + ", Quest file modifications = " + questMods);
-			QuestX.logMSG("Payload is up to date.");
+			QuestX.logMSG("EXTRACT_QUEST_PAYLOAD = false. Not checking.");
 		}
 
 	}
@@ -153,8 +170,8 @@ public class ExtractPayload {
 				if (needToMakePath) {
 					// switches boolean value (switch to false)
 					needToMakePath ^= true;
-					
-					//create need directory
+
+					// create need directory
 					new File(newPath).mkdirs();
 				}
 

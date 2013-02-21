@@ -52,6 +52,12 @@ public class InitialSetup {
 			conf.add("CHECK_UPDATES", true);
 			conf.add("AUTO_DOWNLOAD_UPDATES", false);
 			conf.add("NOTIFY_ADMIN", true);
+			conf.add("EXTRACT_NPC_PAYLOAD", true);
+			conf.addComment("Whether to extract the NPC's included with QuestX, note if you set this to false you will not have any NPCs but"
+					+ " the ones you create yourself, unless you extract the NPCs from the payload file yourself.");
+			conf.add("EXTRACT_QUEST_PAYLOAD", true);
+			conf.addComment("Whether to extract the Quests and related NPCs included with QuestX, note if you set this to false you will not have any Quests but"
+					+ " the ones you create yourself, unless you extract the Quests from the payload file yourself.");
 			conf.write();
 		}
 

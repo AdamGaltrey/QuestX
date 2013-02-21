@@ -111,10 +111,6 @@ public class QuestX extends JavaPlugin {
 		return (economy != null);
 	}
 
-	static void m() {
-
-	}
-
 	@Override
 	public void onEnable() {
 
