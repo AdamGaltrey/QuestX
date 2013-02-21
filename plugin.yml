@@ -1,9 +1,48 @@
 name: QuestX
 main: com.adamki11s.questx.QuestX
-version: 1.0.0
+version: 1.1.1
 author: Adamki11s
+website: http://www.adamki11s.com/
 commands:
   questx:
     aliases: q
     description: QuestX
     usage: /QuestX [args]
+permissions:
+  questx.*:
+    description: Gives access to all QuestX commands
+    children:
+      questx.update: true
+      questx.quests: true
+      questx.npcs: true
+      questx.fixedspawns: true
+      questx.hotspots: true
+  questx.update:
+    default: true
+    children:
+      questx.update.update: true
+  questx.quests:
+    default: true
+    children:
+      questx.quests.setup: true
+  questx.npcs:
+    default: true
+    children:
+      questx.npcs.list: true
+      questx.npcs.delete: true
+      questx.npcs.find: true
+      questx.npcs.tele: true
+  questx.fixedspawns:
+    default: true
+    children:
+      questx.fixedspawns.add: true
+      questx.fixedspawns.edit: true
+      questx.fixedspawns.delete: true
+      questx.fixedspawns.deleteall: true
+      questx.fixedspawns.list: true
+  questx.hotspots:
+    default: true
+    children:
+      questx.hotspots.add: true
+      questx.hotspots.delete: true
+      questx.hotspots.list: true
