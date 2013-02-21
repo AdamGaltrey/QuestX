@@ -27,11 +27,12 @@ import com.adamki11s.npcs.loading.FixedLoadingTable;
 import com.adamki11s.npcs.population.Hotspot;
 import com.adamki11s.npcs.population.HotspotManager;
 import com.adamki11s.npcs.tasks.TaskRegister;
-import com.adamki11s.quests.QuestLoader;
 import com.adamki11s.quests.QuestManager;
 import com.adamki11s.quests.setup.QuestSetup;
 import com.adamki11s.quests.setup.QuestUnpacker;
 import com.adamki11s.questx.QuestX;
+import com.adamki11s.reputation.Reputation;
+import com.adamki11s.reputation.ReputationManager;
 import com.adamki11s.updates.Updater;
 import com.adamki11s.updates.Updater.UpdateResult;
 import com.adamki11s.updates.Updater.UpdateType;
@@ -88,6 +89,20 @@ public class QuestXCommands implements CommandExecutor {
 				
 				/*
 				 * Debug commands (END)
+				 */
+				
+				/*
+				 * Reputation Commands (START)
+				 */
+				
+				if(args.length == 1 && (args[0].equalsIgnoreCase("rep") || args[0].equalsIgnoreCase("reputation") && args[1].equalsIgnoreCase("view")) ){
+					Reputation rep = ReputationManager.getPlayerReputation(p.getName());
+					QuestX.logChat(p, "Your have " + rep.getChatColour() + rep.getRep() + ChatColor.RESET + " reputation.");
+					return true;
+				}
+				
+				/*
+				 * Reputation Commands (END)
 				 */
 
 				if (args.length >= 1 && (args[0].equalsIgnoreCase("help") || args[0].equalsIgnoreCase("?"))) {

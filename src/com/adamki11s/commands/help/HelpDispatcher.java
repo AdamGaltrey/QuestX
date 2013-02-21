@@ -33,12 +33,15 @@ public class HelpDispatcher {
 		"/questx quest setup <name>",
 		"/questx quest next"},
 		miscCMDs = new String[]{"/questx force-update"},
+		repCMDs = new String[]{ChatColor.YELLOW + "/questx rep" + ChatColor.RESET + " or " + ChatColor.YELLOW + "/questx reputation can be used.",
+		"/questx rep view"},
 		pageList = new String[]{"[1/hotspots]"  +ChatColor.GREEN + " Hotspot Commands",
 		"[2/fixedspawns]"  +ChatColor.GREEN + " Fixed Spawn Commands",
 		"[3/tasks]"  +ChatColor.GREEN + " Task Commands",
 		"[4/npcs]"  +ChatColor.GREEN + " NPC Commands",
 		"[5/quests]"  +ChatColor.GREEN + " Quest Commands",
-		"[6/misc]"  +ChatColor.GREEN + " Miscellaneous Commands"};
+		"[6/misc]"  +ChatColor.GREEN + " Miscellaneous Commands",
+		"[7/rep]"  +ChatColor.GREEN + " Reputation Commands"};
 	
 	public static void helpDispatcher(Player p, String[] args){
 		//assuming arg[0] = help has been checked
@@ -83,6 +86,12 @@ public class HelpDispatcher {
 			}else if(args[1].equalsIgnoreCase("6") || args[1].equalsIgnoreCase("misc")){
 				QuestX.logChat(p, ChatColor.GREEN + "" +  ChatColor.ITALIC + "Miscellaneous Commands " + ChatColor.RESET + StaticStrings.separator.substring(23));
 				for(String s : miscCMDs){
+					QuestX.logChat(p, s);
+				}
+				return;
+			}else if(args[1].equalsIgnoreCase("7") || args[1].equalsIgnoreCase("rep")){
+				QuestX.logChat(p, ChatColor.GREEN + "" +  ChatColor.ITALIC + "Reputation Commands " + ChatColor.RESET + StaticStrings.separator.substring(23));
+				for(String s : repCMDs){
 					QuestX.logChat(p, s);
 				}
 				return;
