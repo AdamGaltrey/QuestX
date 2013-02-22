@@ -18,7 +18,7 @@ public class QuestManager {
 	public static void loadQuest(String name) {
 		QuestX.logDebug("Loading quest '" + name + "'");
 		QuestLoader ql;
-		
+
 		try {
 			ql = new QuestLoader(FileLocator.getQuestFile(name));
 			quests.add(ql);
@@ -27,7 +27,7 @@ public class QuestManager {
 		} catch (MissingQuestPropertyException e) {
 			e.printErrorReason();
 		}
-		
+
 	}
 
 	public static boolean isQuestLoaded(String name) {
@@ -38,12 +38,12 @@ public class QuestManager {
 		}
 		return false;
 	}
-	
-	public static void cancelCurrentQuest(String p){
+
+	public static void cancelCurrentQuest(String p) {
 		String qName = QuestManager.getCurrentQuestName(p);
 		QuestLoader ql = QuestManager.getQuestLoader(qName);
 		ql.cancel(p);
-		if(currentQuest.containsKey(p)){
+		if (currentQuest.containsKey(p)) {
 			currentQuest.remove(p);
 		}
 	}
@@ -62,15 +62,20 @@ public class QuestManager {
 		File cur = FileLocator.getCurrentQuestFile();
 		SyncConfiguration cfg = new SyncConfiguration(cur);
 		cfg.read();
-		if (cfg.doesKeyExist(pName)) {
-			String q = cfg.getString(pName);
+
+		String q = cfg.getString(pName, "");
+
+		if (doesQuestExist(q)) {
+
 			if (!isQuestLoaded(q)) {
 				loadQuest(q);
 			}
 			QuestLoader ql = getQuestLoader(q);
 			ql.loadAndCheckPlayerProgress(pName);
 			currentQuest.put(pName, q);
+
 		}
+
 	}
 
 	public static void unloadPlayerQuestData(String pName) {
