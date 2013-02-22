@@ -14,7 +14,6 @@ import org.bukkit.plugin.Plugin;
 import com.adamki11s.dialogue.Conversation;
 import com.adamki11s.npcs.NPCHandler;
 
-
 public class ConversationRegister implements Listener {
 
 	final NPCHandler handle;
@@ -26,11 +25,14 @@ public class ConversationRegister implements Listener {
 		this.handle = handle;
 	}
 
-	public static boolean isPlayerConsversing(String pName) {
+	public static boolean isPlayerConversing(String pName) {
 		for (Conversation c : playersConversing) {
 			if (c != null) {
-				if (c.getConvoData().getPlayer().getName().equalsIgnoreCase(pName)) {
-					return c.isConversing();
+				Player convoPlayer = c.getConvoData().getPlayer();
+				if (convoPlayer != null) {
+					if (convoPlayer.getName().equalsIgnoreCase(pName)) {
+						return c.isConversing();
+					}
 				}
 			}
 		}
@@ -40,12 +42,16 @@ public class ConversationRegister implements Listener {
 	public static boolean isPlayerWithinTalkingDistance(Player p) {
 		for (Conversation c : playersConversing) {
 			if (c != null) {
-				if (c.getConvoData().getPlayer().getName().equalsIgnoreCase(p.getName())) {
-					Location npcLoc = c.getConvoData().getSimpleNpc().getHumanNPC().getBukkitEntity().getLocation();
-					Location pl = p.getLocation();
-					c.getConvoData().getSimpleNpc().getHumanNPC().lookAtPoint(new Location(pl.getWorld(), pl.getX(), pl.getY() + 1, pl.getZ()));
-					return (Math.abs(npcLoc.distance(pl)) < 5);
+				Player convoPlayer = c.getConvoData().getPlayer();
+				if (convoPlayer != null) {
+					if (convoPlayer.getName().equalsIgnoreCase(p.getName())) {
+						Location npcLoc = c.getConvoData().getSimpleNpc().getHumanNPC().getBukkitEntity().getLocation();
+						Location pl = p.getLocation();
+						c.getConvoData().getSimpleNpc().getHumanNPC().lookAtPoint(new Location(pl.getWorld(), pl.getX(), pl.getY() + 1, pl.getZ()));
+						return (Math.abs(npcLoc.distance(pl)) < 5);
+					}
 				}
+
 			}
 		}
 		return false;

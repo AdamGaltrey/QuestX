@@ -22,7 +22,7 @@ public class MovementMonitor implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerMove(final PlayerMoveEvent evt) {
-		if (ConversationRegister.isPlayerConsversing(evt.getPlayer().getName())) {
+		if (ConversationRegister.isPlayerConversing(evt.getPlayer().getName())) {
 			if (!ConversationRegister.isPlayerWithinTalkingDistance(evt.getPlayer())) {
 				ConversationRegister.endPlayerNPCConversation(evt.getPlayer());
 			} 
