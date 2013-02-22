@@ -203,7 +203,7 @@ public class TaskManager {
 			}
 		}
 
-		if (this.getTaskLoader().isAwardingAddPerms()) {
+		if (this.getTaskLoader().isAwardingAddPerms() &&  QuestX.isPermissionsSupported()) {
 			for (String perm : this.getTaskLoader().getAddPerms()) {
 				QuestX.permission.playerAdd(p, perm);
 			}

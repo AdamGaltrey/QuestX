@@ -56,7 +56,7 @@ public class DeathAction {
 		if(awardRep != 0){
 			ReputationManager.updateReputation(p.getName(), awardRep);
 		}
-		if(awardGold > 0){
+		if(awardGold > 0  && QuestX.isEconomySupported()){
 			if (QuestX.economy.hasAccount(p.getName())) {
 				QuestX.economy.bankDeposit(p.getName(), awardGold);
 			} else {

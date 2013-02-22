@@ -327,7 +327,7 @@ public class QuestLoader {
 			// adjust rep
 		}
 
-		if (this.isAwardGold()) {
+		if (this.isAwardGold() && QuestX.isEconomySupported()) {
 			if (QuestX.economy.hasAccount(p.getName())) {
 				QuestX.economy.bankDeposit(p.getName(), this.getRewardGold());
 			} else {
@@ -335,13 +335,13 @@ public class QuestLoader {
 			}
 		}
 
-		if (this.isAwardingAddPerms()) {
+		if (this.isAwardingAddPerms() && QuestX.isPermissionsSupported()) {
 			for (String perm : this.getAddPerms()) {
 				QuestX.permission.playerAdd(p, perm);
 			}
 		}
 
-		if (this.isAwardingRemPerms()) {
+		if (this.isAwardingRemPerms() && QuestX.isPermissionsSupported()) {
 			for (String perm : this.getRemPerms()) {
 				if (QuestX.permission.has(p, perm)) {
 					QuestX.permission.playerRemove(p, perm);

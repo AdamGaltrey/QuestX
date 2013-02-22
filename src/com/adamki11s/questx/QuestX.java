@@ -93,6 +93,14 @@ public class QuestX extends JavaPlugin {
 
 	public static Permission permission = null;
 	public static Economy economy = null;
+	
+	public static boolean isEconomySupported(){
+		return (!(economy == null));
+	}
+	
+	public static boolean isPermissionsSupported(){
+		return (!(permission == null));
+	}
 
 	private boolean setupPermissions() {
 		RegisteredServiceProvider<Permission> permissionProvider = getServer().getServicesManager().getRegistration(net.milkbowl.vault.permission.Permission.class);
