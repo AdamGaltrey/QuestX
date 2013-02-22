@@ -12,7 +12,7 @@ public class DatabaseConfigData {
 		File dbconfig = FileLocator.getDatabaseConfig();
 		SyncConfiguration conf = new SyncConfiguration(dbconfig);
 		conf.read();
-		updateMinutes = conf.getInt("LOGGING_FREQUENCY_MINUTES");
+		updateMinutes = conf.getInt("LOGGING_FREQUENCY_MINUTES", 3);
 	}
 
 	public static int getUpdateMinutes(){

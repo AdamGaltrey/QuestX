@@ -83,14 +83,14 @@ public class CustomAction {
 			io.read();
 
 			if (io.doesKeyExist("DAMAGE_PLAYER")) {
-				Action a = new DamagePlayerAction(npcName, io.getString("DAMAGE_PLAYER"));
+				Action a = new DamagePlayerAction(npcName, io.getString("DAMAGE_PLAYER", "0"));
 				if (a.isActive()) {
 					actions.add(a);
 				}
 			}
 
 			if (io.doesKeyExist("INVOKE_QUEST")) {
-				Action a = new InvokeQuestAction(handle, io.getString("INVOKE_QUEST"));
+				Action a = new InvokeQuestAction(handle, io.getString("INVOKE_QUEST", ""));
 				if (a.isActive()) {
 					invokesTorQ = true;
 					isTask = false;
@@ -108,7 +108,7 @@ public class CustomAction {
 			}
 
 			if (io.doesKeyExist("LIGHTNING")) {
-				Action a = new LightningAction(npcName, io.getString("LIGHTNING"));
+				Action a = new LightningAction(npcName, io.getString("LIGHTNING", "0#0#0#false"));
 				if (a.isActive()) {
 					actions.add(a);
 				}
@@ -117,11 +117,11 @@ public class CustomAction {
 			if (io.doesKeyExist("SPAWN_MOBS") && io.doesKeyExist("SPAWN_MOB_RANGE") && io.doesKeyExist("SPAWN_COOLDOWN_MINUTES") && io.doesKeyExist("DESPAWN_MOB_SECONDS")
 					&& io.doesKeyExist("MOBS_TARGET_PLAYER")) {
 				String[] data = new String[5];
-				data[0] = io.getString("SPAWN_MOBS");
-				data[1] = io.getString("SPAWN_MOB_RANGE");
-				data[2] = io.getString("SPAWN_COOLDOWN_MINUTES");
-				data[3] = io.getString("DESPAWN_MOB_SECONDS");
-				data[4] = io.getString("MOBS_TARGET_PLAYER");
+				data[0] = io.getString("SPAWN_MOBS", "0");
+				data[1] = io.getString("SPAWN_MOB_RANGE", "0");
+				data[2] = io.getString("SPAWN_COOLDOWN_MINUTES", "0");
+				data[3] = io.getString("DESPAWN_MOB_SECONDS", "0");
+				data[4] = io.getString("MOBS_TARGET_PLAYER", "false");
 
 				Action a = new MobSpawnAction(npcName, data);
 				if (a.isActive()) {
@@ -130,28 +130,28 @@ public class CustomAction {
 			}
 
 			if (io.doesKeyExist("ATTACK_PLAYER")) {
-				Action a = new NPCAttackPlayerAction(handle, npcName, io.getString("ATTACK_PLAYER"));
+				Action a = new NPCAttackPlayerAction(handle, npcName, io.getString("ATTACK_PLAYER", "false"));
 				if (a.isActive()) {
 					actions.add(a);
 				}
 			}
 
 			if (io.doesKeyExist("PLAYER_GIVE_ITEMS") && io.doesKeyExist("GIVE_ITEMS_COOLDOWN_MINUTES")) {
-				Action a = new PlayerGiveItemsAction(npcName, io.getString("PLAYER_GIVE_ITEMS"), io.getInt("GIVE_ITEMS_COOLDOWN_MINUTES"));
+				Action a = new PlayerGiveItemsAction(npcName, io.getString("PLAYER_GIVE_ITEMS", "0"), io.getInt("GIVE_ITEMS_COOLDOWN_MINUTES", 0));
 				if (a.isActive()) {
 					actions.add(a);
 				}
 			}
 
 			if (io.doesKeyExist("POTION_EFFECT")) {
-				Action a = new PotionEffectAction(npcName, io.getString("POTION_EFFECT"));
+				Action a = new PotionEffectAction(npcName, io.getString("POTION_EFFECT", "0"));
 				if (a.isActive()) {
 					actions.add(a);
 				}
 			}
 
 			if (io.doesKeyExist("TELEPORT_PLAYER")) {
-				Action a = new TeleportAction(npcName, io.getString("TELEPORT_PLAYER"));
+				Action a = new TeleportAction(npcName, io.getString("TELEPORT_PLAYER", "0"));
 				if (a.isActive()) {
 					actions.add(a);
 				}
@@ -160,7 +160,7 @@ public class CustomAction {
 			// PLAY_RECORD:<record block id>,<range>
 
 			if (io.doesKeyExist("PLAY_RECORD")) {
-				Action a = new PlayRecordAction(npcName, io.getString("PLAY_RECORD"));
+				Action a = new PlayRecordAction(npcName, io.getString("PLAY_RECORD", "0"));
 				if (a.isActive()) {
 					actions.add(a);
 				}
@@ -171,13 +171,13 @@ public class CustomAction {
 
 			if (io.doesKeyExist("EXECUTE_PLAYER_CMD")) {
 				// active always return true for cmds
-				Action a = new ExecuteCMDAction(io.getString("EXECUTE_PLAYER_CMD"), true);
+				Action a = new ExecuteCMDAction(io.getString("EXECUTE_PLAYER_CMD", "0"), true);
 				actions.add(a);
 			}
 			
 			if (io.doesKeyExist("EXECUTE_SERVER_CMD")) {
 				// active always return true for cmds
-				Action a = new ExecuteCMDAction(io.getString("EXECUTE_SERVER_CMD"), false);
+				Action a = new ExecuteCMDAction(io.getString("EXECUTE_SERVER_CMD", "0"), false);
 				actions.add(a);
 			}
 

@@ -15,7 +15,7 @@ public class WorldConfigData {
 		SyncConfiguration conf = new SyncConfiguration(f);
 		conf.read();
 
-		String raw = conf.getString("SPAWNABLE_WORLDS");
+		String raw = conf.getString("SPAWNABLE_WORLDS", "world");
 		StringBuilder trimmed = new StringBuilder();
 		for (String s : raw.split(",")) {
 			trimmed.append(s.trim()).append(",");
@@ -25,9 +25,9 @@ public class WorldConfigData {
 			QuestX.logDebug("World = '" + s + "'");
 		}
 
-		maxSpawnsPerChunk = conf.getInt("MAX_SPAWNS_PER_CHUNK");
-		maxSpawnsPerWorld = conf.getInt("MAX_SPAWNS_PER_WORLD");
-		untouchedDespawnMinutes = conf.getInt("DESPAWN_IFUNTOUCHED_MINUTES");
+		maxSpawnsPerChunk = conf.getInt("MAX_SPAWNS_PER_CHUNK", 2);
+		maxSpawnsPerWorld = conf.getInt("MAX_SPAWNS_PER_WORLD", 200);
+		untouchedDespawnMinutes = conf.getInt("DESPAWN_IFUNTOUCHED_MINUTES", 45);
 
 		if (!conf.doesKeyExist("NPC_ACTIVITY_RANGE")) {
 			conf.add("NPC_ACTIVITY_RANGE", 80);
@@ -37,7 +37,7 @@ public class WorldConfigData {
 			conf.MergeRWArrays();
 			conf.write();
 		} else {
-			npcActvityRange = conf.getInt("NPC_ACTIVITY_RANGE");
+			npcActvityRange = conf.getInt("NPC_ACTIVITY_RANGE", 80);
 		}
 
 		QuestX.logDebug("Max spawns per world = " + maxSpawnsPerWorld);

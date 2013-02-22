@@ -12,8 +12,6 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import com.adamki11s.display.FixedSpawnsDisplay;
-import com.adamki11s.exceptions.MissingDeathTriggerPropertyException;
-import com.adamki11s.exceptions.MissingPropertyException;
 import com.adamki11s.io.FileLocator;
 import com.adamki11s.npcs.NPCHandler;
 import com.adamki11s.npcs.SimpleNPC;
@@ -53,16 +51,11 @@ public class FixedLoadingTable {
 				SyncLocation sl = (SyncLocation) wrapper.getObject();
 				Location spawnLocation = sl.getBukkitLocation();
 				LoadNPCTemplate tempLoader = new LoadNPCTemplate(npcName);
-				try {
-					tempLoader.loadProperties();
-					NPCTemplate template = tempLoader.getLoadedNPCTemplate();
-					template.registerSimpleNPCFixedSpawn(handle, spawnLocation);
-					fixedSpawns.put(npcName, spawnLocation);
-				} catch (MissingPropertyException e) {
-					e.printErrorReason();
-				} catch (MissingDeathTriggerPropertyException e) {
-					e.printErrorReason();
-				}
+
+				tempLoader.loadProperties();
+				NPCTemplate template = tempLoader.getLoadedNPCTemplate();
+				template.registerSimpleNPCFixedSpawn(handle, spawnLocation);
+				fixedSpawns.put(npcName, spawnLocation);
 
 			} else {
 				QuestX.logError("Tried to load NPC '" + npcName + "' but no NPC file was found.");
@@ -76,15 +69,10 @@ public class FixedLoadingTable {
 		SyncLocation sl = (SyncLocation) loader.getObject(name);
 		Location spawnLocation = sl.getBukkitLocation();
 		LoadNPCTemplate tempLoader = new LoadNPCTemplate(name);
-		try {
-			tempLoader.loadProperties();
-			NPCTemplate template = tempLoader.getLoadedNPCTemplate();
-			template.registerSimpleNPCFixedSpawn(handle, spawnLocation);
-		} catch (MissingPropertyException e) {
-			e.printErrorReason();
-		} catch (MissingDeathTriggerPropertyException e) {
-			e.printErrorReason();
-		}
+
+		tempLoader.loadProperties();
+		NPCTemplate template = tempLoader.getLoadedNPCTemplate();
+		template.registerSimpleNPCFixedSpawn(handle, spawnLocation);
 
 	}
 
@@ -148,16 +136,11 @@ public class FixedLoadingTable {
 				loader.write();
 				loader.clearReadArray();
 				loader.clearWriteArray();
-				
+
 				LoadNPCTemplate tmp = new LoadNPCTemplate(npcName);
-				try {
-					tmp.loadProperties();
-					tmp.getLoadedNPCTemplate().registerSimpleNPCFixedSpawn(handle, p.getLocation());
-				} catch (MissingPropertyException e) {
-					e.printErrorReason();
-				} catch (MissingDeathTriggerPropertyException e) {
-					e.printErrorReason();
-				}
+
+				tmp.loadProperties();
+				tmp.getLoadedNPCTemplate().registerSimpleNPCFixedSpawn(handle, p.getLocation());
 
 				if (p != null) {
 					QuestX.logChat(p, "The fixed spawn for NPC '" + npcName + "' was changed to your current location.");
@@ -228,14 +211,9 @@ public class FixedLoadingTable {
 			}
 
 			LoadNPCTemplate tmp = new LoadNPCTemplate(npcName);
-			try {
-				tmp.loadProperties();
-				tmp.getLoadedNPCTemplate().registerSimpleNPCFixedSpawn(handle, l);
-			} catch (MissingPropertyException e) {
-				e.printErrorReason();
-			} catch (MissingDeathTriggerPropertyException e) {
-				e.printErrorReason();
-			}
+
+			tmp.loadProperties();
+			tmp.getLoadedNPCTemplate().registerSimpleNPCFixedSpawn(handle, l);
 
 			loader.read();
 			for (SyncWrapper wrap : loader.getReadableData()) {

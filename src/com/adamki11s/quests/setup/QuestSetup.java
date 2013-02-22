@@ -89,7 +89,7 @@ public class QuestSetup {
 		File setupFile = new File(FileLocator.quest_data_root + File.separator + name + File.separator + "setup.qxs");
 		SyncConfiguration cfg = new SyncConfiguration(setupFile);
 		cfg.read();
-		String setupName = cfg.getString("Name");
+		String setupName = cfg.getString("Name", name);
 		if (!setupName.equalsIgnoreCase(this.name)) {
 			this.setup = false;
 			this.failSetupReason = "Quest setup file name does not match the quest name. Expected '" + name + "', got '" + setupName + "'";
@@ -102,7 +102,7 @@ public class QuestSetup {
 			this.nodes = i;
 
 			for (int c = 1; c <= this.nodes; c++) {
-				String raw = cfg.getString(c + "");
+				String raw = cfg.getString(c + "", "");
 				String[] splits = raw.split("#");
 				String npcName = splits[0];
 				String desc = splits[1];

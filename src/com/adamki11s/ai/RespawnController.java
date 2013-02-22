@@ -6,12 +6,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.World;
 
-import com.adamki11s.exceptions.MissingDeathTriggerPropertyException;
-import com.adamki11s.exceptions.MissingPropertyException;
 import com.adamki11s.io.FileLocator;
 import com.adamki11s.npcs.NPCHandler;
 import com.adamki11s.npcs.SimpleNPC;
@@ -58,10 +54,10 @@ public class RespawnController {
 			if (!areAllLoaded) {
 
 				String npcNameToLoad;
-				
+
 				List<File> fList = new ArrayList<File>(Arrays.asList(new File(FileLocator.npc_data_root).listFiles()));
-		        Collections.shuffle(fList);
-				
+				Collections.shuffle(fList);
+
 				for (File f : fList) {
 					boolean loaded = false;
 					for (String pre : preloaded) {
@@ -73,24 +69,17 @@ public class RespawnController {
 						QuestX.logDebug("Trying to load '" + f.getName());
 						npcNameToLoad = f.getName();
 						LoadNPCTemplate tempLoader = new LoadNPCTemplate(npcNameToLoad);
-						try {
-							tempLoader.loadProperties();
-							if (tempLoader.wantsToLoad()) {
-								NPCTemplate temp = tempLoader.getLoadedNPCTemplate();
-								temp.addSimpleNPCToWaitingList(this.handle);
-								QuestX.logDebug("Added NPC '" + npcNameToLoad + "' to waiting list");
-								break;
-							} else {
-								QuestX.logDebug("NPC '" + npcNameToLoad + "' load=false, finding another");
-								loaded = true;
-							}
-						} catch (MissingPropertyException e) {
-							e.printErrorReason();
+						tempLoader.loadProperties();
+						if (tempLoader.wantsToLoad()) {
+							NPCTemplate temp = tempLoader.getLoadedNPCTemplate();
+							temp.addSimpleNPCToWaitingList(this.handle);
+							QuestX.logDebug("Added NPC '" + npcNameToLoad + "' to waiting list");
+							break;
+						} else {
+							QuestX.logDebug("NPC '" + npcNameToLoad + "' load=false, finding another");
+							loaded = true;
 						}
-						// load into waiting list
-						catch (MissingDeathTriggerPropertyException e) {
-							e.printErrorReason();
-						}
+
 					}
 				}
 

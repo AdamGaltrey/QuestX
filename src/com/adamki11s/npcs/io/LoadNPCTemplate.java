@@ -2,12 +2,10 @@ package com.adamki11s.npcs.io;
 
 import java.io.File;
 
-import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
 
 import com.adamki11s.data.ItemStackDrop;
 import com.adamki11s.data.ItemStackProbability;
-import com.adamki11s.exceptions.MissingPropertyException;
 import com.adamki11s.io.FileLocator;
 import com.adamki11s.io.NPCTag;
 import com.adamki11s.questx.QuestX;
@@ -42,7 +40,7 @@ public class LoadNPCTemplate {
 		if (prop.exists()) {
 			SyncConfiguration conf = new SyncConfiguration(prop);
 			conf.read();
-			return conf.getBoolean(NPCTag.LOAD.toString());
+			return conf.getBoolean(NPCTag.LOAD.toString(), true);
 		}
 		return false;
 	}
@@ -51,7 +49,7 @@ public class LoadNPCTemplate {
 		return this.npcTemplate;
 	}
 
-	public void loadProperties() throws MissingPropertyException {
+	public void loadProperties() {
 		File prop = FileLocator.getNPCPropertiesFile(name);
 		// File prop = new File(folder + File.separator +
 		// FileLocator.propertyFile);
@@ -59,71 +57,27 @@ public class LoadNPCTemplate {
 			SyncConfiguration conf = new SyncConfiguration(prop);
 			conf.read();
 
-			if (conf.doesKeyExist(NPCTag.MOVEABLE.toString())) {
-				this.moveable = conf.getBoolean(NPCTag.MOVEABLE.toString());
-			} else {
-				throw new MissingPropertyException(name, NPCTag.MOVEABLE.toString());
-			}
+				this.moveable = conf.getBoolean(NPCTag.MOVEABLE.toString(), true);
 
-			if (conf.doesKeyExist(NPCTag.ATTACKABLE.toString())) {
-				this.attackable = conf.getBoolean(NPCTag.ATTACKABLE.toString());
-			} else {
-				throw new MissingPropertyException(name, NPCTag.ATTACKABLE.toString());
-			}
+				this.attackable = conf.getBoolean(NPCTag.ATTACKABLE.toString(), true);
 
-			if (conf.doesKeyExist(NPCTag.MIN_PAUSE_TICKS.toString())) {
-				this.minPauseTicks = conf.getInt(NPCTag.MIN_PAUSE_TICKS.toString());
-			} else {
-				throw new MissingPropertyException(name, NPCTag.MIN_PAUSE_TICKS.toString());
-			}
+				this.minPauseTicks = conf.getInt(NPCTag.MIN_PAUSE_TICKS.toString(), 200);
 
-			if (conf.doesKeyExist(NPCTag.MAX_PAUSE_TICKS.toString())) {
-				this.maxPauseTicks = conf.getInt(NPCTag.MAX_PAUSE_TICKS.toString());
-			} else {
-				throw new MissingPropertyException(name, NPCTag.MAX_PAUSE_TICKS.toString());
-			}
+				this.maxPauseTicks = conf.getInt(NPCTag.MAX_PAUSE_TICKS.toString(), 600);
 
-			if (conf.doesKeyExist(NPCTag.MAX_VARIATION.toString())) {
-				this.maxVariation = conf.getInt(NPCTag.MAX_VARIATION.toString());
-			} else {
-				throw new MissingPropertyException(name, NPCTag.MAX_VARIATION.toString());
-			}
+				this.maxVariation = conf.getInt(NPCTag.MAX_VARIATION.toString(), 10);
 
-			if (conf.doesKeyExist(NPCTag.RESPAWN_TICKS.toString())) {
-				this.respawnTicks = conf.getInt(NPCTag.RESPAWN_TICKS.toString());
-			} else {
-				throw new MissingPropertyException(name, NPCTag.RESPAWN_TICKS.toString());
-			}
+				this.respawnTicks = conf.getInt(NPCTag.RESPAWN_TICKS.toString(), 1200);
 
-			if (conf.doesKeyExist(NPCTag.MAX_HEALTH.toString())) {
-				this.maxHealth = conf.getInt(NPCTag.MAX_HEALTH.toString());
-			} else {
-				throw new MissingPropertyException(name, NPCTag.MAX_HEALTH.toString());
-			}
+				this.maxHealth = conf.getInt(NPCTag.MAX_HEALTH.toString(), 20);
 
-			if (conf.doesKeyExist(NPCTag.DAMAGE_MODIFIER.toString())) {
-				this.damageMod = conf.getInt(NPCTag.DAMAGE_MODIFIER.toString());
-			} else {
-				throw new MissingPropertyException(name, NPCTag.DAMAGE_MODIFIER.toString());
-			}
+				this.damageMod = conf.getInt(NPCTag.DAMAGE_MODIFIER.toString(), 1);
 
-			if (conf.doesKeyExist(NPCTag.RETALLIATION_MULTIPLIER.toString())) {
-				this.retalliationMultiplier = conf.getDouble(NPCTag.RETALLIATION_MULTIPLIER.toString());
-			} else {
-				throw new MissingPropertyException(name, NPCTag.RETALLIATION_MULTIPLIER.toString());
-			}
+				this.retalliationMultiplier = conf.getDouble(NPCTag.RETALLIATION_MULTIPLIER.toString(), 1.0);
 
-			if (conf.doesKeyExist(NPCTag.INVENTORY_DROPS.toString())) {
-				this.inventDrops = conf.getString(NPCTag.INVENTORY_DROPS.toString());// id,data,quantity,chance#
-			} else {
-				throw new MissingPropertyException(name, NPCTag.INVENTORY_DROPS.toString());
-			}
+				this.inventDrops = conf.getString(NPCTag.INVENTORY_DROPS.toString(), "0");// id,data,quantity,chance#
 
-			if (conf.doesKeyExist(NPCTag.GEAR.toString())) {
-				this.gear = conf.getString(NPCTag.GEAR.toString());// boots,legs,chest,helm,arm
-			} else {
-				throw new MissingPropertyException(name, NPCTag.GEAR.toString());
-			}
+				this.gear = conf.getString(NPCTag.GEAR.toString(), "0");// boots,legs,chest,helm,arm
 
 			if (!this.inventDrops.equalsIgnoreCase("0")) {
 				String[] inventDropsToParse = this.inventDrops.split("#");

@@ -5,9 +5,6 @@ import java.io.File;
 import com.adamki11s.dialogue.DLGParser;
 import com.adamki11s.exceptions.InvalidDialogueException;
 import com.adamki11s.exceptions.InvalidQuestException;
-import com.adamki11s.exceptions.MissingPropertyException;
-import com.adamki11s.exceptions.MissingQuestPropertyException;
-import com.adamki11s.exceptions.MissingTaskPropertyException;
 import com.adamki11s.io.FileLocator;
 import com.adamki11s.npcs.io.LoadNPCTemplate;
 import com.adamki11s.npcs.tasks.TaskLoader;
@@ -33,31 +30,26 @@ public class Validator {
 					QuestX.logError("task.qxs file is missing for NPC '" + f.getName() + "'");
 					continue;
 				}
+
 				try {
 					validateDialogue(f.getName());
-					validateProperties(f.getName());
-					validateTaskFile(f.getName());
 				} catch (InvalidDialogueException e) {
 					e.printErrorReason();
-				} catch (MissingPropertyException e) {
-					e.printErrorReason();
-				} catch (MissingTaskPropertyException e) {
-					e.printErrorReason();
 				}
+				validateProperties(f.getName());
+				validateTaskFile(f.getName());
 
 			}
 		}
-		
-		//validate quests
+
+		// validate quests
 		for (File f : new File(FileLocator.quest_data_root).listFiles()) {
-			if(f.isDirectory()){
+			if (f.isDirectory()) {
 				File qFile = FileLocator.getQuestFile(f.getName());
-				if(qFile.exists()){
+				if (qFile.exists()) {
 					try {
 						validateQuestFile(f.getName());
 					} catch (InvalidQuestException e) {
-						e.printErrorReason();
-					} catch (MissingQuestPropertyException e) {
 						e.printErrorReason();
 					}
 				} else {
@@ -72,19 +64,19 @@ public class Validator {
 		DLGParser.validateParse(FileLocator.getNPCDlgFile(npc), npc);
 	}
 
-	static void validateProperties(String npc) throws MissingPropertyException {
+	static void validateProperties(String npc){
 		LoadNPCTemplate lt = new LoadNPCTemplate(npc);
 		lt.loadProperties();
 		lt = null;
 	}
 
-	static void validateTaskFile(String npc) throws MissingTaskPropertyException {
+	static void validateTaskFile(String npc) {
 		TaskLoader tl = new TaskLoader(FileLocator.getNPCTaskFile(npc), npc);
 		tl.load();
 		tl = null;
 	}
 
-	static void validateQuestFile(String quest) throws InvalidQuestException, MissingQuestPropertyException {
+	static void validateQuestFile(String quest) throws InvalidQuestException {
 		new QuestLoader(FileLocator.getQuestFile(quest));
 	}
 

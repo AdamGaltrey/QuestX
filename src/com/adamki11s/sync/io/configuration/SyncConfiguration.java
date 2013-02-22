@@ -44,11 +44,17 @@ public class SyncConfiguration extends IOStream {
 		this.writeableData.clear();
 		this.readableData.clear();
 	}
-	
-	public void MergeRWArrays(){
-		for(Entry<String, Object> e : readableData.entrySet()){
+
+	public void MergeRWArrays() {
+		for (Entry<String, Object> e : readableData.entrySet()) {
 			this.writeableData.put(e.getKey(), e.getValue());
 		}
+	}
+
+	private void writeProperty(String key, Object data) {
+		this.writeableData.put(key, data);
+		this.MergeRWArrays();
+		this.write();
 	}
 
 	/**
@@ -157,30 +163,52 @@ public class SyncConfiguration extends IOStream {
 		return this.readableData.get(key.toUpperCase());
 	}
 
-	public String getString(String key) {
+	public String getString(String key, String def) {
 		if (this.doesKeyExist(key)) {
 			return getObject(key).toString();
 		} else {
-			return null;
+			this.writeProperty(key, def);
+			return def;
 		}
 	}
 
-	public int getInt(String key) throws NumberFormatException{
-		int i = 0;
-		try{
-			i = Integer.parseInt(getString(key));
-		} catch (NumberFormatException e){
-			throw e;
+	public int getInt(String key, int def) throws NumberFormatException {
+		if (this.doesKeyExist(key)) {
+			int i = 0;
+			try {
+				i = Integer.parseInt(getString(key, Integer.toString(def)));
+			} catch (NumberFormatException e) {
+				throw e;
+			}
+			return i;
+		} else {
+			this.writeProperty(key, def);
+			return def;
 		}
-		return i;
 	}
 
-	public double getDouble(String key) {
-		return Double.parseDouble(getString(key));
+	public double getDouble(String key, double def) {
+		if (this.doesKeyExist(key)) {
+			double d = 0;
+			try {
+				d = Double.parseDouble(getString(key, Double.toString(def)));
+			} catch (NumberFormatException e) {
+				throw e;
+			}
+			return d;
+		} else {
+			this.writeProperty(key, def);
+			return def;
+		}
 	}
 
-	public boolean getBoolean(String key) {
-		return Boolean.parseBoolean(getString(key));
+	public boolean getBoolean(String key, boolean def) {
+		if (this.doesKeyExist(key)) {
+			return Boolean.parseBoolean(getString(key, Boolean.toString(def)));
+		} else {
+			this.writeProperty(key, def);
+			return def;
+		}
 	}
 
 }

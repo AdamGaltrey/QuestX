@@ -2,7 +2,6 @@ package com.adamki11s.quests;
 
 import java.io.File;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Map.Entry;
 
 import org.bukkit.Location;
@@ -14,7 +13,6 @@ import com.adamki11s.commands.QuestXCMDExecutor;
 import com.adamki11s.exceptions.InvalidISAException;
 import com.adamki11s.exceptions.InvalidKillTrackerException;
 import com.adamki11s.exceptions.InvalidQuestException;
-import com.adamki11s.exceptions.MissingQuestPropertyException;
 import com.adamki11s.io.FileLocator;
 import com.adamki11s.npcs.tasks.EntityKillTracker;
 import com.adamki11s.npcs.tasks.Fireworks;
@@ -46,19 +44,15 @@ public class QuestLoader {
 	NPCKillTracker nkt;
 	boolean apAdd, apRem, execPlayerCommand, execServerCommand, fireWorks;
 
-	public QuestLoader(File f) throws InvalidQuestException, MissingQuestPropertyException {
+	public QuestLoader(File f) throws InvalidQuestException {
 		this.config = new SyncConfiguration(f);
 		this.load();
 	}
 
-	void load() throws InvalidQuestException, MissingQuestPropertyException {
+	void load() throws InvalidQuestException{
 		this.config.read();
 
-		if (this.config.doesKeyExist("NAME")) {
-			this.questName = config.getString("NAME");
-		} else {
-			throw new MissingQuestPropertyException(questName, "NAME");
-		}
+		this.questName = config.getString("NAME", "QuestName");
 
 		int i = 0;
 
@@ -68,123 +62,85 @@ public class QuestLoader {
 
 		this.nodes = i;
 
-		if (config.doesKeyExist("REWARD_ITEMS")) {
-			if (!this.config.getString("REWARD_ITEMS").equalsIgnoreCase("0")) {
-				try {
-					this.rewardItems = ISAParser.parseISA(this.config.getString("REWARD_ITEMS"), this.questName, true);
-				} catch (InvalidISAException e) {
-					this.rewardItems = null;
-					e.printErrorReason();
-				}
-			} else {
+		String rew = config.getString("REWARD_ITEMS", "0");
+
+		if (!rew.equalsIgnoreCase("0")) {
+			try {
+				this.rewardItems = ISAParser.parseISA(rew, this.questName, true);
+			} catch (InvalidISAException e) {
 				this.rewardItems = null;
+				e.printErrorReason();
 			}
 		} else {
-			throw new MissingQuestPropertyException(questName, "REWARD_ITEMS");
+			this.rewardItems = null;
 		}
 
-		if (config.doesKeyExist("REWARD_EXP")) {
-			this.rewardExp = config.getInt("REWARD_EXP");
+		this.rewardExp = config.getInt("REWARD_EXP", 0);
+
+		this.rewardRep = config.getInt("REWARD_REP", 0);
+
+		this.startText = this.config.getString("START_TEXT", "Quest Started.");
+
+		this.endText = this.config.getString("END_TEXT", "Quest Completed.");
+
+		this.rewardGold = config.getInt("REWARD_GOLD", 0);
+
+		String rewPermsAdd = config.getString("REWARD_PERMISSIONS_ADD", "0");
+		if (!rewPermsAdd.equalsIgnoreCase("0")) {
+			this.addPerms = rewPermsAdd.split(",");
+			this.apAdd = true;
 		} else {
-			throw new MissingQuestPropertyException(questName, "REWARD_EXP");
+			this.apAdd = false;
 		}
 
-		if (config.doesKeyExist("REWARD_REP")) {
-			this.rewardRep = config.getInt("REWARD_REP");
+		String rewPermsRem = config.getString("REWARD_PERMISSIONS_REMOVE", "0");
+		if (!rewPermsRem.equalsIgnoreCase("0")) {
+			this.remPerms = rewPermsRem.split(",");
+			this.apRem = true;
 		} else {
-			throw new MissingQuestPropertyException(questName, "REWARD_REP");
+			this.apRem = false;
 		}
 
-		if (config.doesKeyExist("START_TEXT")) {
-			this.startText = this.config.getString("START_TEXT");
+		String execPCMD = config.getString("EXECUTE_PLAYER_CMD", "0");
+		if (!execPCMD.equalsIgnoreCase("0")) {
+			this.playerCmds = execPCMD.split(",");
+			this.execPlayerCommand = true;
 		} else {
-			throw new MissingQuestPropertyException(questName, "START_TEXT");
+			this.execPlayerCommand = false;
 		}
 
-		if (config.doesKeyExist("END_TEXT")) {
-			this.endText = this.config.getString("END_TEXT");
+		String execSCMD = config.getString("EXECUTE_SERVER_CMD", "0");
+		if (!execSCMD.equalsIgnoreCase("0")) {
+			this.serverCmds = execPCMD.split(",");
+			this.execServerCommand = true;
 		} else {
-			throw new MissingQuestPropertyException(questName, "END_TEXT");
+			this.execServerCommand = false;
 		}
 
-		if (config.doesKeyExist("REWARD_GOLD")) {
-			this.rewardGold = config.getInt("REWARD_GOLD");
-		} else {
-			throw new MissingQuestPropertyException(questName, "REWARD_GOLD");
-		}
+		String fWorks = config.getString("FIREWORKS", "0");
+		if (!fWorks.equalsIgnoreCase("0")) {
+			this.fireWorks = true;
+			String parts[] = fWorks.split(",");
+			int rad, sect;
 
-		if (config.doesKeyExist("REWARD_PERMISSIONS_ADD")) {
-			if (!config.getString("REWARD_PERMISSIONS_ADD").equalsIgnoreCase("0")) {
-				this.addPerms = config.getString("REWARD_PERMISSIONS_ADD").split(",");
-				this.apAdd = true;
-			} else {
-				this.apAdd = false;
-			}
-		} else {
-			throw new MissingQuestPropertyException(questName, "REWARD_PERMISSIONS_ADD");
-		}
-
-		if (config.doesKeyExist("REWARD_PERMISSIONS_REMOVE")) {
-			if (!config.getString("REWARD_PERMISSIONS_REMOVE").equalsIgnoreCase("0")) {
-				this.remPerms = config.getString("REWARD_PERMISSIONS_REMOVE").split(",");
-				this.apRem = true;
-			} else {
-				this.apRem = false;
-			}
-		} else {
-			throw new MissingQuestPropertyException(questName, "REWARD_PERMISSIONS_REMOVE");
-		}
-
-		if (config.doesKeyExist("EXECUTE_PLAYER_CMD")) {
-			if (!config.getString("EXECUTE_PLAYER_CMD").equalsIgnoreCase("0")) {
-				this.playerCmds = config.getString("EXECUTE_PLAYER_CMD").split(",");
-				this.execPlayerCommand = true;
-			} else {
-				this.execPlayerCommand = false;
-			}
-		} else {
-			throw new MissingQuestPropertyException(questName, "EXECUTE_PLAYER_CMD");
-		}
-
-		if (config.doesKeyExist("EXECUTE_SERVER_CMD")) {
-			if (!config.getString("EXECUTE_SERVER_CMD").equalsIgnoreCase("0")) {
-				this.playerCmds = config.getString("EXECUTE_SERVER_CMD").split(",");
-				this.execPlayerCommand = true;
-			} else {
-				this.execPlayerCommand = false;
-			}
-		} else {
-			throw new MissingQuestPropertyException(questName, "EXECUTE_SERVER_CMD");
-		}
-
-		if (config.doesKeyExist("FIREWORKS")) {
-			if (!config.getString("FIREWORKS").equalsIgnoreCase("0")) {
-				this.fireWorks = true;
-				String parts[] = config.getString("FIREWORKS").split(",");
-				int rad, sect;
-
-				try {
-					rad = Integer.parseInt(parts[0]);
-					sect = Integer.parseInt(parts[1]);
-				} catch (NumberFormatException nfe) {
-					this.fireWorks = false;
-					throw new InvalidQuestException(config.getString("FIREWORKS"), "Could not parse integer! Make sure it is a whole number and greater or equal to 0.", this.questName);
-				}
-
+			try {
+				rad = Integer.parseInt(parts[0]);
+				sect = Integer.parseInt(parts[1]);
 				fwRadius = rad;
 				fwSectors = sect;
-			} else {
+			} catch (NumberFormatException nfe) {
 				this.fireWorks = false;
 			}
+
 		} else {
-			throw new MissingQuestPropertyException(questName, "FIREWORKS");
+			this.fireWorks = false;
 		}
 
 		this.tasks = new QuestTask[i];
 		QuestX.logDebug("Loading Quest " + questName + " with " + this.nodes + " objectives.");
 		for (int c = 1; c <= this.nodes; c++) {
 			// load and parse string into a QuestTask object
-			String raw = this.config.getString(c + "");
+			String raw = this.config.getString(c + "", "");
 			String qtypeEnum = raw.substring(0, raw.indexOf(":"));
 			String dataString = raw.substring(raw.indexOf(":") + 1);
 			QuestX.logDebug("READING---------------");
@@ -290,16 +246,17 @@ public class QuestLoader {
 		}
 
 		this.loadAndCheckPlayerProgress(p);
-		this.currentTask.put(p, this.tasks[playerProgress.get(p) - 1].getClonedInstance());// We only
-																	// want to
-																	// use the
-																	// initial
-																	// array for
-																	// refernce,
-																	// we don't
-																	// want to
-																	// change
-																	// anything
+		this.currentTask.put(p, this.tasks[playerProgress.get(p) - 1].getClonedInstance());// We
+																							// only
+		// want to
+		// use the
+		// initial
+		// array for
+		// refernce,
+		// we don't
+		// want to
+		// change
+		// anything
 	}
 
 	private synchronized void playerFinishedQuest(String p) {
@@ -419,7 +376,7 @@ public class QuestLoader {
 		SyncConfiguration c = new SyncConfiguration(f);
 		if (f.exists()) {
 			c.read();
-			this.playerProgress.put(p, c.getInt("P"));
+			this.playerProgress.put(p, c.getInt("P", 1));
 			// QuestX.logMSG("'" + p + "' progress loaded = " + c.getInt("P"));
 		} else {
 			c.createFileIfNeeded();

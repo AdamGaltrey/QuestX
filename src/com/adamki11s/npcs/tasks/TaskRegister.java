@@ -73,7 +73,7 @@ public class TaskRegister {
 			boolean en = true;
 
 			if (cfg.doesKeyExist("ENABLED")) {
-				en = cfg.getBoolean("ENABLED");
+				en = cfg.getBoolean("ENABLED", true);
 			} else {
 				cfg.add("ENABLED", true);
 				cfg.MergeRWArrays();

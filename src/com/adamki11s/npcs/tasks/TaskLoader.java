@@ -7,7 +7,6 @@ import org.bukkit.inventory.ItemStack;
 
 import com.adamki11s.exceptions.InvalidISAException;
 import com.adamki11s.exceptions.InvalidKillTrackerException;
-import com.adamki11s.exceptions.MissingTaskPropertyException;
 import com.adamki11s.io.FileLocator;
 import com.adamki11s.questx.QuestX;
 import com.adamki11s.sync.io.configuration.SyncConfiguration;
@@ -40,188 +39,127 @@ public class TaskLoader {
 		}
 	}
 
-	public void load() throws MissingTaskPropertyException {
+	public void load() {
 		SyncConfiguration config = new SyncConfiguration(this.taskFile);
 		QuestX.logDebug("Reading config");
 		config.read();
 		QuestX.logDebug("Config read to memory");
 
-		if (config.doesKeyExist("TASK_NAME")) {
-			this.taskName = config.getString("TASK_NAME");
-		} else {
-			throw new MissingTaskPropertyException(npcName, "TASK_NAME");
-		}
+		this.taskName = config.getString("TASK_NAME", "TASK_NAME");
 
-		if (config.doesKeyExist("TASK_DESCRIPTION")) {
-			this.taskDescription = config.getString("TASK_DESCRIPTION");
-		} else {
-			throw new MissingTaskPropertyException(npcName, "TASK_DESCRIPTION");
-		}
+		this.taskDescription = config.getString("TASK_DESCRIPTION", "Task Description");
 
-		if (config.doesKeyExist("INCOMPLETE_TASK_SPEECH")) {
-			this.incompleteTaskSpeech = config.getString("INCOMPLETE_TASK_SPEECH");
-		} else {
-			throw new MissingTaskPropertyException(npcName, "INCOMPLETE_TASK_SPEECH");
-		}
+		this.incompleteTaskSpeech = config.getString("INCOMPLETE_TASK_SPEECH", "The Task has not been completed yet.");
 
-		if (config.doesKeyExist("COMPLETE_TASK_SPEECH")) {
-			this.completeTaskSpeech = config.getString("COMPLETE_TASK_SPEECH");
-		} else {
-			throw new MissingTaskPropertyException(npcName, "COMPLETE_TASK_SPEECH");
-		}
+		this.completeTaskSpeech = config.getString("COMPLETE_TASK_SPEECH", "Task completed.");
 
-		QuestX.logDebug("Reading fetch_items");
-
-		if (config.doesKeyExist("FETCH_ITEMS")) {
-			if (!config.getString("FETCH_ITEMS").trim().equalsIgnoreCase("0")) {
-				try {
-					this.retrieveItems = ISAParser.parseISA(config.getString("FETCH_ITEMS"), this.npcName, false);
-					this.fetchItems = true;
-				} catch (InvalidISAException e) {
-					e.printErrorReason();
-					this.fetchItems = false;
-				}
-			} else {
+		String fetchI = config.getString("FETCH_ITEMS", "0");
+		if (!fetchI.trim().equalsIgnoreCase("0")) {
+			try {
+				this.retrieveItems = ISAParser.parseISA(fetchI, this.npcName, false);
+				this.fetchItems = true;
+			} catch (InvalidISAException e) {
+				e.printErrorReason();
 				this.fetchItems = false;
 			}
 		} else {
-			throw new MissingTaskPropertyException(npcName, "FETCH_ITEMS");
+			this.fetchItems = false;
 		}
 
-		QuestX.logDebug("Reading reward_items");
-
-		if (config.doesKeyExist("REWARD_ITEMS")) {
-			if (!config.getString("REWARD_ITEMS").trim().equalsIgnoreCase("0")) {
-				try {
-					this.rewardItems = ISAParser.parseISA(config.getString("REWARD_ITEMS"), this.npcName, false);
-					this.awardItems = true;
-				} catch (InvalidISAException e) {
-					e.printErrorReason();
-					this.awardItems = false;
-				}
-			} else {
+		String rewI = config.getString("REWARD_ITEMS", "0");
+		if (!rewI.trim().equalsIgnoreCase("0")) {
+			try {
+				this.rewardItems = ISAParser.parseISA(rewI, this.npcName, false);
+				this.awardItems = true;
+			} catch (InvalidISAException e) {
+				e.printErrorReason();
 				this.awardItems = false;
 			}
 		} else {
-			throw new MissingTaskPropertyException(npcName, "REWARD_ITEMS");
+			this.awardItems = false;
 		}
 
-		QuestX.logDebug("Reading kill_entities");
-
-		if (config.doesKeyExist("KILL_ENTITIES")) {
-			if (!config.getString("KILL_ENTITIES").trim().equalsIgnoreCase("0")) {
-				try {
-					this.ekt = new EntityKillTracker(config.getString("KILL_ENTITIES"));
-					this.killEntities = true;
-				} catch (InvalidKillTrackerException e) {
-					e.printCustomErrorReason(false, this.npcName);
-					this.killEntities = false;
-				}
-			} else {
+		String killE = config.getString("KILL_ENTITIES", "0");
+		if (!killE.trim().equalsIgnoreCase("0")) {
+			try {
+				this.ekt = new EntityKillTracker(killE);
+				this.killEntities = true;
+			} catch (InvalidKillTrackerException e) {
+				e.printCustomErrorReason(false, this.npcName);
 				this.killEntities = false;
 			}
 		} else {
-			throw new MissingTaskPropertyException(npcName, "KILL_ENTITIES");
+			this.killEntities = false;
 		}
 
-		if (config.doesKeyExist("KILL_NPCS")) {
-			if (!config.getString("KILL_NPCS").trim().equalsIgnoreCase("0")) {
-				QuestX.logDebug("Loading NPC's to kill");
-				this.nkt = new NPCKillTracker(config.getString("KILL_NPCS"));
-				this.killNPCS = true;
-			} else {
-				QuestX.logDebug("Not loading NPC's to kill");
-				this.killNPCS = false;
-			}
+		String killNPC = config.getString("KILL_NPCS", "0");
+		if (!killNPC.trim().equalsIgnoreCase("0")) {
+			QuestX.logDebug("Loading NPC's to kill");
+			this.nkt = new NPCKillTracker(killNPC);
+			this.killNPCS = true;
 		} else {
-			throw new MissingTaskPropertyException(npcName, "KILL_ENTITIES");
+			QuestX.logDebug("Not loading NPC's to kill");
+			this.killNPCS = false;
 		}
 
-		if (config.doesKeyExist("FIREWORKS")) {
-			if (!config.getString("FIREWORKS").equalsIgnoreCase("0")) {
-				String parts[] = config.getString("FIREWORKS").split(",");
-				int rad, sect;
-				try {
-					rad = Integer.parseInt(parts[0]);
-					sect = Integer.parseInt(parts[1]);
-					fwRadius = rad;
-					fwSectors = sect;
-					this.fireWorks = true;
-				} catch (NumberFormatException nfe) {
-					QuestX.logError("Failed to parse integer for FIREWORKS tag, make sure the value is greater than or equal to 0 and is a whole number.");
-					QuestX.logError("Line : " + config.getString("FIREWORKS"));
-					this.fireWorks = false;
-				}
-			} else {
+		String fWorks = config.getString("FIREWORKS", "0");
+		if (!fWorks.equalsIgnoreCase("0")) {
+			String parts[] = fWorks.split(",");
+			int rad, sect;
+			try {
+				rad = Integer.parseInt(parts[0]);
+				sect = Integer.parseInt(parts[1]);
+				fwRadius = rad;
+				fwSectors = sect;
+				this.fireWorks = true;
+			} catch (NumberFormatException nfe) {
+				QuestX.logError("Failed to parse integer for FIREWORKS tag, make sure the value is greater than or equal to 0 and is a whole number.");
+				QuestX.logError("Line : " + fWorks);
 				this.fireWorks = false;
 			}
 		} else {
-			throw new MissingTaskPropertyException(npcName, "FIREWORKS");
+			this.fireWorks = false;
 		}
 
-		if (config.doesKeyExist("REWARD_EXP")) {
-			this.rewardExp = config.getInt("REWARD_EXP");
+		this.rewardExp = config.getInt("REWARD_EXP", 0);
+
+		this.rewardRep = config.getInt("REWARD_REP", 0);
+
+		this.rewardGold = config.getInt("REWARD_GOLD", 0);
+
+		String rewPAdd = config.getString("REWARD_PERMISSIONS_ADD", "0");
+		if (!rewPAdd.equalsIgnoreCase("0")) {
+			this.addPerms = rewPAdd.split("#");
+			this.apAdd = true;
 		} else {
-			throw new MissingTaskPropertyException(npcName, "REWARD_EXP");
+			this.apAdd = false;
 		}
 
-		if (config.doesKeyExist("REWARD_REP")) {
-			this.rewardRep = config.getInt("REWARD_REP");
+		String rewPRem = config.getString("REWARD_PERMISSIONS_REMOVE", "0");
+		if (!rewPRem.equalsIgnoreCase("0")) {
+			this.remPerms = rewPRem.split("#");
+			this.apRem = true;
 		} else {
-			throw new MissingTaskPropertyException(npcName, "REWARD_REP");
+			this.apRem = false;
 		}
 
-		if (config.doesKeyExist("REWARD_GOLD")) {
-			this.rewardGold = config.getInt("REWARD_GOLD");
+		String execPCmd = config.getString("EXECUTE_PLAYER_CMD", "0");
+		if (!execPCmd.equalsIgnoreCase("0")) {
+			this.playerCmds = execPCmd.split("#");
+			this.execPlayerCommand = true;
 		} else {
-			throw new MissingTaskPropertyException(npcName, "REWARD_GOLD");
+			this.execPlayerCommand = false;
 		}
 
-		if (config.doesKeyExist("REWARD_PERMISSIONS_ADD")) {
-			if (!config.getString("REWARD_PERMISSIONS_ADD").equalsIgnoreCase("0")) {
-				this.addPerms = config.getString("REWARD_PERMISSIONS_ADD").split("#");
-				this.apAdd = true;
-			} else {
-				this.apAdd = false;
-			}
+		String execSCmd = config.getString("EXECUTE_SERVER_CMD", "0");
+
+		if (!execSCmd.equalsIgnoreCase("0")) {
+			this.serverCmds = execSCmd.split("#");
+			this.execServerCommand = true;
 		} else {
-			throw new MissingTaskPropertyException(npcName, "REWARD_PERMISSIONS_ADD");
+			this.execServerCommand = false;
 		}
 
-		if (config.doesKeyExist("REWARD_PERMISSIONS_REMOVE")) {
-			if (!config.getString("REWARD_PERMISSIONS_REMOVE").equalsIgnoreCase("0")) {
-				this.remPerms = config.getString("REWARD_PERMISSIONS_REMOVE").split("#");
-				this.apRem = true;
-			} else {
-				this.apRem = false;
-			}
-		} else {
-			throw new MissingTaskPropertyException(npcName, "REWARD_PERMISSIONS_REMOVE");
-		}
-
-		if (config.doesKeyExist("EXECUTE_PLAYER_CMD")) {
-			if (!config.getString("EXECUTE_PLAYER_CMD").equalsIgnoreCase("0")) {
-				this.playerCmds = config.getString("EXECUTE_PLAYER_CMD").split("#");
-				this.execPlayerCommand = true;
-			} else {
-				this.execPlayerCommand = false;
-			}
-		} else {
-			throw new MissingTaskPropertyException(npcName, "EXECUTE_PLAYER_CMD");
-		}
-
-		if (config.doesKeyExist("EXECUTE_SERVER_CMD")) {
-			if (!config.getString("EXECUTE_SERVER_CMD").equalsIgnoreCase("0")) {
-				this.serverCmds = config.getString("EXECUTE_SERVER_CMD").split("#");
-				this.execServerCommand = true;
-			} else {
-				this.execServerCommand = false;
-			}
-		} else {
-			throw new MissingTaskPropertyException(npcName, "EXECUTE_SERVER_CMD");
-		}
-
-		QuestX.logDebug("TaskLoad Operation completed");
 	}
 
 	public boolean isExecutingPlayerCmds() {

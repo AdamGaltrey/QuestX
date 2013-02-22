@@ -12,10 +12,10 @@ public class GeneralConfigData {
 		File genConfig = FileLocator.getGeneralConfig();
 		SyncConfiguration conf = new SyncConfiguration(genConfig);
 		conf.read();
-		tagAPISupport = conf.getBoolean("TAG_API_SUPPORT");
-		checkUpdates = conf.getBoolean("CHECK_UPDATES");
-		autoDLUpdates = conf.getBoolean("AUTO_DOWNLOAD_UPDATES");
-		notifyAdmin = conf.getBoolean("NOTIFY_ADMIN");
+		tagAPISupport = conf.getBoolean("TAG_API_SUPPORT", false);
+		checkUpdates = conf.getBoolean("CHECK_UPDATES", true);
+		autoDLUpdates = conf.getBoolean("AUTO_DOWNLOAD_UPDATES", false);
+		notifyAdmin = conf.getBoolean("NOTIFY_ADMIN", true);
 		
 		boolean edited = false;
 
@@ -26,7 +26,7 @@ public class GeneralConfigData {
 					+ " the ones you create yourself, unless you extract the NPCs from the payload file yourself.");
 			extractNPC = true;
 		} else {
-			extractNPC = conf.getBoolean("EXTRACT_NPC_PAYLOAD");
+			extractNPC = conf.getBoolean("EXTRACT_NPC_PAYLOAD", true);
 		}
 
 		if (!conf.doesKeyExist("EXTRACT_QUEST_PAYLOAD")) {
@@ -36,7 +36,7 @@ public class GeneralConfigData {
 					+ " the ones you create yourself, unless you extract the Quests from the payload file yourself.");
 			extractQuest = true;
 		} else {
-			extractQuest = conf.getBoolean("EXTRACT_QUEST_PAYLOAD");
+			extractQuest = conf.getBoolean("EXTRACT_QUEST_PAYLOAD", true);
 		}
 		
 		if(edited){

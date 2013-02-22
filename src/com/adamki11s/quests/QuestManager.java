@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import com.adamki11s.exceptions.InvalidQuestException;
-import com.adamki11s.exceptions.MissingQuestPropertyException;
 import com.adamki11s.io.FileLocator;
 import com.adamki11s.questx.QuestX;
 import com.adamki11s.sync.io.configuration.SyncConfiguration;
@@ -23,8 +22,6 @@ public class QuestManager {
 			ql = new QuestLoader(FileLocator.getQuestFile(name));
 			quests.add(ql);
 		} catch (InvalidQuestException e) {
-			e.printErrorReason();
-		} catch (MissingQuestPropertyException e) {
 			e.printErrorReason();
 		}
 

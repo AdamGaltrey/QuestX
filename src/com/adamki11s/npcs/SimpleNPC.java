@@ -17,11 +17,9 @@ import com.adamki11s.ai.RandomMovement;
 import com.adamki11s.data.ItemStackDrop;
 import com.adamki11s.dialogue.Conversation;
 import com.adamki11s.events.ConversationRegister;
-import com.adamki11s.exceptions.MissingDeathTriggerPropertyException;
 import com.adamki11s.io.FileLocator;
 import com.adamki11s.io.WorldConfigData;
 import com.adamki11s.npcs.population.HotspotManager;
-import com.adamki11s.npcs.tasks.Fireworks;
 import com.adamki11s.npcs.tasks.TaskManager;
 import com.adamki11s.npcs.tasks.TaskRegister;
 import com.adamki11s.npcs.triggers.CustomAction;
@@ -74,7 +72,7 @@ public class SimpleNPC {
 	}
 
 	public SimpleNPC(NPCHandler handle, String name, boolean moveable, boolean attackable, int minPauseTicks, int maxPauseTicks, int maxVariation, int health, int respawnTicks,
-			ItemStackDrop inventory, ItemStack[] gear, int damageMod, double retalliationMultiplier) throws MissingDeathTriggerPropertyException {
+			ItemStackDrop inventory, ItemStack[] gear, int damageMod, double retalliationMultiplier) {
 		UniqueNameRegister.addNPCName(name);
 		this.name = name;
 		this.moveable = moveable;
@@ -97,15 +95,15 @@ public class SimpleNPC {
 		SyncConfiguration cfg = new SyncConfiguration(fLink);
 		if (fLink.exists()) {
 			cfg.read();
-			this.questName = cfg.getString("QUEST_NAME");
-			String nodes = cfg.getString("NODES");
+			this.questName = cfg.getString("QUEST_NAME", "QUEST_NAME");
+			String nodes = cfg.getString("NODES", "0");
 			if (nodes != null) {
 				for (String num : nodes.split(",")) {
 					this.completeQuestNodes.add(Integer.parseInt(num));
 				}
 			}
 			QuestX.logDebug("qName = " + this.questName);
-			QuestX.logDebug("nodes = " + cfg.getString("NODES"));
+			QuestX.logDebug("nodes = " + cfg.getString("NODES", "0"));
 		} else {
 			this.questName = "null";
 		}

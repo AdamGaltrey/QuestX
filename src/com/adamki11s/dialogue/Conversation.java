@@ -9,7 +9,6 @@ import com.adamki11s.dialogue.triggers.TriggerType;
 import com.adamki11s.display.StaticStrings;
 import com.adamki11s.events.ConversationRegister;
 import com.adamki11s.exceptions.InvalidDialogueException;
-import com.adamki11s.exceptions.MissingTaskPropertyException;
 import com.adamki11s.io.FileLocator;
 import com.adamki11s.npcs.NPCHandler;
 import com.adamki11s.npcs.SimpleNPC;
@@ -188,17 +187,13 @@ public class Conversation {
 					} else {
 						TaskLoader tl = new TaskLoader(FileLocator.getNPCTaskFile(npcName), npcName);
 						QuestX.logDebug("Loading task...");
-						try {
-							tl.load();
-							QuestX.logDebug("Task Loaded!");
-							TaskManager manage = new TaskManager(p.getName(), tl);
-							TaskRegister.registerTask(manage);
-							QuestX.logChat(p, ChatColor.ITALIC + tl.getTaskName() + ChatColor.RESET + ChatColor.GREEN + " task started!");
-							QuestX.logChat(p, "Task description : " + tl.getTaskDescription());
-						} catch (MissingTaskPropertyException e) {
-							e.printErrorReason();
-							QuestX.logChat(p, "Task failed to load, task file is incorrectly formatted. Check the server log for details.");
-						}
+
+						tl.load();
+						QuestX.logDebug("Task Loaded!");
+						TaskManager manage = new TaskManager(p.getName(), tl);
+						TaskRegister.registerTask(manage);
+						QuestX.logChat(p, ChatColor.ITALIC + tl.getTaskName() + ChatColor.RESET + ChatColor.GREEN + " task started!");
+						QuestX.logChat(p, "Task description : " + tl.getTaskDescription());
 
 						this.endConversation();
 						return;

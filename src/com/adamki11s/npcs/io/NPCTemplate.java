@@ -1,11 +1,9 @@
 package com.adamki11s.npcs.io;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
 
 import com.adamki11s.data.ItemStackDrop;
-import com.adamki11s.exceptions.MissingDeathTriggerPropertyException;
 import com.adamki11s.npcs.NPCHandler;
 import com.adamki11s.npcs.SimpleNPC;
 import com.adamki11s.questx.QuestX;
@@ -38,14 +36,14 @@ public class NPCTemplate {
 	
 	
 	//int health, int respawnTicks, ItemStackDrop inventory, ItemStack[] gear, int damageMod, double retalliationMultiplier) {
-	public void registerSimpleNPCFixedSpawn(NPCHandler handle, Location fixedLocation) throws MissingDeathTriggerPropertyException{
+	public void registerSimpleNPCFixedSpawn(NPCHandler handle, Location fixedLocation){
 		SimpleNPC snpc = new SimpleNPC(handle, name, moveable, attackable, minPauseTicks, maxPauseTicks, maxVariation, maxHealth, respawnTicks, inventory, gear, damageMod, retalliationMultiplier);
 		snpc.setFixedLocation(fixedLocation);
 		snpc.setNewSpawnLocation(fixedLocation);
 		snpc.spawnNPC();
 	}
 	
-	public void addSimpleNPCToWaitingList(NPCHandler handle) throws MissingDeathTriggerPropertyException{
+	public void addSimpleNPCToWaitingList(NPCHandler handle){
 		QuestX.logDebug("Adding new simple npc to list");
 		SimpleNPC snpc = new SimpleNPC(handle, name, moveable, attackable, minPauseTicks, maxPauseTicks, maxVariation, maxHealth, respawnTicks, inventory, gear, damageMod, retalliationMultiplier);
 		handle.addToWaitingList(snpc);

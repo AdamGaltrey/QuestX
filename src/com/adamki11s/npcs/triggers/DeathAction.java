@@ -7,7 +7,6 @@ import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Player;
 
 import com.adamki11s.commands.QuestXCMDExecutor;
-import com.adamki11s.exceptions.MissingDeathTriggerPropertyException;
 import com.adamki11s.io.FileLocator;
 import com.adamki11s.questx.QuestX;
 import com.adamki11s.reputation.ReputationManager;
@@ -24,7 +23,7 @@ public class DeathAction {
 		this.npcName = npcName;
 	}
 
-	public void load() throws MissingDeathTriggerPropertyException {
+	public void load() {
 		File f = FileLocator.getNPCDeathTriggerFile(npcName);
 		SyncConfiguration io = new SyncConfiguration(f);
 		
@@ -45,36 +44,12 @@ public class DeathAction {
 		
 		
 		io.read();
-
-		if(io.doesKeyExist("REWARD_EXP")){
-			awardExp = io.getInt("REWARD_EXP");
-		} else {
-			throw new MissingDeathTriggerPropertyException(npcName, "REWARD_EXP");
-		}
 		
-		if(io.doesKeyExist("REWARD_GOLD")){
-			awardGold = io.getInt("REWARD_GOLD");
-		} else {
-			throw new MissingDeathTriggerPropertyException(npcName, "REWARD_GOLD");
-		}
-		
-		if(io.doesKeyExist("REWARD_REP")){
-			awardRep = io.getInt("REWARD_REP");
-		} else {
-			throw new MissingDeathTriggerPropertyException(npcName, "REWARD_REP");
-		}
-		
-		if(io.doesKeyExist("EXECUTE_PLAYER_CMD")){
-			playerCMD = io.getString("EXECUTE_PLAYER_CMD").split(",");
-		} else {
-			throw new MissingDeathTriggerPropertyException(npcName, "EXECUTE_PLAYER_CMD");
-		}
-		
-		if(io.doesKeyExist("EXECUTE_SERVER_CMD")){
-			serverCMD = io.getString("EXECUTE_SERVER_CMD").split(",");
-		} else {
-			throw new MissingDeathTriggerPropertyException(npcName, "EXECUTE_SERVER_CMD");
-		}
+		awardExp = io.getInt("REWARD_EXP", 0);
+		awardGold = io.getInt("REWARD_GOLD", 0);
+		awardRep = io.getInt("REWARD_REP", 0);
+		playerCMD = io.getString("EXECUTE_PLAYER_CMD", "0").split(",");
+		serverCMD = io.getString("EXECUTE_SERVER_CMD", "0").split(",");
 	}
 	
 	public void execute(Player p){
