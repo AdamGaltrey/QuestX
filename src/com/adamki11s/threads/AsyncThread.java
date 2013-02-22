@@ -40,7 +40,7 @@ public class AsyncThread implements Runnable {
 		if (playerCount.get() == 0) {
 			// first player on the server ?
 			if (!playersOnline) {
-				//set boolean to true
+				// set boolean to true
 				playersOnline ^= true;
 			}
 		}
@@ -82,13 +82,8 @@ public class AsyncThread implements Runnable {
 				fifteenSecTickOver += tickRate;
 				denstiyCalculationTickOver += tickRate;
 				// if(denstiyCalculationTickOver > (20 * 60 * 5)){ 5minutes
-				if (denstiyCalculationTickOver >= (20 * 60 * DatabaseConfigData.getUpdateMinutes())) { // 60
-																										// secs
-																										// *
-																										// x
-																										// minutes
-																										// between
-																										// updates
+				// 60 seconds * x minutes between updates
+				if (denstiyCalculationTickOver >= (20 * 60 * DatabaseConfigData.getUpdateMinutes())) {
 					this.denstiyCalculationTickOver = 0;
 					this.pdThread.run();
 				}
@@ -116,17 +111,17 @@ public class AsyncThread implements Runnable {
 				glThread.run(tickRate);
 
 			} else {
-				
+
 				// 0 players online
 				if (playersOnline) {
 					// invert boolean
 					playersOnline ^= true;
 					// run shutdown (clears memory)
-					
-					for(SimpleNPC npc : handle.getNPCs()){
+
+					for (SimpleNPC npc : handle.getNPCs()) {
 						npc.purgeCachedData();
 					}
-					
+
 					this.decisionControl.serverNoPlayersAction();
 					this.aControl.serverNoPlayersAction();
 				}

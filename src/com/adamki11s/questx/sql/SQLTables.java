@@ -10,7 +10,7 @@ import com.adamki11s.sync.sql.SyncSQL;
 
 public class SQLTables {
 
-	public static void initiateSQLite(SyncSQL sql) {
+	public static void initiateSQLite(SyncSQL sql, String[] worlds) {
 		QuestX.logMSG("Connecting to SQLite database...");
 		if (sql.initialise()) {
 			QuestX.logMSG("Connection successful!");
@@ -30,12 +30,12 @@ public class SQLTables {
 			e.printStackTrace();
 		}*/
 
-		for (World w : Bukkit.getServer().getWorlds()) {
+		for (String w : worlds) {
 			try {
-				if (!sql.doesTableExist(w.getName())) {
-					String worldTable = "CREATE TABLE " + w.getName() + "('id' INTEGER PRIMARY KEY AUTOINCREMENT, 'x' INTEGER NOT NULL, 'z' INTEGER NOT NULL, 'density' INTEGER NOT NULL)";
-					String insert = "INSERT INTO " + w.getName() + " (x,z,density) VALUES (0,0,0)";
-					QuestX.logMSG("Creating SQLite table '" + w.getName() + "'.");
+				if (!sql.doesTableExist(w)) {
+					String worldTable = "CREATE TABLE " + w + "('id' INTEGER PRIMARY KEY AUTOINCREMENT, 'x' INTEGER NOT NULL, 'z' INTEGER NOT NULL, 'density' INTEGER NOT NULL)";
+					String insert = "INSERT INTO " + w + " (x,z,density) VALUES (0,0,0)";
+					QuestX.logMSG("Creating SQLite table '" + w + "'.");
 					sql.standardQuery(worldTable);
 					sql.standardQuery(insert);
 					QuestX.logMSG("Table created successfully.");

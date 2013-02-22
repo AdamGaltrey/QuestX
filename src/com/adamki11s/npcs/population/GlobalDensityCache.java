@@ -17,10 +17,22 @@ public class GlobalDensityCache {
 			if(!nodes.containsKey(w)){
 				nodes.put(w, new LinkedHashMap<NPCChunkData, Long>());
 			}
-			String query = "SELECT * FROM " + w + " ORDER BY density ASC";
+			String query = "SELECT * FROM '" + w + "' ORDER BY density ASC";
 			long gDensity = 0;
 			try {
 				ResultSet set = sql.sqlQuery(query);
+				
+				
+				/*
+				 * Error on GET result set
+				 * 
+				 * No table found 'name', missiing database throwing exceptions?
+				 * 
+				 * java.sql.SQLException: [SQLITE_ERROR] SQL error or missing database (near "-": syntax error)
+				 * 
+				 */
+				
+				
 				while (set.next()) {
 					NPCChunkData cd = new NPCChunkData(set.getInt("x"), set.getInt("z"));
 					gDensity += set.getLong("density");

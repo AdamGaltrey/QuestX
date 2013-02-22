@@ -28,42 +28,23 @@ public class PopulationDensityThread implements Runnable {
 
 	public PopulationDensityThread() {
 		this.sql = new SyncSQL(FileLocator.getPopDensityDatabase());
-		SQLTables.initiateSQLite(sql);
 		this.worlds = WorldConfigData.getWorlds();
+		SQLTables.initiateSQLite(sql, worlds);
 		this.loadPreparedStatements();
 		GlobalDensityCache.updateGlobalDensity(this.sql, worlds);
 	}
 
 	void loadPreparedStatements() {
-		// this.sql.getConnection().setAutoCommit(false);
 		for (String worldName : this.worlds) {
-			// if exists (select * from tablename where zipcode = value)
-			// select 'already exists'
-			// else
-			// select 'no record'
-			/*
-			 * String prepUpdateDensity = "IF EXISTS(SELECT x,z FROM " +
-			 * worldName + " WHERE x=? AND z=?) THEN UPDATE " + worldName +
-			 * " SET density=density+? WHERE x=? AND z=?; ELSE" +
-			 * " INSERT INTO " + worldName + " (x,z,density) VALUES (?,?,?);";
-			 */
-			QuestX.logDebug("Preparing statements for world '" + worldName + "'");
 			String selectXZ = "SELECT x,z FROM " + worldName + " WHERE x=? AND z=?";
 			String updateDensity = "UPDATE " + worldName + " SET density=density+? WHERE x=? AND z=?";
 
 			try {
 				PreparedStatement prepXZ = this.sql.getConnection().prepareStatement(selectXZ), prepDensity = this.sql.getConnection().prepareStatement(updateDensity);
-
 				this.preparedStatements.put(worldName, new PreparedStatement[] { prepXZ, prepDensity });
-				// QuestX.logMSG("Statement prepared for world '" + worldName +
-				// "'.");
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
-			// String updateDensity = "UPDATE " + worldName +
-			// " SET x=x+1, z=z+1 WHERE x=?, z=?";
-			// String checkChunk = "SELECT (x,z) FROM pop_density_" + worldName
-			// + " WHERE x=?, z=?";
 		}
 	}
 
@@ -125,14 +106,6 @@ public class PopulationDensityThread implements Runnable {
 
 		PreparedStatement[] preps = this.preparedStatements.get(worldName);
 
-		/*
-		 * String selectXZ = "SELECT x,z FROM " + worldName +
-		 * " WHERE x=? AND z=?"; String updateDensity = "UPDATE " + worldName +
-		 * " SET density=density+? WHERE x=? AND z=?"; String insertChunk =
-		 * "INSERT INTO " + worldName +
-		 * " (x,z,density) VALUES (x=?,z=?,density=?)";
-		 */
-
 		for (ChunkDensity cd : density) {
 			try {
 				QuestX.logDebug("Updating data for chunk (" + cd.getX() + ", " + cd.getZ() + ") World - " + worldName);
@@ -154,12 +127,6 @@ public class PopulationDensityThread implements Runnable {
 				e.printStackTrace();
 			}
 		}
-		// updateSales.setInt(1, e.getValue().intValue());
-		// updateSales.setString(2, e.getKey());
-		// updateSales.executeUpdate();
-		// updateTotal.setInt(1, e.getValue().intValue());
-		// updateTotal.setString(2, e.getKey());
-		// updateTotal.executeUpdate();
 	}
 
 }
