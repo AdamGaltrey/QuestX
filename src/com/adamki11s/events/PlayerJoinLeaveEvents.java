@@ -35,6 +35,10 @@ public class PlayerJoinLeaveEvents implements Listener{
 		AsyncThread.playerLeft();
 		ReputationManager.unloadPlayerReputation(evt.getPlayer().getName());
 		QuestManager.unloadPlayerQuestData(evt.getPlayer().getName());
+		
+		if (ConversationRegister.isPlayerConversing(evt.getPlayer().getName())) {
+			ConversationRegister.endPlayerNPCConversation(evt.getPlayer());
+		}
 	}
 	
 }

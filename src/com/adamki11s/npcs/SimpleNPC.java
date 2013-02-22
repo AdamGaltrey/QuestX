@@ -454,7 +454,7 @@ public class SimpleNPC {
 								return;
 							}
 
-						} 
+						}
 					}
 				}
 
@@ -486,6 +486,7 @@ public class SimpleNPC {
 					return;
 				}
 			}
+			
 			if (!FileLocator.doesNPCDlgFileExist(this.getName())) {
 				QuestX.logChat(p, ChatColor.AQUA + "[QuestX] " + ChatColor.RED + "No dialogue.dlg file found or it is empty!");
 			} else {
@@ -500,10 +501,24 @@ public class SimpleNPC {
 				}
 			}
 		} else {
-			if (c.getConvoData().getPlayer().getName().equalsIgnoreCase(p.getName())) {
-				QuestX.logChat(p, ChatColor.RED + "You are already talking to this NPC.");
+			Player convoPlayer = c.getConvoData().getPlayer();
+			if (convoPlayer != null) {
+				if (convoPlayer.getName().equalsIgnoreCase(p.getName())) {
+					QuestX.logChat(p, ChatColor.RED + "You are already talking to this NPC.");
+				} else {
+					QuestX.logChat(p, ChatColor.RED + "This NPC is already talking to another player.");
+				}
 			} else {
-				QuestX.logChat(p, ChatColor.RED + "This NPC is already talking to another player.");
+				c.endConversation();
+				c = new Conversation(p.getName(), this);
+				c.loadConversation();
+				if (c.wasParseSuccessful()) {
+					c.startConversation();
+					Location pl = p.getLocation();
+					this.getHumanNPC().lookAtPoint(new Location(pl.getWorld(), pl.getX(), pl.getY() + 1, pl.getZ()));
+				} else {
+					QuestX.logChatError(p, "There was an error parsing the dialogue file for this NPC. Please check the server log for more information.");
+				}
 			}
 		}
 	}

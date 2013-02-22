@@ -1,5 +1,6 @@
 package com.adamki11s.events;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 
 import org.bukkit.Bukkit;
@@ -26,6 +27,7 @@ public class ConversationRegister implements Listener {
 	}
 
 	public static boolean isPlayerConversing(String pName) {
+		ArrayList<Conversation> rem = new ArrayList<Conversation>();
 		for (Conversation c : playersConversing) {
 			if (c != null) {
 				Player convoPlayer = c.getConvoData().getPlayer();
@@ -33,13 +35,21 @@ public class ConversationRegister implements Listener {
 					if (convoPlayer.getName().equalsIgnoreCase(pName)) {
 						return c.isConversing();
 					}
+				} else {
+					rem.add(c);
 				}
 			}
 		}
+		
+		for(Conversation c : rem){
+			playersConversing.remove(c);
+		}
+		
 		return false;
 	}
 
 	public static boolean isPlayerWithinTalkingDistance(Player p) {
+		ArrayList<Conversation> rem = new ArrayList<Conversation>();
 		for (Conversation c : playersConversing) {
 			if (c != null) {
 				Player convoPlayer = c.getConvoData().getPlayer();
@@ -50,10 +60,17 @@ public class ConversationRegister implements Listener {
 						c.getConvoData().getSimpleNpc().getHumanNPC().lookAtPoint(new Location(pl.getWorld(), pl.getX(), pl.getY() + 1, pl.getZ()));
 						return (Math.abs(npcLoc.distance(pl)) < 5);
 					}
+				} else {
+					rem.add(c);
 				}
 
 			}
 		}
+		
+		for(Conversation c : rem){
+			playersConversing.remove(c);
+		}
+		
 		return false;
 	}
 
