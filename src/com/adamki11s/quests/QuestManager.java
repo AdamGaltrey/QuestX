@@ -60,16 +60,19 @@ public class QuestManager {
 		SyncConfiguration cfg = new SyncConfiguration(cur);
 		cfg.read();
 
-		String q = cfg.getString(pName, "");
+		String q = cfg.getString(pName, "0");
 
-		if (doesQuestExist(q)) {
+		if (!q.equalsIgnoreCase("0") && doesQuestExist(q)) {
 
 			if (!isQuestLoaded(q)) {
 				loadQuest(q);
 			}
 			QuestLoader ql = getQuestLoader(q);
-			ql.loadAndCheckPlayerProgress(pName);
-			currentQuest.put(pName, q);
+
+			if (ql != null) {
+				ql.loadAndCheckPlayerProgress(pName);
+				currentQuest.put(pName, q);
+			}
 
 		}
 
