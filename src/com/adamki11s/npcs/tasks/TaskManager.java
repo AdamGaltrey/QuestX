@@ -195,7 +195,7 @@ public class TaskManager {
 			// adjust rep
 		}
 
-		if (this.getTaskLoader().isAwardGold()) {
+		if (this.getTaskLoader().isAwardGold() && QuestX.isEconomySupported()) {
 			if (QuestX.economy.hasAccount(p.getName())) {
 				QuestX.economy.bankDeposit(p.getName(), this.getTaskLoader().getRewardGold());
 			} else {
@@ -209,7 +209,7 @@ public class TaskManager {
 			}
 		}
 
-		if (this.getTaskLoader().isAwardingRemPerms()) {
+		if (this.getTaskLoader().isAwardingRemPerms() && QuestX.isPermissionsSupported()) {
 			for (String perm : this.getTaskLoader().getRemPerms()) {
 				if (QuestX.permission.has(p, perm)) {
 					QuestX.permission.playerRemove(p, perm);

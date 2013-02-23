@@ -215,24 +215,26 @@ public class Conversation {
 
 						if (!QuestManager.doesPlayerHaveQuest(p.getName())) {
 							// start a quest
-							QuestX.logDebug("Player does not have quest!");
 							if (!QuestManager.isQuestLoaded(qName)) {
 								QuestManager.loadQuest(qName);
 							}
-							QuestX.logDebug("QUEST LOADED ############");
 							QuestLoader ql = QuestManager.getQuestLoader(qName);
-							ql.loadAndCheckPlayerProgress(p.getName());
-							if (ql.isQuestComplete(p.getName())) {
-								QuestX.logChat(p, "You have already completed this quest!");
-							} else {
-								QuestManager.setCurrentPlayerQuest(p.getName(), qName);
-								if (ql.getCurrentQuestNode(p.getName()) == 1) {
-									QuestX.logChat(p, ql.getStartText());
+							if (ql.canPlayerUndertakeQuest(p)) {
+								ql.loadAndCheckPlayerProgress(p.getName());
+								if (ql.isQuestComplete(p.getName())) {
+									QuestX.logChat(p, "You have already completed this quest!");
+								} else {
+									QuestManager.setCurrentPlayerQuest(p.getName(), qName);
+									if (ql.getCurrentQuestNode(p.getName()) == 1) {
+										QuestX.logChat(p, ql.getStartText());
+									}
+									QuestTask t = ql.getPlayerQuestTask(p.getName());
+									t.sendWhatIsLeftToDo(p);
 								}
-								QuestTask t = ql.getPlayerQuestTask(p.getName());
-								t.sendWhatIsLeftToDo(p);
+								this.endConversation();
+							} else {
+								this.endConversation();
 							}
-							this.endConversation();
 						} else {
 							QuestX.logDebug("Player has quest!");
 							if (npc.doesLinkToQuest()) {

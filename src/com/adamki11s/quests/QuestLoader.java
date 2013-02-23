@@ -20,6 +20,7 @@ import com.adamki11s.npcs.tasks.ISAParser;
 import com.adamki11s.npcs.tasks.NPCKillTracker;
 import com.adamki11s.quests.locations.GotoLocationController;
 import com.adamki11s.quests.locations.GotoLocationTask;
+import com.adamki11s.quests.requirements.QuestRequirements;
 import com.adamki11s.questx.QuestX;
 import com.adamki11s.reputation.ReputationManager;
 import com.adamki11s.sync.io.configuration.SyncConfiguration;
@@ -43,13 +44,19 @@ public class QuestLoader {
 	EntityKillTracker ekt;
 	NPCKillTracker nkt;
 	boolean apAdd, apRem, execPlayerCommand, execServerCommand, fireWorks;
+	
+	private QuestRequirements reqs;
 
 	public QuestLoader(File f) throws InvalidQuestException {
 		this.config = new SyncConfiguration(f);
 		this.load();
 	}
+	
+	public boolean canPlayerUndertakeQuest(Player p){
+		return this.reqs.canPlayerUndertakeQuest(p);
+	}
 
-	void load() throws InvalidQuestException{
+	void load() throws InvalidQuestException {
 		this.config.read();
 
 		this.questName = config.getString("NAME", "QuestName");
@@ -74,6 +81,22 @@ public class QuestLoader {
 		} else {
 			this.rewardItems = null;
 		}
+
+		/*
+		 * Quest requirements : min - max REP, gold, quests completed
+		 * 
+		 * private final String[] completedQuests; private final int minRep,
+		 * maxRep, requiredGold;
+		 */
+		
+		int minRep = config.getInt("REQ_REP_MIN", 0), maxRep = config.getInt("REQ_REP_MAX", 0), reqGold = config.getInt("REQ_GOLD", 0);
+		String[] reqQuests = config.getString("REQ_COMPLETED_QUESTS", "0").split(",");
+		
+		this.reqs = new QuestRequirements(reqQuests, minRep, maxRep, reqGold);
+
+		/*
+		 * End requirements
+		 */
 
 		this.rewardExp = config.getInt("REWARD_EXP", 0);
 
