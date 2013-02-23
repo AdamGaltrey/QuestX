@@ -24,7 +24,7 @@ public class QuestRequirements {
 		if (QuestX.isEconomySupported()) {
 			double balance = QuestX.economy.getBalance(p.getName());
 			if (balance < this.requiredGold) {
-				QuestX.logChat(p, ChatColor.RED + "You need " + ChatColor.YELLOW + this.requiredGold + ChatColor.RED + " gold, you only have " + ChatColor.YELLOW + balance);
+				QuestX.logChat(p, ChatColor.RED + "You need " + ChatColor.YELLOW + this.requiredGold + ChatColor.RED + " gold to undertake this quest, you only have " + ChatColor.YELLOW + balance);
 				return false;
 			}
 		}
@@ -33,13 +33,13 @@ public class QuestRequirements {
 		int rep = r.getRep();
 		if (minRep != 0 && maxRep != 0) {
 			if (!(rep >= this.minRep && rep <= this.maxRep)) {
-				QuestX.logChat(p, ChatColor.RED + "You need between " + ChatColor.YELLOW + minRep + " - " + maxRep + ChatColor.RED + " to undertake this quest.");
+				QuestX.logChat(p, ChatColor.RED + "You need between " + ChatColor.YELLOW + minRep + " - " + maxRep + ChatColor.RED + " reputation to undertake this quest.");
 				return false;
 			}
 		}
 
 		boolean can = true;
-		StringBuilder error = new StringBuilder().append(ChatColor.RED).append("You need to complete the following quests : ").append(ChatColor.RESET);
+		StringBuilder error = new StringBuilder().append(ChatColor.RED).append("You need to complete the following quests before attempting this one : ").append(ChatColor.RESET);
 
 		if (!completedQuests[0].equalsIgnoreCase("0")) {
 
