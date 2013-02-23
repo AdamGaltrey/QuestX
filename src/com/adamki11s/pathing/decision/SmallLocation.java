@@ -1,5 +1,6 @@
 package com.adamki11s.pathing.decision;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
 import com.adamki11s.io.WorldConfigData;
