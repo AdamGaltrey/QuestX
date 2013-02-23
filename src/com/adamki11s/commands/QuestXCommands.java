@@ -95,7 +95,7 @@ public class QuestXCommands implements CommandExecutor {
 				 * Reputation Commands (START)
 				 */
 				
-				if(args.length == 1 && (args[0].equalsIgnoreCase("rep") || args[0].equalsIgnoreCase("reputation") && args[1].equalsIgnoreCase("view")) ){
+				if(args.length == 2 && (args[0].equalsIgnoreCase("rep") || args[0].equalsIgnoreCase("reputation") && args[1].equalsIgnoreCase("view")) ){
 					Reputation rep = ReputationManager.getPlayerReputation(p.getName());
 					QuestX.logChat(p, "Your have " + rep.getChatColour() + rep.getRep() + ChatColor.RESET + " reputation.");
 					return true;
