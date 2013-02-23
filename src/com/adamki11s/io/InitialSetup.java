@@ -31,6 +31,14 @@ public class InitialSetup {
 			io.add("DEFAULT_HOTSPOT", 0);
 			io.write();
 		}
+		
+		f = FileLocator.getNPCPresetPathingFile();
+		if (!f.exists()) {
+			fileSetup(f);
+			SyncObjectIO io = new SyncObjectIO(f);
+			io.add("NULL", 0);
+			io.write();
+		}
 
 		File dbConfig = FileLocator.getDatabaseConfig();
 
@@ -60,7 +68,7 @@ public class InitialSetup {
 					+ " the ones you create yourself, unless you extract the Quests from the payload file yourself.");
 			conf.write();
 		}
-
+		
 		File wConfig = FileLocator.getWorldConfig();
 		if (!wConfig.exists()) {
 			fileSetup(wConfig);

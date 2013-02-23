@@ -17,6 +17,7 @@ import com.adamki11s.npcs.NPCHandler;
 import com.adamki11s.npcs.SimpleNPC;
 import com.adamki11s.npcs.io.LoadNPCTemplate;
 import com.adamki11s.npcs.io.NPCTemplate;
+import com.adamki11s.pathing.preset.PresetPath;
 import com.adamki11s.questx.QuestX;
 import com.adamki11s.sync.io.objects.SyncObjectIO;
 import com.adamki11s.sync.io.objects.SyncWrapper;
@@ -26,7 +27,9 @@ public class FixedLoadingTable {
 
 	static volatile HashMap<String, Location> fixedSpawns = new HashMap<String, Location>();
 
-	final static SyncObjectIO loader = new SyncObjectIO(FileLocator.getNPCFixedSpawnsFile());
+	private final static SyncObjectIO loader = new SyncObjectIO(FileLocator.getNPCFixedSpawnsFile());
+	
+	private final static SyncObjectIO io = new SyncObjectIO(FileLocator.getNPCPresetPathingFile());
 
 	public static String[] getFixedSpawns() {
 		HashSet<String> ret = new HashSet<String>(fixedSpawns.size());
@@ -37,10 +40,25 @@ public class FixedLoadingTable {
 		Arrays.sort(toSort, String.CASE_INSENSITIVE_ORDER);
 		return toSort;
 	}
+	
+	public static void addPresetPath(String npc, PresetPath path){
+		io.read();
+		System.out.println("Adding preset path for NPC - " + npc);
+		for (SyncWrapper wrap : io.getReadableData()) {
+			io.add(wrap.getTag(), wrap.getObject());
+		}
+		io.add(npc, path);
+		io.write();
+	}
 
 	public static void spawnFixedNPCS(NPCHandler handle) {
-		QuestX.logDebug("registering npc spawns");
 		loader.read();
+		io.read();
+		
+		for (SyncWrapper wrap : io.getReadableData()) {
+			System.out.println("DATA = " + wrap.getTag() + " : OBJECT");
+		}
+		
 		QuestX.logDebug("wrapper length = " + loader.getReadableData().size());
 		for (SyncWrapper wrapper : loader.getReadableData()) {
 			if (wrapper.getTag().equalsIgnoreCase("NPC_COUNT")) {
@@ -56,6 +74,20 @@ public class FixedLoadingTable {
 				NPCTemplate template = tempLoader.getLoadedNPCTemplate();
 				template.registerSimpleNPCFixedSpawn(handle, spawnLocation);
 				fixedSpawns.put(npcName, spawnLocation);
+				
+				if(io.doesObjectExist(npcName)){
+					System.out.println("NPC " + npcName + " has a preset path.");
+					PresetPath path = (PresetPath) io.getObject(npcName);
+					SimpleNPC npc = handle.getSimpleNPCByName(npcName);
+					if(npc != null){
+						System.out.println("Preset path was set");
+						npc.setPresetPath(path);
+					} else {
+						System.out.println("NPC was null, Preset path NOT set");
+					}
+				} else {
+					System.out.println("NPC " + npcName + " doesn't have a preset path.");
+				}
 
 			} else {
 				QuestX.logError("Tried to load NPC '" + npcName + "' but no NPC file was found.");

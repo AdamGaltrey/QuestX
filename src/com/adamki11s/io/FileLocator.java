@@ -98,6 +98,10 @@ public class FileLocator {
 		return new File(data_root + File.separator + "fixed_spawns.qxs");
 	}
 	
+	public static File getNPCPresetPathingFile() {
+		return new File(data_root + File.separator + "preset_pathing.qxs");
+	}
+	
 	public static File getHotspotFile(){
 		return new File(data_root + File.separator + "hotspots.qxs");
 	}

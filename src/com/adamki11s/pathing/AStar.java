@@ -109,7 +109,7 @@ public class AStar {
 			// path found
 			LinkedList<Tile> routeTrace = new LinkedList<Tile>();
 			Tile parent;
-
+			
 			routeTrace.add(current);
 
 			while ((parent = current.getParent()) != null) {

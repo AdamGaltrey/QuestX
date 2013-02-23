@@ -16,7 +16,7 @@ public class PathingCache {
 	private final Location start;
 	private final Tile[] nodes;
 
-	private SoftReference<LinkedList<Tile[]>> nodeLink;
+	private SoftReference<LinkedList<Tile[]>> nodeLink = new SoftReference<LinkedList<Tile[]>>(new LinkedList<Tile[]>());
 
 	// each node is a point to walk to
 	public PathingCache(Location start, Tile[] nodes) {

@@ -19,6 +19,7 @@ import com.adamki11s.display.Pages;
 import com.adamki11s.display.QuestDisplay;
 import com.adamki11s.display.StaticStrings;
 import com.adamki11s.display.TaskDisplay;
+import com.adamki11s.events.PlayerInteract;
 import com.adamki11s.guidance.LocationGuider;
 import com.adamki11s.io.FileLocator;
 import com.adamki11s.npcs.NPCHandler;
@@ -66,7 +67,7 @@ public class QuestXCommands implements CommandExecutor {
 				Player p = (Player) sender;
 				
 				/*
-				 * Debug commands
+				 * Debug Commands
 				 */
 				
 				if(args.length == 2 && args[0].equalsIgnoreCase("debug")){
@@ -88,7 +89,31 @@ public class QuestXCommands implements CommandExecutor {
 				
 				
 				/*
-				 * Debug commands (END)
+				 * Debug Commands (END)
+				 */
+				
+				/*
+				 * Path Set Commands (START)
+				 */
+				
+				if(args.length == 3 && args[0].equalsIgnoreCase("path") && args[1].equalsIgnoreCase("setup")){
+					String npc = args[2];
+					PlayerInteract.startCreatingPresetPath(p, npc);
+					return true;
+				}
+				
+				if(args.length == 2 && args[0].equalsIgnoreCase("path") && args[1].equalsIgnoreCase("cancel")){
+					PlayerInteract.cancelCreatingPath(p);
+					return true;
+				}
+				
+				if(args.length == 3 && args[0].equalsIgnoreCase("path") && args[1].equalsIgnoreCase("create")){
+					PlayerInteract.finaliseCreatingPath(p, args[2]);
+					return true;
+				}
+				
+				/*
+				 * Path Set Commands (END)
 				 */
 				
 				/*

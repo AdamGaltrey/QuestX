@@ -27,10 +27,15 @@ public class PresetPath implements Serializable {
 		this.pCache = new PathingCache(spawn.getBukkitLocation(), nodes);
 	}
 	
-	public PathingCache getPathingCache(){
-		return this.pCache;
+	public int getTickDelay(){
+		return this.tickDelay;
 	}
 	
-	
+	public PathingCache getPathingCache(){
+		if(this.pCache == null){
+			this.pCache = new PathingCache(spawn.getBukkitLocation(), nodes);
+		}
+		return this.pCache;
+	}
 
 }

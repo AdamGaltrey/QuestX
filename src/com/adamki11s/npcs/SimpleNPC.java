@@ -24,6 +24,7 @@ import com.adamki11s.npcs.tasks.TaskManager;
 import com.adamki11s.npcs.tasks.TaskRegister;
 import com.adamki11s.npcs.triggers.CustomAction;
 import com.adamki11s.npcs.triggers.DeathAction;
+import com.adamki11s.pathing.preset.PresetPath;
 import com.adamki11s.quests.QuestLoader;
 import com.adamki11s.quests.QuestManager;
 import com.adamki11s.quests.QuestTask;
@@ -59,7 +60,9 @@ public class SimpleNPC {
 	boolean isSpawnFixed = false;
 
 	HumanNPC npc;
-	boolean isSpawned = false, underAttack = false, isPathing = true;
+	boolean isSpawned = false, underAttack = false, isPathing = true, isWalkingCustomPath = false;
+	
+	private PresetPath path;
 
 	final ItemStack[] gear;// boots 1, legs 2, chest 3, head 4, arm 5
 
@@ -69,6 +72,19 @@ public class SimpleNPC {
 		if (this.randMovement != null) {
 			this.randMovement.purgeCache();
 		}
+	}
+	
+	public void setPresetPath(PresetPath p){
+		this.isWalkingCustomPath = true;
+		this.path = p;
+	}
+	
+	public boolean isWalkingCustomPath(){
+		return this.isWalkingCustomPath;
+	}
+	
+	public PresetPath getPresetPath(){
+		return this.path;
 	}
 
 	public SimpleNPC(NPCHandler handle, String name, boolean moveable, boolean attackable, int minPauseTicks, int maxPauseTicks, int maxVariation, int health, int respawnTicks,
