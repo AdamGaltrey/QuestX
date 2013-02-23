@@ -52,8 +52,9 @@ public class SyncConfiguration extends IOStream {
 	}
 
 	private void writeProperty(String key, Object data) {
-		this.writeableData.put(key, data);
 		this.MergeRWArrays();
+		this.writeableData.put(key, data);
+
 		this.write();
 	}
 
