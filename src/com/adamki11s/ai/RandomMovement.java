@@ -104,7 +104,7 @@ public class RandomMovement {
 
 		this.targetPoint = target;
 
-		npc.getHumanNPC().pathFindTo(currentPoint, targetPoint);
+		npc.getHumanNPC().pathFindTo(currentPoint, targetPoint, (npc.getMaxVariation() * 2) + 2);
 
 		this.newMDScheduled = false;
 	}
@@ -130,7 +130,7 @@ public class RandomMovement {
 			QuestX.logDebug("Current is air!");
 		}
 
-		npc.getHumanNPC().pathFindTo(currentPoint, targetPoint);
+		npc.getHumanNPC().pathFindTo(currentPoint, targetPoint, (npc.getMaxVariation() * 2) + 2);
 		// npc.getHumanNPC().lookAtPoint(this.targetPoint);
 		this.newMDScheduled = false;
 	}

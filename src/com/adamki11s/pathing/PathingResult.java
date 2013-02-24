@@ -3,8 +3,7 @@ package com.adamki11s.pathing;
 public enum PathingResult {
 	
 	SUCCESS(0),
-	NO_PATH(-1),
-	ITERATIONS_EXCEEDED(-2);
+	NO_PATH(-1);
 
 	private final int ec;
 	

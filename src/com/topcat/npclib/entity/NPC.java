@@ -147,7 +147,7 @@ public class NPC {
 		return this.result;
 	}
 
-	public synchronized void pathFindTo(final Location init, Location end) {
+	public synchronized void pathFindTo(final Location init, Location end, int range) {
 
 		if (taskid != 0) {
 			this.stopPathFind();
@@ -171,7 +171,7 @@ public class NPC {
 		AStar astarPath;
 		
 		try {
-			astarPath = new AStar(init, end, 2000);
+			astarPath = new AStar(init, end, range);
 			walkNodes = astarPath.iterate();
 			this.result = astarPath.getPathingResult();
 		} catch (InvalidPathException e1) {

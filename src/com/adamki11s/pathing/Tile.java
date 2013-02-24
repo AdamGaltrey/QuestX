@@ -4,13 +4,9 @@
 
 package com.adamki11s.pathing;
 
-import java.io.Serializable;
-
 import org.bukkit.Location;
 
-public class Tile implements Serializable {
-
-	private static final long serialVersionUID = 1L;
+public class Tile {
 
 	// as offset from starting point
 	private final short x, y, z;
@@ -33,6 +29,10 @@ public class Tile implements Serializable {
 		b.append(z);
 		uid = b.toString();
 
+	}
+	
+	public boolean isInRange(int range){
+		return ((range - abs(x) >= 0) && (range - abs(y) >= 0) && (range - abs(z) >= 0));
 	}
 
 	public void setParent(Tile parent) {

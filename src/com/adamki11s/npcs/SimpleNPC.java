@@ -641,7 +641,7 @@ public class SimpleNPC {
 			if (!this.isPathFindingComplete()) {
 				this.stopPathFinding();
 			}
-			this.npc.pathFindTo(this.getNpc().getBukkitEntity().getLocation().subtract(0, 1, 0), l);
+			this.npc.pathFindTo(this.getNpc().getBukkitEntity().getLocation().subtract(0, 1, 0), l, ((this.maxVariation * 2) + 2));
 		}
 	}
 

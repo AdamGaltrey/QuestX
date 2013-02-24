@@ -41,10 +41,10 @@ public class AStar {
 		}
 	}
 
-	private final int maxIterations;
+	private final int range;
 	private final String endUID;
 
-	public AStar(Location start, Location end, int maxIterations) throws InvalidPathException {
+	public AStar(Location start, Location end, int range) throws InvalidPathException {
 
 		boolean s = true, e = true;
 
@@ -60,7 +60,7 @@ public class AStar {
 		this.ey = end.getBlockY();
 		this.ez = end.getBlockZ();
 
-		this.maxIterations = maxIterations;
+		this.range = range;
 
 		short sh = 0;
 		Tile t = new Tile(sh, sh, sh, null);
@@ -81,20 +81,26 @@ public class AStar {
 		return this.result;
 	}
 
+	boolean checkOnce = false;
+	
+	private int abs(int i) {
+		return (i < 0 ? -i : i);
+	}
+
 	public ArrayList<Tile> iterate() {
+
+		if (!checkOnce) {
+			// invert the boolean flag
+			checkOnce ^= true;
+			if((abs(sx - ex) > range) || (abs(sy - ey) > range) || (abs(sz - ez) > range)){
+				this.result = PathingResult.NO_PATH;
+				return null;//jump out
+			}
+		}
 		// while not at end
 		Tile current = null;
 
-		int iterations = 0;
-
 		while (canContinue()) {
-
-			iterations++;
-
-			if (iterations > this.maxIterations) {
-				this.result = PathingResult.ITERATIONS_EXCEEDED;
-				break;
-			}
 
 			// get lowest F cost square on open list
 			current = this.getLowestFTile();
@@ -109,7 +115,7 @@ public class AStar {
 			// path found
 			LinkedList<Tile> routeTrace = new LinkedList<Tile>();
 			Tile parent;
-			
+
 			routeTrace.add(current);
 
 			while ((parent = current.getParent()) != null) {
@@ -186,6 +192,11 @@ public class AStar {
 
 					Tile t = new Tile((short) (current.getX() + x), (short) (current.getY() + y), (short) (current.getZ() + z), current);
 
+					if (!t.isInRange(this.range)) {
+						// if block is out of bounds continue
+						continue;
+					}
+
 					if (x != 0 && z != 0 && (y == 0 || y == 1)) {
 						// check to stop jumping through diagonal blocks
 						Tile xOff = new Tile((short) (current.getX() + x), (short) (current.getY() + y), (short) (current.getZ()), current), zOff = new Tile((short) (current.getX()),
@@ -247,9 +258,9 @@ public class AStar {
 		// 85, 107 and 113 stops npcs climbing fences and fence gates
 		if (i != 10 && i != 11 && i != 51 && i != 59 && i != 65 && i != 0 && i != 85 && i != 107 && i != 113 && !canBlockBeWalkedThrough(i)) {
 			// make sure the blocks above are air
-			
-			if(b.getRelative(0, 1, 0).getTypeId() == 107){
-				//fench gate check, if closed continue
+
+			if (b.getRelative(0, 1, 0).getTypeId() == 107) {
+				// fench gate check, if closed continue
 				Gate g = new Gate(b.getRelative(0, 1, 0).getData());
 				return (g.isOpen() ? (b.getRelative(0, 2, 0).getTypeId() == 0) : false);
 			}
