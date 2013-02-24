@@ -128,12 +128,11 @@ public class FixedLoadingTable {
 	}
 
 	public static final void deleteAllFixedSpawns(Player p, NPCHandler handle) {
-		File spawn = FileLocator.getNPCFixedSpawnsFile();
+		File spawn = FileLocator.getNPCFixedSpawnsFile(), pres = FileLocator.getNPCPresetPathingFile();
 		if (spawn.canRead() && spawn.canWrite()) {
 			if (spawn.exists()) {
-				SyncObjectIO io = new SyncObjectIO(spawn);
-				io.read();
-				for(SyncWrapper wrap : io.getReadableData()){
+				loader.read();
+				for(SyncWrapper wrap : loader.getReadableData()){
 					SimpleNPC rem = handle.getSimpleNPCByName(wrap.getTag());
 					if (rem != null) {
 						rem.destroyNPCObject();
@@ -142,18 +141,39 @@ public class FixedLoadingTable {
 				spawn.delete();
 				try {
 					spawn.createNewFile();
-					io.add("NPC_COUNT", 0);
-					io.write();
+					loader.add("NPC_COUNT", 0);
+					loader.write();
 					QuestX.logChat(p, "All fixed spawns for NPCs were deleted");
 				} catch (IOException e) {
-					QuestX.logChat(p, "There was an error deleting the file");
+					QuestX.logChat(p, "There was an error deleting the fixed spawns file");
 					e.printStackTrace();
 				}
 			} else {
-				QuestX.logChat(p, "The file does not exist!");
+				QuestX.logChat(p, "The fixed spawns file does not exist!");
 			}
 		} else {
-			QuestX.logChat(p, "The file cannot be accessed, it is either missing or being used. Please try again later.");
+			QuestX.logChat(p, "The fixed spawns file cannot be accessed, it is either missing or being used. Please try again later.");
+		}
+		
+		
+		if (pres.canRead() && pres.canWrite()) {
+			if (pres.exists()) {
+				pres.delete();
+				try {
+					pres.createNewFile();
+					io.clearWriteArray();
+					io.add("NULL", 0);
+					io.write();
+					QuestX.logChat(p, "All preset paths for NPCs were deleted");
+				} catch (IOException e) {
+					QuestX.logChat(p, "There was an error deleting the preset pathing  file");
+					e.printStackTrace();
+				}
+			} else {
+				QuestX.logChat(p, "The preset pathing file does not exist!");
+			}
+		} else {
+			QuestX.logChat(p, "The preset pathing file cannot be accessed, it is either missing or being used. Please try again later.");
 		}
 	}
 
@@ -194,19 +214,28 @@ public class FixedLoadingTable {
 				loader.write();
 				loader.clearReadArray();
 				loader.clearWriteArray();
+				
+				io.read();
+				io.clearWriteArray();
+				io.clearReadArray();
+				for (SyncWrapper wrap : loader.getReadableData()) {
+					// copy all the data read, except the npc to remove
+					if (!wrap.getTag().equalsIgnoreCase(npcName)) {
+						io.add(wrap);
+					}
+				}
+				io.write();
+				
+				if(presetNPCs.contains(npcName)){
+					QuestX.logChat(p, "The preset path for NPC '" + npcName + "' was removed.");
+					presetNPCs.remove(npcName);
+				}
 
 				LoadNPCTemplate tmp = new LoadNPCTemplate(npcName);
 
 				tmp.loadProperties();
 				
 				SimpleNPC npc = tmp.getLoadedNPCTemplate().registerSimpleNPCFixedSpawn(handle, p.getLocation());
-				
-				npc.setAllowedToMove(false);
-				
-				if(io.doesObjectExist(npcName)){
-					PresetPath path = (PresetPath) io.getObject(npcName);	
-					npc.setPresetPath(path);
-				}
 				
 				npc.setAllowedToMove(true);
 
@@ -250,9 +279,24 @@ public class FixedLoadingTable {
 				loader.clearWriteArray();
 
 				fixedSpawns.remove(npcName);
+				
+				io.read();
+				io.clearWriteArray();
+				io.clearReadArray();
+				for (SyncWrapper wrap : loader.getReadableData()) {
+					// copy all the data read, except the npc to remove
+					if (!wrap.getTag().equalsIgnoreCase(npcName)) {
+						io.add(wrap);
+					}
+				}
+				io.write();
 
 				if (p != null) {
 					QuestX.logChat(p, "The fixed spawn for NPC '" + npcName + "' was removed.");
+					if(presetNPCs.contains(npcName)){
+						QuestX.logChat(p, "The preset path for NPC '" + npcName + "' was removed.");
+						presetNPCs.remove(npcName);
+					}
 				}
 
 				return true;
