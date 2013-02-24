@@ -70,6 +70,7 @@ public class FixedLoadingTable {
 			if (FileLocator.doesNPCNameExist(npcName)) {
 				SyncLocation sl = (SyncLocation) wrapper.getObject();
 				Location spawnLocation = sl.getBukkitLocation();
+				
 				LoadNPCTemplate tempLoader = new LoadNPCTemplate(npcName);
 
 				tempLoader.loadProperties();

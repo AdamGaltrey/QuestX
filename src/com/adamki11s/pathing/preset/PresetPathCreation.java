@@ -27,9 +27,6 @@ public class PresetPathCreation {
 
 	public PresetPathCreation(Location start, String npc, String worldName) {
 		this.start = start;
-		for(Player p : Bukkit.getServer().getOnlinePlayers()){
-			p.getWorld().getBlockAt(start).setType(Material.DIAMOND_BLOCK);
-		}
 		this.points.add(start);
 		this.npc = npc;
 		this.world = worldName;
@@ -64,11 +61,11 @@ public class PresetPathCreation {
 					Block b = t.getLocation(previousPoint).getBlock();
 					BlockState old = new BlockState(b);
 					states.add(old);
-					p.sendBlockChange(b.getLocation(), Material.SPONGE, (byte) 0);
+					p.sendBlockChange(b.getLocation(), Material.WOOL, (byte) 5);
 				}
 				Bukkit.getServer().getScheduler().runTaskLater(QuestX.p, new Runnable() {
 					public void run() {
-						p.sendBlockChange(l, Material.SPONGE, (byte) 0);
+						p.sendBlockChange(l, Material.WOOL, (byte) 5);
 					}
 				}, 3L);
 				// p.sendBlockChange(l, Material.DIAMOND_BLOCK, (byte) 0);

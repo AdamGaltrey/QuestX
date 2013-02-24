@@ -622,9 +622,9 @@ public class SimpleNPC {
 	}
 
 	public void destroyNPCObject() {
+		this.handle.removeNPC(this);
 		this.despawnNPC();
 		UniqueNameRegister.removeName(name);
-		this.handle.removeNPC(this);
 		HotspotManager.despawnNPC(this.name);
 	}
 
