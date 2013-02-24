@@ -373,6 +373,15 @@ public class QuestXCommands implements CommandExecutor {
 				/*
 				 * Fixed Spawn Commands (START)
 				 */
+				
+				if(args.length == 2 && args[0].equalsIgnoreCase("fixedspawns") && args[1].equalsIgnoreCase("deleteall")){
+					if (QPerms.hasPermission(p, "questx.fixedspawns.deleteall")) {
+						FixedLoadingTable.deleteAllFixedSpawns(p, handle);
+					} else {
+						QuestX.logChatError(p, "You must be an Operator to perform this command");
+					}
+					return true;
+				}
 
 				if (args.length == 3 && args[0].equalsIgnoreCase("fixedspawns")) {
 					String npcName = args[2];
@@ -381,13 +390,6 @@ public class QuestXCommands implements CommandExecutor {
 						return true;
 					} else if (args[1].equalsIgnoreCase("edit") && QPerms.hasPermission(p, "questx.fixedspawns.edit")) {
 						FixedLoadingTable.editFixedNPCSpawn(p, npcName, handle);
-						return true;
-					} else if (args[1].equalsIgnoreCase("deleteall")) {
-						if (QPerms.hasPermission(p, "questx.fixedspawns.deleteall")) {
-							FixedLoadingTable.deleteAllFixedSpawns(p, handle);
-						} else {
-							QuestX.logChatError(p, "You must be an Operator to perform this command");
-						}
 						return true;
 					}
 				}
