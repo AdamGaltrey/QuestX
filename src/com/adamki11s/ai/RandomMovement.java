@@ -104,7 +104,7 @@ public class RandomMovement {
 
 		this.targetPoint = target;
 
-		npc.getHumanNPC().pathFindTo(currentPoint, targetPoint, (npc.getMaxVariation() * 2) + 2);
+		npc.getHumanNPC().pathFindTo(currentPoint, targetPoint, (int)(target.distance(currentPoint) * 2.5));
 
 		this.newMDScheduled = false;
 	}
