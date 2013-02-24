@@ -26,7 +26,10 @@ public class PresetPathCreation {
 	private ArrayList<BlockState> states = new ArrayList<BlockState>();
 
 	public PresetPathCreation(Location start, String npc, String worldName) {
-		this.start = start.subtract(0, 1, 0);
+		this.start = start;
+		for(Player p : Bukkit.getServer().getOnlinePlayers()){
+			p.getWorld().getBlockAt(start).setType(Material.DIAMOND_BLOCK);
+		}
 		this.points.add(start);
 		this.npc = npc;
 		this.world = worldName;

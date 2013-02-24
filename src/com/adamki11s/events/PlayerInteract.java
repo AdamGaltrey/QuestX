@@ -14,6 +14,7 @@ import org.bukkit.plugin.Plugin;
 
 import com.adamki11s.npcs.NPCHandler;
 import com.adamki11s.npcs.SimpleNPC;
+import com.adamki11s.npcs.loading.FixedLoadingTable;
 import com.adamki11s.pathing.Tile;
 import com.adamki11s.pathing.preset.PresetPathCreation;
 import com.adamki11s.questx.QuestX;
@@ -77,11 +78,20 @@ public class PlayerInteract implements Listener {
 		if (isCreatingPresetPath(p.getName())) {
 			
 			PresetPathCreation path = creating.get(p.getName());
+			
+			path.resetBlockStates(p);
 
 			path.createPath(p);
 
 			creating.remove(p.getName());
 			QuestX.logChat(p, ChatColor.GREEN + "Path creation completed.");
+			
+			SimpleNPC npc = handle.getSimpleNPCByName(path.getNPC());
+			if(npc != null){
+				npc.destroyNPCObject();
+			}
+			
+			FixedLoadingTable.spawnFixedNPC(handle, path.getNPC());
 		} else {
 			QuestX.logChatError(p, ChatColor.RED + "You are not creating a path.");
 		}
