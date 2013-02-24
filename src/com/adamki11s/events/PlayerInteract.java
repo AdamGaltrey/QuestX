@@ -56,6 +56,10 @@ public class PlayerInteract implements Listener {
 					QuestX.logChatError(p, ChatColor.RED + "This NPC does not have a fixed spawn.");
 					return;
 				} else {
+					if(FixedLoadingTable.presetNPCs.contains(n)){
+						QuestX.logChatError(p, ChatColor.RED + "This NPC already has a preset path.");
+						return;
+					}
 					creating.put(p.getName(), new PresetPathCreation(npc.getFixedLocation(), n, p.getWorld().getName()));
 					QuestX.logChat(p, ChatColor.GREEN + "Set your points by right clicking.");
 				}
@@ -74,14 +78,14 @@ public class PlayerInteract implements Listener {
 		}
 	}
 
-	public static void finaliseCreatingPath(Player p) {
+	public static void finaliseCreatingPath(Player p, NPCHandler handle) {
 		if (isCreatingPresetPath(p.getName())) {
 			
 			PresetPathCreation path = creating.get(p.getName());
 			
 			path.resetBlockStates(p);
 
-			path.createPath(p);
+			path.createPath(p, handle);
 
 			creating.remove(p.getName());
 			QuestX.logChat(p, ChatColor.GREEN + "Path creation completed.");

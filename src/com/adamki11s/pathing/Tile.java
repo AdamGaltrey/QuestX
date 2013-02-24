@@ -4,9 +4,13 @@
 
 package com.adamki11s.pathing;
 
+import java.io.Serializable;
+
 import org.bukkit.Location;
 
-public class Tile {
+public class Tile implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 
 	// as offset from starting point
 	private final short x, y, z;

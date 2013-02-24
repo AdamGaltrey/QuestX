@@ -9,6 +9,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
+import com.adamki11s.npcs.NPCHandler;
 import com.adamki11s.npcs.loading.FixedLoadingTable;
 import com.adamki11s.pathing.AStar;
 import com.adamki11s.pathing.AStar.InvalidPathException;
@@ -95,10 +96,10 @@ public class PresetPathCreation {
 		}
 	}
 
-	public void createPath(Player p) {
+	public void createPath(Player p, NPCHandler handle) {
 		Tile[] nodes = this.getFinalTileNodes();
 		PresetPath presetPath = new PresetPath(new SyncLocation(this.start), nodes);
-		FixedLoadingTable.addPresetPath(npc, presetPath);
+		FixedLoadingTable.addPresetPath(npc, presetPath, handle);
 		QuestX.logChat(p, ChatColor.GREEN + "Preset path set successfully.");
 	}
 

@@ -16,6 +16,7 @@ import com.adamki11s.commands.help.HelpBook;
 import com.adamki11s.commands.help.HelpDispatcher;
 import com.adamki11s.display.FixedSpawnsDisplay;
 import com.adamki11s.display.Pages;
+import com.adamki11s.display.PresetPathsDisplay;
 import com.adamki11s.display.QuestDisplay;
 import com.adamki11s.display.StaticStrings;
 import com.adamki11s.display.TaskDisplay;
@@ -93,23 +94,45 @@ public class QuestXCommands implements CommandExecutor {
 				 */
 				
 				/*
-				 * Path Set Commands (START)
+				 * Path Preset Commands (START)
 				 */
 				
-				if(args.length == 3 && args[0].equalsIgnoreCase("path") && args[1].equalsIgnoreCase("setup")){
+				if(args.length == 3 && args[0].equalsIgnoreCase("path") && args[1].equalsIgnoreCase("setup") && QPerms.hasPermission(p, "questx.path.preset")){
 					String npc = args[2];
 					PlayerInteract.startCreatingPresetPath(p, npc);
 					return true;
 				}
 				
-				if(args.length == 2 && args[0].equalsIgnoreCase("path") && args[1].equalsIgnoreCase("cancel")){
+				if(args.length == 2 && args[0].equalsIgnoreCase("path") && args[1].equalsIgnoreCase("cancel") && QPerms.hasPermission(p, "questx.path.preset")){
 					PlayerInteract.cancelCreatingPath(p);
 					return true;
 				}
 				
-				if(args.length == 2 && args[0].equalsIgnoreCase("path") && args[1].equalsIgnoreCase("create")){
-					PlayerInteract.finaliseCreatingPath(p);
+				if(args.length == 2 && args[0].equalsIgnoreCase("path") && args[1].equalsIgnoreCase("create") && QPerms.hasPermission(p, "questx.path.preset")){
+					PlayerInteract.finaliseCreatingPath(p, handle);
 					return true;
+				}
+				
+				if(args.length == 3 && args[0].equalsIgnoreCase("path") && args[1].equalsIgnoreCase("delete") && QPerms.hasPermission(p, "questx.path.preset")){
+					FixedLoadingTable.removePresetPath(p, args[2], handle);
+					return true;
+				}
+				
+				if (args.length >= 2 && args[0].equalsIgnoreCase("path") && QPerms.hasPermission(p, "questx.fixedspawns.list")) {
+					if (args[1].equalsIgnoreCase("list")) {
+						if (args.length == 2) {
+							PresetPathsDisplay.display(p, 1);
+						} else if (args.length == 3) {
+							int pg = 1;
+							try {
+								pg = Integer.parseInt(args[2]);
+							} catch (NumberFormatException nfe) {
+								QuestX.logChat(p, ChatColor.RED + "Page number must be an integer! /q fixedspawns list <page>");
+							}
+							PresetPathsDisplay.display(p, pg);
+						}
+						return true;
+					}
 				}
 				
 				/*
@@ -403,7 +426,7 @@ public class QuestXCommands implements CommandExecutor {
 							try {
 								pg = Integer.parseInt(args[2]);
 							} catch (NumberFormatException nfe) {
-								QuestX.logChat(p, ChatColor.RED + "Page number must be an integer! /q display fixedspawns <page>");
+								QuestX.logChat(p, ChatColor.RED + "Page number must be an integer! /q fixedspawns list <page>");
 							}
 							FixedSpawnsDisplay.display(p, pg);
 						}
