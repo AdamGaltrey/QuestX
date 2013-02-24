@@ -146,31 +146,6 @@ public class NPC {
 	public PathingResult getPathingResult() {
 		return this.result;
 	}
-	
-	public synchronized void presetPathFindTo(ArrayList<Tile> tiles){
-		if (taskid != 0) {
-			this.stopPathFind();
-			//QuestX.logError("Task did not cancel correctly.");
-			return;
-		}
-
-		if (!this.isPathFindComplete()) {
-			//QuestX.logError("Cannot start movement, old path is incomplete.");
-			return;
-		}
-		
-		this.walkNodes = tiles;
-		
-		this.e = tiles.get(tiles.size() - 1).getLocation(this.entity.getBukkitEntity().getLocation());
-		
-		taskid = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(NPCManager.plugin, new Runnable() {
-			@Override
-			public void run() {
-				// moveToNextTile(init);
-				move(entity.getBukkitEntity().getLocation());
-			}
-		}, 0L, 5L);
-	}
 
 	public synchronized void pathFindTo(final Location init, Location end) {
 
@@ -217,7 +192,7 @@ public class NPC {
 				// moveToNextTile(init);
 				move(init);
 			}
-		}, 0L, 5L);
+		}, 0L, 6L);
 	}
 
 }
