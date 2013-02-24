@@ -131,10 +131,17 @@ public class FixedLoadingTable {
 		File spawn = FileLocator.getNPCFixedSpawnsFile();
 		if (spawn.canRead() && spawn.canWrite()) {
 			if (spawn.exists()) {
+				SyncObjectIO io = new SyncObjectIO(spawn);
+				io.read();
+				for(SyncWrapper wrap : io.getReadableData()){
+					SimpleNPC rem = handle.getSimpleNPCByName(wrap.getTag());
+					if (rem != null) {
+						rem.destroyNPCObject();
+					}
+				}
 				spawn.delete();
 				try {
 					spawn.createNewFile();
-					SyncObjectIO io = new SyncObjectIO(spawn);
 					io.add("NPC_COUNT", 0);
 					io.write();
 					QuestX.logChat(p, "All fixed spawns for NPCs were deleted");
