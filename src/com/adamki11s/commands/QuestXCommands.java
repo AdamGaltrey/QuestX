@@ -107,8 +107,8 @@ public class QuestXCommands implements CommandExecutor {
 					return true;
 				}
 				
-				if(args.length == 3 && args[0].equalsIgnoreCase("path") && args[1].equalsIgnoreCase("create")){
-					PlayerInteract.finaliseCreatingPath(p, args[2]);
+				if(args.length == 2 && args[0].equalsIgnoreCase("path") && args[1].equalsIgnoreCase("create")){
+					PlayerInteract.finaliseCreatingPath(p);
 					return true;
 				}
 				

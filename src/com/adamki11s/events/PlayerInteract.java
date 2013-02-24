@@ -73,21 +73,12 @@ public class PlayerInteract implements Listener {
 		}
 	}
 
-	public static void finaliseCreatingPath(Player p, String td) {
+	public static void finaliseCreatingPath(Player p) {
 		if (isCreatingPresetPath(p.getName())) {
-			
-			int tickDelay = 0;
-			
-			try{
-				tickDelay = Integer.parseInt(td);
-			} catch (NumberFormatException e){
-				QuestX.logChatError(p, ChatColor.RED + "Tick delay must be an integer.");
-				return;
-			}
 			
 			PresetPathCreation path = creating.get(p.getName());
 
-			path.createPath(p, tickDelay);
+			path.createPath(p);
 
 			creating.remove(p.getName());
 			QuestX.logChat(p, ChatColor.GREEN + "Path creation completed.");

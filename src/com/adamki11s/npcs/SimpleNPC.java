@@ -7,6 +7,7 @@ import net.minecraft.server.v1_4_R1.Packet;
 import net.minecraft.server.v1_4_R1.Packet5EntityEquipment;
 import net.minecraft.server.v1_4_R1.WorldServer;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_4_R1.inventory.CraftItemStack;
@@ -19,6 +20,7 @@ import com.adamki11s.dialogue.Conversation;
 import com.adamki11s.events.ConversationRegister;
 import com.adamki11s.io.FileLocator;
 import com.adamki11s.io.WorldConfigData;
+import com.adamki11s.npcs.loading.FixedLoadingTable;
 import com.adamki11s.npcs.population.HotspotManager;
 import com.adamki11s.npcs.tasks.TaskManager;
 import com.adamki11s.npcs.tasks.TaskRegister;
@@ -61,7 +63,7 @@ public class SimpleNPC {
 
 	HumanNPC npc;
 	boolean isSpawned = false, underAttack = false, isPathing = true, isWalkingCustomPath = false;
-	
+
 	private PresetPath path;
 
 	final ItemStack[] gear;// boots 1, legs 2, chest 3, head 4, arm 5
@@ -73,23 +75,33 @@ public class SimpleNPC {
 			this.randMovement.purgeCache();
 		}
 	}
-	
-	public void setPresetPath(PresetPath p){
+
+	public void setPresetPath(PresetPath p) {
 		this.isWalkingCustomPath = true;
 		this.path = p;
+		this.allowToMove = true;
 	}
-	
-	public boolean isWalkingCustomPath(){
+
+	public boolean isWalkingCustomPath() {
 		return this.isWalkingCustomPath;
 	}
-	
-	public PresetPath getPresetPath(){
+
+	public PresetPath getPresetPath() {
 		return this.path;
+	}
+
+	public boolean isAllowedToMove() {
+		return this.allowToMove;
+	}
+
+	public void setAllowedToMove(boolean move) {
+		this.allowToMove = move;
 	}
 
 	public SimpleNPC(NPCHandler handle, String name, boolean moveable, boolean attackable, int minPauseTicks, int maxPauseTicks, int maxVariation, int health, int respawnTicks,
 			ItemStackDrop inventory, ItemStack[] gear, int damageMod, double retalliationMultiplier) {
 		UniqueNameRegister.addNPCName(name);
+
 		this.name = name;
 		this.moveable = moveable;
 		this.attackable = attackable;
@@ -500,7 +512,7 @@ public class SimpleNPC {
 					return;
 				}
 			}
-			
+
 			if (!FileLocator.doesNPCDlgFileExist(this.getName())) {
 				QuestX.logChat(p, ChatColor.AQUA + "[QuestX] " + ChatColor.RED + "No dialogue.dlg file found or it is empty!");
 			} else {
@@ -542,8 +554,16 @@ public class SimpleNPC {
 		return ((HumanNPC) this.handle.getNPCManager().getNPC(id)).getName().equalsIgnoreCase(this.getName());
 	}
 
+	private boolean allowToMove = false;
+
 	public synchronized void spawnNPC() {
 		if (!isSpawned) {
+
+			if (FixedLoadingTable.presetNPCs.contains(name)) {
+				this.allowToMove = false;
+			} else {
+				this.allowToMove = true;
+			}
 
 			Location toSpawn;
 			if (this.isSpawnFixed()) {
@@ -577,6 +597,7 @@ public class SimpleNPC {
 			isSpawned = true;
 
 			this.handle.registerNPCSpawn(this);
+
 		}
 	}
 
@@ -608,7 +629,7 @@ public class SimpleNPC {
 	}
 
 	public void moveTick() {
-		if (this.randMovement != null && this.isAllowedToPathFind()) {
+		if (this.allowToMove && this.randMovement != null && this.isAllowedToPathFind()) {
 			this.randMovement.move();
 		}
 	}
@@ -616,10 +637,12 @@ public class SimpleNPC {
 	public void moveTo(Location l) {
 		// QuestX.logMSG("moving npc " + this.getName() + " to location " +
 		// l.getBlock().getType().toString()));
-		if (!this.isPathFindingComplete()) {
-			this.stopPathFinding();
+		if (this.allowToMove) {
+			if (!this.isPathFindingComplete()) {
+				this.stopPathFinding();
+			}
+			this.npc.pathFindTo(this.getNpc().getBukkitEntity().getLocation().subtract(0, 1, 0), l);
 		}
-		this.npc.pathFindTo(this.getNpc().getBukkitEntity().getLocation().subtract(0, 1, 0), l);
 	}
 
 	public void lookAt(Location l) {

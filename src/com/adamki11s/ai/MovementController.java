@@ -17,7 +17,7 @@ public class MovementController {
 		ArrayList<SimpleNPC> process = new ArrayList<SimpleNPC>();
 		for(SimpleNPC npc : handle.getNPCs()){
 			
-			if(!npc.isMovementScheduled() && npc.isAllowedToPathFind() && npc.isMoveable() && npc.isNPCSpawned() && !npc.isUnderAttack() && !npc.isConversing()){
+			if(npc.isAllowedToMove() && !npc.isMovementScheduled() && npc.isAllowedToPathFind() && npc.isMoveable() && npc.isNPCSpawned() && !npc.isUnderAttack() && !npc.isConversing()){
 				process.add(npc);
 			}
 		}

@@ -19,20 +19,20 @@ import com.adamki11s.sync.io.serializable.SyncLocation;
 public class PresetPathCreation {
 
 	private final String npc, world;
-	
+
 	private final Location start;
 
 	private ArrayList<Location> points = new ArrayList<Location>();
 	private ArrayList<BlockState> states = new ArrayList<BlockState>();
 
 	public PresetPathCreation(Location start, String npc, String worldName) {
-		this.start = start;
+		this.start = start.subtract(0, 1, 0);
 		this.points.add(start);
 		this.npc = npc;
 		this.world = worldName;
 	}
-	
-	public Location getStart(){
+
+	public Location getStart() {
 		return this.start;
 	}
 
@@ -46,19 +46,14 @@ public class PresetPathCreation {
 
 	public void setLocation(final Player p, final Location l) {
 		Location previousPoint = points.get(points.size() - 1);
-		
-		//weird bug, block change doesn't show for clicked block so delayed task for clicked block change.
-		Bukkit.getServer().getScheduler().runTaskLater(QuestX.p, new Runnable(){
-			public void run(){
-				p.sendBlockChange(l, Material.SPONGE, (byte) 0);
-			}
-		}, 3L);
+
+		// weird bug, block change doesn't show for clicked block so delayed
+		// task for clicked block change.
 
 		try {
 			AStar machine = new AStar(previousPoint, l, 3000);
 			ArrayList<Tile> list = machine.iterate();
-			
-			
+
 			switch (machine.getPathingResult()) {
 			case SUCCESS:
 				points.add(l);
@@ -68,8 +63,14 @@ public class PresetPathCreation {
 					states.add(old);
 					p.sendBlockChange(b.getLocation(), Material.SPONGE, (byte) 0);
 				}
-				//p.sendBlockChange(l, Material.DIAMOND_BLOCK, (byte) 0);
-				//p.sendBlockChange(previousPoint, Material.DIAMOND_BLOCK, (byte) 0);
+				Bukkit.getServer().getScheduler().runTaskLater(QuestX.p, new Runnable() {
+					public void run() {
+						p.sendBlockChange(l, Material.SPONGE, (byte) 0);
+					}
+				}, 3L);
+				// p.sendBlockChange(l, Material.DIAMOND_BLOCK, (byte) 0);
+				// p.sendBlockChange(previousPoint, Material.DIAMOND_BLOCK,
+				// (byte) 0);
 				QuestX.logChat(p, ChatColor.GREEN + "Path point set successfully.");
 				break;
 			default:
@@ -77,7 +78,14 @@ public class PresetPathCreation {
 				return;
 			}
 		} catch (InvalidPathException e) {
-			QuestX.logChatError(p, ChatColor.RED + "Invalid block selected");
+			StringBuilder error = new StringBuilder().append(ChatColor.RED).append("Invalid block selected");
+			if (e.isEndNotSolid()) {
+				error.append(" end block is not solid,");
+			}
+			if (e.isStartNotSolid()) {
+				error.append(" start block is not solid,");
+			}
+			QuestX.logChatError(p, error.toString());
 		}
 	}
 
@@ -86,10 +94,10 @@ public class PresetPathCreation {
 			bs.restoreBlock(p);
 		}
 	}
-	
-	public void createPath(Player p, int tickDelay){
+
+	public void createPath(Player p) {
 		Tile[] nodes = this.getFinalTileNodes();
-		PresetPath presetPath = new PresetPath(this.npc, new SyncLocation(this.start), nodes, tickDelay);
+		PresetPath presetPath = new PresetPath(new SyncLocation(this.start), nodes);
 		FixedLoadingTable.addPresetPath(npc, presetPath);
 		QuestX.logChat(p, ChatColor.GREEN + "Preset path set successfully.");
 	}
@@ -102,7 +110,7 @@ public class PresetPathCreation {
 			tiles[count] = this.getTile(start, this.points.remove(0));
 			count++;
 		}
-		tiles[count] = new Tile((short)0, (short)0, (short)0, null);
+		tiles[count] = new Tile((short) 0, (short) 0, (short) 0, null);
 		return tiles;
 	}
 

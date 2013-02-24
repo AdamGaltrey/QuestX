@@ -100,6 +100,15 @@ public class MovementData {
 			}
 		}
 	}
+	
+	public void generateMoveTicks(){
+		Random r = new Random();
+		if (this.maxPauseTicks == 0 && this.minPauseTicks == 0) {
+			this.pauseTicks = 0;
+		} else {
+			this.pauseTicks = r.nextInt(maxPauseTicks - minPauseTicks) + minPauseTicks;
+		}
+	}
 
 	private boolean canMoveHere(World w, int dx, int dy, int dz, int rx, int ry, int rz) {
 		if (dx == 0 && dy == 0 && dz == 0) {

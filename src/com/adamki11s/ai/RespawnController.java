@@ -72,7 +72,9 @@ public class RespawnController {
 						tempLoader.loadProperties();
 						if (tempLoader.wantsToLoad()) {
 							NPCTemplate temp = tempLoader.getLoadedNPCTemplate();
+							
 							temp.addSimpleNPCToWaitingList(this.handle);
+							
 							QuestX.logDebug("Added NPC '" + npcNameToLoad + "' to waiting list");
 							break;
 						} else {

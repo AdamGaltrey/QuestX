@@ -30,6 +30,8 @@ public class FixedLoadingTable {
 	private final static SyncObjectIO loader = new SyncObjectIO(FileLocator.getNPCFixedSpawnsFile());
 	
 	private final static SyncObjectIO io = new SyncObjectIO(FileLocator.getNPCPresetPathingFile());
+	
+	public static HashSet<String> presetNPCs = new HashSet<String>();
 
 	public static String[] getFixedSpawns() {
 		HashSet<String> ret = new HashSet<String>(fixedSpawns.size());
@@ -55,8 +57,8 @@ public class FixedLoadingTable {
 		loader.read();
 		io.read();
 		
-		for (SyncWrapper wrap : io.getReadableData()) {
-			System.out.println("DATA = " + wrap.getTag() + " : OBJECT");
+		for(SyncWrapper wrap : io.getReadableData()){
+			presetNPCs.add(wrap.getTag());
 		}
 		
 		QuestX.logDebug("wrapper length = " + loader.getReadableData().size());
@@ -72,22 +74,20 @@ public class FixedLoadingTable {
 
 				tempLoader.loadProperties();
 				NPCTemplate template = tempLoader.getLoadedNPCTemplate();
-				template.registerSimpleNPCFixedSpawn(handle, spawnLocation);
-				fixedSpawns.put(npcName, spawnLocation);
+				
+				SimpleNPC npc = template.registerSimpleNPCFixedSpawn(handle, spawnLocation);
+				
+				npc.setAllowedToMove(false);
 				
 				if(io.doesObjectExist(npcName)){
-					System.out.println("NPC " + npcName + " has a preset path.");
-					PresetPath path = (PresetPath) io.getObject(npcName);
-					SimpleNPC npc = handle.getSimpleNPCByName(npcName);
-					if(npc != null){
-						System.out.println("Preset path was set");
-						npc.setPresetPath(path);
-					} else {
-						System.out.println("NPC was null, Preset path NOT set");
-					}
-				} else {
-					System.out.println("NPC " + npcName + " doesn't have a preset path.");
+					PresetPath path = (PresetPath) io.getObject(npcName);	
+					npc.setPresetPath(path);
 				}
+				
+				npc.setAllowedToMove(true);
+				
+				fixedSpawns.put(npcName, spawnLocation);
+				
 
 			} else {
 				QuestX.logError("Tried to load NPC '" + npcName + "' but no NPC file was found.");
@@ -98,13 +98,27 @@ public class FixedLoadingTable {
 
 	public static void spawnFixedNPC(NPCHandler handle, String name) {
 		loader.read();
+		io.read();
 		SyncLocation sl = (SyncLocation) loader.getObject(name);
 		Location spawnLocation = sl.getBukkitLocation();
 		LoadNPCTemplate tempLoader = new LoadNPCTemplate(name);
 
 		tempLoader.loadProperties();
+		
 		NPCTemplate template = tempLoader.getLoadedNPCTemplate();
-		template.registerSimpleNPCFixedSpawn(handle, spawnLocation);
+		
+		
+		
+		SimpleNPC npc = template.registerSimpleNPCFixedSpawn(handle, spawnLocation);
+		
+		npc.setAllowedToMove(false);
+		
+		if(io.doesObjectExist(name)){
+			PresetPath path = (PresetPath) io.getObject(name);	
+			npc.setPresetPath(path);
+		}
+		
+		npc.setAllowedToMove(true);
 
 	}
 
@@ -152,6 +166,7 @@ public class FixedLoadingTable {
 				}
 
 				loader.read();
+				io.read();
 				loader.clearWriteArray();
 				for (SyncWrapper wrap : loader.getReadableData()) {
 					// copy all the data read, except the npc to remove, set
@@ -172,7 +187,17 @@ public class FixedLoadingTable {
 				LoadNPCTemplate tmp = new LoadNPCTemplate(npcName);
 
 				tmp.loadProperties();
-				tmp.getLoadedNPCTemplate().registerSimpleNPCFixedSpawn(handle, p.getLocation());
+				
+				SimpleNPC npc = tmp.getLoadedNPCTemplate().registerSimpleNPCFixedSpawn(handle, p.getLocation());
+				
+				npc.setAllowedToMove(false);
+				
+				if(io.doesObjectExist(npcName)){
+					PresetPath path = (PresetPath) io.getObject(npcName);	
+					npc.setPresetPath(path);
+				}
+				
+				npc.setAllowedToMove(true);
 
 				if (p != null) {
 					QuestX.logChat(p, "The fixed spawn for NPC '" + npcName + "' was changed to your current location.");
@@ -245,6 +270,7 @@ public class FixedLoadingTable {
 			LoadNPCTemplate tmp = new LoadNPCTemplate(npcName);
 
 			tmp.loadProperties();
+			
 			tmp.getLoadedNPCTemplate().registerSimpleNPCFixedSpawn(handle, l);
 
 			loader.read();

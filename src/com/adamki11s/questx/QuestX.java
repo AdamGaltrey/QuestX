@@ -123,7 +123,8 @@ public class QuestX extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
-
+		p = this;
+		
 		version = this.getDescription().getVersion();
 		f = this.getFile();
 		
@@ -191,7 +192,7 @@ public class QuestX extends JavaPlugin {
 
 		FixedLoadingTable.spawnFixedNPCS(handle);
 
-		p = this;
+		
 		this.getCommand("QuestX").setExecutor(new QuestXCommands(this));
 		this.tControl = new ThreadController(handle);
 		this.tControl.initiateAsyncThread(10L);

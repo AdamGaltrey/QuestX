@@ -1,8 +1,5 @@
 package com.adamki11s.ai;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -11,7 +8,6 @@ import org.bukkit.entity.Player;
 import com.adamki11s.ai.dataset.MovementData;
 import com.adamki11s.npcs.SimpleNPC;
 import com.adamki11s.pathing.Tile;
-import com.adamki11s.pathing.preset.PathingCache;
 import com.adamki11s.pathing.preset.PresetPath;
 import com.adamki11s.questx.QuestX;
 
@@ -35,7 +31,9 @@ public class RandomMovement {
 		this.maxPauseTicks = maxPauseTicks;
 		this.minPauseTicks = minPauseTicks;
 		this.maxVariation = maxVariation;
-		this.generateNewMovement();// link to null
+		if (npc.isAllowedToMove()) {
+			this.generateNewMovement();// link to null
+		}
 	}
 
 	public void purgeCache() {
@@ -43,6 +41,10 @@ public class RandomMovement {
 	}
 
 	public synchronized void move() {
+		if (!this.npc.isAllowedToMove()) {
+			return;
+		}
+
 		this.currentPoint = this.npc.getHumanNPC().getBukkitEntity().getLocation();
 
 		this.currentPoint.subtract(0, 1, 0);
@@ -66,31 +68,15 @@ public class RandomMovement {
 		} else {
 			if (this.npc.getHumanNPC().isPathFindComplete()) {
 				if (!this.newMDScheduled) {
-					final PresetPath path = npc.getPresetPath();
-					if (path == null) {
-						System.out.println("Preset path is null");
-					} else {
-						System.out.println("Preset path is NOT null");
-					}
-					this.pauseTicks = path.getTickDelay();
+
+					this.pauseTicks = md.getPauseTicks();
 					this.newMDScheduled = true;
 					Bukkit.getServer().getScheduler().runTaskLater(QuestX.p, new Runnable() {
 						public void run() {
 							if (npc.isMoveable() && npc.isNPCSpawned() && !npc.isUnderAttack() && !npc.isConversing()) {
-								PathingCache cache = path.getPathingCache();
-								if (cache == null) {
-									System.out.println("Preset cache is null");
-								} else {
-									System.out.println("Preset cache is NOT null");
-								}
-								Tile[] tls = path.getPathingCache().getWalkPath();
-								ArrayList<Tile> tiles = new ArrayList<Tile>(Arrays.asList(tls));
-								for (Tile t : tiles) {
-									for (Player p : Bukkit.getServer().getOnlinePlayers()) {
-										p.sendBlockChange(t.getLocation(npc.getHumanNPC().getBukkitEntity().getLocation()), Material.GOLD_BLOCK, (byte) 0);
-									}
-								}
-								npc.getHumanNPC().presetPathFindTo(tiles);
+
+								generatePresetMovement();
+
 							}
 						}
 					}, pauseTicks);
@@ -108,9 +94,24 @@ public class RandomMovement {
 		return this.newMDScheduled;
 	}
 
+	public synchronized void generatePresetMovement() {
+		this.md.generateMoveTicks();
+		this.pauseTicks = md.getPauseTicks();
+
+		PresetPath path = npc.getPresetPath();
+
+		Location target = path.getNextTarget();
+
+		this.targetPoint = target;
+
+		npc.getHumanNPC().pathFindTo(currentPoint, targetPoint);
+
+		this.newMDScheduled = false;
+	}
+
 	public synchronized void generateNewMovement() {
-		QuestX.logDebug("Generating MData for '" + this.npc.getName() + "'");
 		md.generate();
+
 		Location old = targetPoint;
 		this.targetPoint = md.getEndPoint();
 

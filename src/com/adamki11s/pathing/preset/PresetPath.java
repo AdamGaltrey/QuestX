@@ -10,32 +10,45 @@ import com.adamki11s.sync.io.serializable.SyncLocation;
 public class PresetPath implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
-	private final String npc;
+
 	private final Tile[] nodes;
 	private final SyncLocation spawn;
-	private final int tickDelay;
-	
-	private transient PathingCache pCache;
-	
-	public PresetPath(String npc, SyncLocation spawn, Tile[] nodes, int tickDelay){
-		this.npc = npc;
+
+	public PresetPath(SyncLocation spawn, Tile[] nodes) {
 		this.spawn = spawn;
 		this.nodes = nodes;
-		//time to wait before moving to the next node after reaching the destination node.
-		this.tickDelay = tickDelay;
-		this.pCache = new PathingCache(spawn.getBukkitLocation(), nodes);
+		first = true;
 	}
-	
-	public int getTickDelay(){
-		return this.tickDelay;
+
+	private transient int position = 0;
+	private transient boolean first = false;
+
+	public Location getStartLocation() {
+		return spawn.getBukkitLocation();
 	}
-	
-	public PathingCache getPathingCache(){
-		if(this.pCache == null){
-			this.pCache = new PathingCache(spawn.getBukkitLocation(), nodes);
+
+	public Tile[] getNodes() {
+		return nodes;
+	}
+
+	public Location getNextTarget() {
+		Tile next;
+
+		if (position == (nodes.length - 1)) {
+			position = 0;
+		} else {
+			position++;
 		}
-		return this.pCache;
+
+		if (first) {		
+			next = nodes[position];
+		} else {
+			first = true;
+			position = 0;
+			next = nodes[0];
+		}
+
+		return next.getLocation(getStartLocation());
 	}
 
 }
