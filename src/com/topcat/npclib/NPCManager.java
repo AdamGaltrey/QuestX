@@ -34,7 +34,7 @@ import com.topcat.npclib.nms.NPCEntity;
 import com.topcat.npclib.nms.NPCNetworkManager;
 
 /**
- *
+ * 
  * @author martin
  */
 public class NPCManager {
@@ -46,34 +46,41 @@ public class NPCManager {
 	private NPCNetworkManager npcNetworkManager;
 	public static JavaPlugin plugin;
 
-	public NPCManager(JavaPlugin plugin) {
-		server = BServer.getInstance();
+	private Object lock = new Object();
 
-		try {
-			npcNetworkManager = new NPCNetworkManager();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		NPCManager.plugin = plugin;
-		taskid = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
-			@Override
-			public void run() {
-				HashSet<String> toRemove = new HashSet<String>();
-				for (String i : npcs.keySet()) {
-					Entity j = npcs.get(i).getEntity();
-					j.z();
-					if (j.dead) {
-						toRemove.add(i);
+	public NPCManager(JavaPlugin plugin) {
+
+		synchronized (lock) {
+
+			server = BServer.getInstance();
+
+			try {
+				npcNetworkManager = new NPCNetworkManager();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+			NPCManager.plugin = plugin;
+			taskid = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
+				@Override
+				public void run() {
+					HashSet<String> toRemove = new HashSet<String>();
+					for (String i : npcs.keySet()) {
+						Entity j = npcs.get(i).getEntity();
+						j.z();
+						if (j.dead) {
+							toRemove.add(i);
+						}
+					}
+					for (String n : toRemove) {
+						npcs.remove(n);
 					}
 				}
-				for (String n : toRemove) {
-					npcs.remove(n);
-				}
-			}
-		}, 1L, 1L);
-		Bukkit.getServer().getPluginManager().registerEvents(new SL(), plugin);
-		Bukkit.getServer().getPluginManager().registerEvents(new WL(), plugin);
+			}, 1L, 1L);
+			Bukkit.getServer().getPluginManager().registerEvents(new SL(), plugin);
+			Bukkit.getServer().getPluginManager().registerEvents(new WL(), plugin);
+
+		}
 	}
 
 	public BWorld getBWorld(World world) {
@@ -132,7 +139,8 @@ public class NPCManager {
 			server.getLogger().log(Level.WARNING, "NPC with that id already exists, existing NPC returned");
 			return npcs.get(id);
 		} else {
-			if (name.length() > 16) { // Check and nag if name is too long, spawn NPC anyway with shortened name.
+			if (name.length() > 16) { // Check and nag if name is too long,
+										// spawn NPC anyway with shortened name.
 				String tmp = name.substring(0, 16);
 				server.getLogger().log(Level.WARNING, "NPCs can't have names longer than 16 characters,");
 				server.getLogger().log(Level.WARNING, name + " has been shortened to " + tmp);
@@ -141,7 +149,7 @@ public class NPCManager {
 			BWorld world = getBWorld(l.getWorld());
 			NPCEntity npcEntity = new NPCEntity(this, world, name, new PlayerInteractManager(world.getWorldServer()));
 			npcEntity.setPositionRotation(l.getX(), l.getY(), l.getZ(), l.getYaw(), l.getPitch());
-			world.getWorldServer().addEntity(npcEntity); //the right way
+			world.getWorldServer().addEntity(npcEntity); // the right way
 			NPC npc = new HumanNPC(npcEntity);
 			npcs.put(id, npc);
 			return npc;
@@ -158,7 +166,7 @@ public class NPCManager {
 
 	public void despawnHumanByName(String npcName) {
 		if (npcName.length() > 16) {
-			npcName = npcName.substring(0, 16); //Ensure you can still despawn
+			npcName = npcName.substring(0, 16); // Ensure you can still despawn
 		}
 		HashSet<String> toRemove = new HashSet<String>();
 		for (String n : npcs.keySet()) {
@@ -221,28 +229,35 @@ public class NPCManager {
 	}
 
 	public void rename(String id, String name) {
-        if (name.length() > 16) { // Check and nag if name is too long, spawn NPC anyway with shortened name.
-            String tmp = name.substring(0, 16);
-            server.getLogger().log(Level.WARNING, "NPCs can't have names longer than 16 characters,");
-            server.getLogger().log(Level.WARNING, name + " has been shortened to " + tmp);
-            name = tmp;
-        }
-        HumanNPC npc = (HumanNPC) getNPC(id);
-        npc.setName(name);
-        BWorld b = getBWorld(npc.getBukkitEntity().getLocation().getWorld());
-        WorldServer s = b.getWorldServer();
-        try {
-            Method m = s.getClass().getDeclaredMethod("b", new Class[] {Entity.class}); //jeremytrains: d -> b
-            m.setAccessible(true);
-            m.invoke(s, npc.getEntity());
-            m = s.getClass().getDeclaredMethod("a", new Class[] {Entity.class}); //jeremytrains: c -> a
-            m.setAccessible(true);
-            m.invoke(s, npc.getEntity());
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        s.everyoneSleeping();
-    }
+		if (name.length() > 16) { // Check and nag if name is too long, spawn
+									// NPC anyway with shortened name.
+			String tmp = name.substring(0, 16);
+			server.getLogger().log(Level.WARNING, "NPCs can't have names longer than 16 characters,");
+			server.getLogger().log(Level.WARNING, name + " has been shortened to " + tmp);
+			name = tmp;
+		}
+		HumanNPC npc = (HumanNPC) getNPC(id);
+		npc.setName(name);
+		BWorld b = getBWorld(npc.getBukkitEntity().getLocation().getWorld());
+		WorldServer s = b.getWorldServer();
+		try {
+			Method m = s.getClass().getDeclaredMethod("b", new Class[] { Entity.class }); // jeremytrains:
+																							// d
+																							// ->
+																							// b
+			m.setAccessible(true);
+			m.invoke(s, npc.getEntity());
+			m = s.getClass().getDeclaredMethod("a", new Class[] { Entity.class }); // jeremytrains:
+																					// c
+																					// ->
+																					// a
+			m.setAccessible(true);
+			m.invoke(s, npc.getEntity());
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		s.everyoneSleeping();
+	}
 
 	public BServer getServer() {
 		return server;
