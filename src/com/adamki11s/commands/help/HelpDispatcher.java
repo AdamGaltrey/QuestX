@@ -35,13 +35,15 @@ public class HelpDispatcher {
 		miscCMDs = new String[]{"/questx force-update"},
 		repCMDs = new String[]{ChatColor.YELLOW + "/questx rep" + ChatColor.RESET + " or " + ChatColor.YELLOW + "/questx reputation can be used.",
 		"/questx rep view"},
+		pathCMDs = new String[]{"/questx path setup <npcname>", "/questx path cancel", "/questx path create", "/questx path delete <npcname>", "/questx path list", "/questx path list <page>"},
 		pageList = new String[]{"[1/hotspots]"  +ChatColor.GREEN + " Hotspot Commands",
 		"[2/fixedspawns]"  +ChatColor.GREEN + " Fixed Spawn Commands",
 		"[3/tasks]"  +ChatColor.GREEN + " Task Commands",
 		"[4/npcs]"  +ChatColor.GREEN + " NPC Commands",
 		"[5/quests]"  +ChatColor.GREEN + " Quest Commands",
 		"[6/misc]"  +ChatColor.GREEN + " Miscellaneous Commands",
-		"[7/rep]"  +ChatColor.GREEN + " Reputation Commands"};
+		"[7/rep]"  +ChatColor.GREEN + " Reputation Commands",
+		"[8/path]" + ChatColor.GREEN + " Custom Pathing Commands"};
 	
 	public static void helpDispatcher(Player p, String[] args){
 		//assuming arg[0] = help has been checked
@@ -90,8 +92,14 @@ public class HelpDispatcher {
 				}
 				return;
 			}else if(args[1].equalsIgnoreCase("7") || args[1].equalsIgnoreCase("rep")){
-				QuestX.logChat(p, ChatColor.GREEN + "" +  ChatColor.ITALIC + "Reputation Commands " + ChatColor.RESET + StaticStrings.separator.substring(23));
+				QuestX.logChat(p, ChatColor.GREEN + "" +  ChatColor.ITALIC + "Reputation Commands " + ChatColor.RESET + StaticStrings.separator.substring(20));
 				for(String s : repCMDs){
+					QuestX.logChat(p, s);
+				}
+				return;
+			}else if(args[1].equalsIgnoreCase("8") || args[1].equalsIgnoreCase("path")){
+				QuestX.logChat(p, ChatColor.GREEN + "" +  ChatColor.ITALIC + "Custom Pathing Commands " + ChatColor.RESET + StaticStrings.separator.substring(24));
+				for(String s : pathCMDs){
 					QuestX.logChat(p, s);
 				}
 				return;
