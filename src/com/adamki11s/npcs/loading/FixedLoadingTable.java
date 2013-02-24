@@ -134,6 +134,9 @@ public class FixedLoadingTable {
 				spawn.delete();
 				try {
 					spawn.createNewFile();
+					SyncObjectIO io = new SyncObjectIO(spawn);
+					io.add("NPC_COUNT", 0);
+					io.write();
 					QuestX.logChat(p, "All fixed spawns for NPCs were deleted");
 				} catch (IOException e) {
 					QuestX.logChat(p, "There was an error deleting the file");
