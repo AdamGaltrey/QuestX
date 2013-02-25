@@ -79,9 +79,8 @@ public class AsyncThread implements Runnable {
 			hourTickOver += tickRate;
 			
 			//if(hourTickOver > (72000)){
-			if(hourTickOver > (100)){
+			if(hourTickOver > (72000)){
 				this.hourTickOver = 0;
-				System.out.println("Running quest poll.");
 				fPollThread.poll();
 			}
 

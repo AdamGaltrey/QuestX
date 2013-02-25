@@ -14,6 +14,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.adamki11s.bundle.LocaleBundle;
 import com.adamki11s.commands.QuestXCommands;
 import com.adamki11s.dialogue.dynamic.DynamicStrings;
 import com.adamki11s.events.ConversationRegister;
@@ -58,6 +59,7 @@ public class QuestX extends JavaPlugin {
 	TagColourEvent tagColourEvent;
 	PlayerTeleportListener teleEvent;
 	PlayerInteract pInteractEvent;
+	LocaleBundle locale; 
 
 	public static Plugin p;
 	public static String version;
@@ -158,6 +160,8 @@ public class QuestX extends JavaPlugin {
 		}
 
 		InitialSetup.run();
+		
+		this.locale = new LocaleBundle("en");
 
 		try {
 			metrics = new Metrics(this);

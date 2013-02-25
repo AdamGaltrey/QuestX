@@ -3,6 +3,7 @@ package com.adamki11s.io;
 import java.io.File;
 import java.io.IOException;
 
+import com.adamki11s.bundle.LocaleBundle;
 import com.adamki11s.poll.PollManager;
 import com.adamki11s.questx.QuestX;
 import com.adamki11s.sync.io.configuration.SyncConfiguration;
@@ -17,6 +18,8 @@ public class InitialSetup {
 		folderSetup(new File(FileLocator.npc_data_root));
 		folderSetup(new File(FileLocator.quest_data_root));
 		folderSetup(new File(FileLocator.rep_data_root));
+		folderSetup(new File("plugins" + File.separator + "QuestX" + File.separator + "Locale"));
+		
 		File f = FileLocator.getNPCFixedSpawnsFile();
 		if (!f.exists()) {
 			fileSetup(f);
