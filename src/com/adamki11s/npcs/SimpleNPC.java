@@ -527,6 +527,9 @@ public class SimpleNPC {
 				}
 			}
 		} else {
+			if(c == null){
+				return;
+			}
 			Player convoPlayer = c.getConvoData().getPlayer();
 			if (convoPlayer != null) {
 				if (convoPlayer.getName().equalsIgnoreCase(p.getName())) {
