@@ -15,7 +15,7 @@ import com.adamki11s.npcs.NPCHandler;
 import com.adamki11s.npcs.SimpleNPC;
 import com.adamki11s.npcs.population.PopulationDensityThread;
 import com.adamki11s.pathing.decision.DecisionController;
-import com.adamki11s.questx.QuestX;
+import com.adamki11s.poll.FilePoll;
 
 public class AsyncThread implements Runnable {
 
@@ -28,6 +28,7 @@ public class AsyncThread implements Runnable {
 	final HealthController hControl;
 	final DecisionController decisionControl;
 	final GotoLocationThreadController glThread = new GotoLocationThreadController();
+	final FilePoll fPollThread = new FilePoll();
 	final int tickRate;
 
 	private volatile boolean running = true;
@@ -69,11 +70,20 @@ public class AsyncThread implements Runnable {
 		this.pdThread.terminateSQL();
 	}
 
-	int secondTickOver = 0, denstiyCalculationTickOver = 0, twoSecondTickOver = 0, fifteenSecTickOver = 0;
+	int secondTickOver = 0, denstiyCalculationTickOver = 0, twoSecondTickOver = 0, fifteenSecTickOver = 0, hourTickOver = 0;
 
 	@Override
 	public void run() {
 		if (running) {
+			
+			hourTickOver += tickRate;
+			
+			//if(hourTickOver > (72000)){
+			if(hourTickOver > (100)){
+				this.hourTickOver = 0;
+				System.out.println("Running quest poll.");
+				fPollThread.poll();
+			}
 
 			if (playerCount.get() != 0) {
 

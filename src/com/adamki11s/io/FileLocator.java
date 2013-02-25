@@ -78,6 +78,10 @@ public class FileLocator {
 		return new File(config_root + File.separator + "npc_world_config.txt");
 	}
 	
+	public static File getPollFile(){
+		return new File(config_root + File.separator + "poll_config.txt");
+	}
+	
 	public static File getGeneralConfig(){
 		return new File(config_root + File.separator + "general_config.txt");
 	}

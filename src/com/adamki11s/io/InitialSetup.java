@@ -3,6 +3,7 @@ package com.adamki11s.io;
 import java.io.File;
 import java.io.IOException;
 
+import com.adamki11s.poll.PollManager;
 import com.adamki11s.questx.QuestX;
 import com.adamki11s.sync.io.configuration.SyncConfiguration;
 import com.adamki11s.sync.io.objects.SyncObjectIO;
@@ -38,6 +39,18 @@ public class InitialSetup {
 			SyncObjectIO io = new SyncObjectIO(f);
 			io.add("NULL", 0);
 			io.write();
+		}
+		
+		f = FileLocator.getPollFile();
+		
+		if(!f.exists()){
+			fileSetup(f);
+			SyncConfiguration c = new SyncConfiguration(f);
+			c.addComment("The files are polled every hour, to automatically erase a progression file after x hours add them to this file in the specified format.");
+			c.addComment("<type>:<name>,<hours>");
+			c.addComment("Task example (Clear each players progression if last time touched was more than 3 hours) --> TASK:npc_name,3");
+			c.addComment("Quest example (Clear each players progression if last time touched was more than 7 hours) --> QUEST:questname,7");
+			c.write();
 		}
 
 		File dbConfig = FileLocator.getDatabaseConfig();
@@ -91,6 +104,8 @@ public class InitialSetup {
 		if (!currentQ.exists()) {
 			fileSetup(currentQ);
 		}
+		
+		PollManager.load();
 		WorldConfigData.loadWorldConfigData();
 		GeneralConfigData.load();
 		DatabaseConfigData.load();
