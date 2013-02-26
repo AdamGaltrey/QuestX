@@ -23,7 +23,6 @@ public class PollManager {
 				try{
 					hours = Integer.parseInt(parts[1]);
 					questPoll.put(parts[0].trim(), hours);
-					System.out.println("Checking quest " + parts[0].trim() + " every " + hours + " hours.");
 				} catch (NumberFormatException ex){
 					continue;
 				}
@@ -32,7 +31,6 @@ public class PollManager {
 				try{
 					hours = Integer.parseInt(parts[1]);
 					taskPoll.put(parts[0].trim(), hours);
-					System.out.println("Checking task for npc " + parts[0].trim() + " every " + hours + " hours.");
 				} catch (NumberFormatException ex){
 					continue;
 				}

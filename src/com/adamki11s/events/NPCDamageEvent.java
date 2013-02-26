@@ -9,6 +9,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.plugin.Plugin;
 
+import com.adamki11s.bundle.LocaleBundle;
 import com.adamki11s.npcs.NPCHandler;
 import com.adamki11s.npcs.SimpleNPC;
 import com.adamki11s.npcs.tasks.TaskRegister;
@@ -38,7 +39,7 @@ public class NPCDamageEvent implements Listener {
 					attacked.getHumanNPC().actAsHurt();
 					attacked.damageNPC(damager, evt.getDamage());
 				} else {
-					QuestX.logChat(damager, attacked.getName() + " can not be harmed.");
+					QuestX.logChat(damager, attacked.getName() + LocaleBundle.getString("cannot_harm"));
 					evt.setCancelled(true);
 				}
 

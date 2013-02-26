@@ -15,6 +15,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import com.adamki11s.ai.RandomMovement;
+import com.adamki11s.bundle.LocaleBundle;
 import com.adamki11s.data.ItemStackDrop;
 import com.adamki11s.dialogue.Conversation;
 import com.adamki11s.events.ConversationRegister;
@@ -370,7 +371,7 @@ public class SimpleNPC {
 			 * + this.getName() + "'. This NPC may respawn elsewhere now."); }
 			 */
 			StringBuilder loot = new StringBuilder();
-			loot.append(this.name).append(" dropped : ");
+			loot.append(this.name).append(LocaleBundle.getString("dropped_items"));
 			boolean gainedLoot = false;
 			if (this.inventory != null) {
 				for (ItemStack i : this.inventory.getDrops()) {
@@ -389,7 +390,7 @@ public class SimpleNPC {
 				tm.trackNPCKill(this.getName());
 			}
 
-			QuestX.logChat(p, ChatColor.RED + "You killed NPC '" + this.name + "'");
+			QuestX.logChat(p, ChatColor.RED + LocaleBundle.getString("killed_npc") + this.name + "'");
 
 			if (this.deathAction != null) {
 				this.deathAction.execute(p);
@@ -476,7 +477,7 @@ public class SimpleNPC {
 								}
 								return;
 							} else {
-								QuestX.logChat(p, "Sorry You need to see " + t.getNPCToCompleteName() + " to complete this part of the quest");
+								QuestX.logChat(p, LocaleBundle.getString("need_to_see") + t.getNPCToCompleteName() + LocaleBundle.getString("to_complete_quest_node"));
 								return;
 							}
 

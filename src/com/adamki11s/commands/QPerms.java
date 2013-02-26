@@ -3,6 +3,7 @@ package com.adamki11s.commands;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
+import com.adamki11s.bundle.LocaleBundle;
 import com.adamki11s.questx.QuestX;
 
 public class QPerms {
@@ -16,8 +17,8 @@ public class QPerms {
 			if(p.hasPermission(perm)){
 				return true;
 			} else {
-				QuestX.logChatError(p, ChatColor.RED + "You do not have permission to do this.");
-				QuestX.logChatError(p, ChatColor.RED + "Permission node needed = " + ChatColor.YELLOW + perm);
+				QuestX.logChat(p, ChatColor.RED + LocaleBundle.getString("no_perms"));
+				QuestX.logChat(p, ChatColor.RED + LocaleBundle.getString("node_needed") + ChatColor.YELLOW + perm);
 				return false;
 			}
 		}

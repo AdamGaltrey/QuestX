@@ -10,17 +10,6 @@ public class QuestXCMDExecutor {
 		if (p != null) {
 			for (String cmd : commands) {
 				p.performCommand(cmd);
-				/*int argLength = cmd.split(" ").length;
-				String[] split = cmd.split(" ");
-				String[] args = new String[cmd.split(" ").length - 1];
-				if (argLength > 1) {
-					for (int i = 1; i < argLength; i++) {
-						args[i - 1] = split[i];
-					}
-					
-				} else {
-
-				}*/
 			}
 		}
 	}

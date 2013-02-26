@@ -4,6 +4,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.adamki11s.bundle.LocaleBundle;
 import com.adamki11s.dialogue.triggers.Trigger;
 import com.adamki11s.dialogue.triggers.TriggerType;
 import com.adamki11s.display.StaticStrings;
@@ -36,7 +37,7 @@ public class Conversation {
 			i = Integer.parseInt(s);
 			this.selectSpeechOption(i);
 		} catch (NumberFormatException ex) {
-			QuestX.logChat(this.convoData.getPlayer(), "Invalid option! Select an index. Number only. Eg '1'");
+			QuestX.logChat(this.convoData.getPlayer(), LocaleBundle.getString("invalid_index"));
 		}
 	}
 
@@ -74,19 +75,19 @@ public class Conversation {
 
 		boolean taskEnabled = TaskRegister.isTaskEnabled(npcName), questEnabled = this.convoData.getSimpleNpc().doesLinkToQuest();
 
-		QuestX.logChat(p, ChatColor.GREEN + "Conversation started with NPC " + ChatColor.ITALIC + "" + ChatColor.YELLOW + npcName);
+		QuestX.logChat(p, ChatColor.GREEN + LocaleBundle.getString("convo_started") + ChatColor.ITALIC + "" + ChatColor.YELLOW + npcName);
 
 		if (taskEnabled) {
-			build.append("Task : ");
+			build.append(LocaleBundle.getString("task_indicator"));
 			if (TaskRegister.hasPlayerCompletedTask(npcName, p.getName())) {
-				build.append(ChatColor.GREEN).append("Complete ");
+				build.append(ChatColor.GREEN).append(LocaleBundle.getString("complete"));
 			} else {
-				build.append(ChatColor.DARK_RED).append("Incomplete ");
+				build.append(ChatColor.DARK_RED).append(LocaleBundle.getString("incomplete"));
 			}
 		}
 
 		if (questEnabled) {
-			build.append(ChatColor.RESET).append("Quest : ");
+			build.append(ChatColor.RESET).append(LocaleBundle.getString("quest_indicator"));
 
 			String qName = this.convoData.getSimpleNpc().getQuestName();
 
@@ -97,12 +98,12 @@ public class Conversation {
 				QuestLoader ql = QuestManager.getQuestLoader(qName);
 				ql.loadAndCheckPlayerProgress(p.getName());
 				if (ql.isQuestComplete(p.getName())) {
-					build.append(ChatColor.GREEN).append("Complete");
+					build.append(ChatColor.GREEN).append(LocaleBundle.getString("complete"));
 				} else {
-					build.append(ChatColor.DARK_RED).append("Incomplete");
+					build.append(ChatColor.DARK_RED).append(LocaleBundle.getString("incomplete"));
 				}
 			} else {
-				build.append(ChatColor.DARK_RED).append("Not Setup");
+				build.append(ChatColor.DARK_RED).append(LocaleBundle.getString("not_setup"));
 			}
 		}
 
@@ -118,7 +119,7 @@ public class Conversation {
 		if (this.conversing) {
 			Player p = this.getConvoData().getPlayer();
 			if (p != null) {
-				QuestX.logChat(p, ChatColor.RED + "Conversation ended.");
+				QuestX.logChat(p, ChatColor.RED + LocaleBundle.getString("convo_ended"));
 			}
 			this.conversing = false;
 			ConversationRegister.playersConversing.remove(this);
@@ -134,12 +135,12 @@ public class Conversation {
 		DialogueItem[] items = d.getItems();
 		Player p = this.convoData.getPlayer();
 		int count = 1;
-		QuestX.logChat(p, ChatColor.ITALIC + "" + ChatColor.BLUE + "Speech Options " + ChatColor.RESET + StaticStrings.separator.substring(13));
+		QuestX.logChat(p, ChatColor.ITALIC + "" + ChatColor.BLUE + LocaleBundle.getString("speech_options") + ChatColor.RESET + StaticStrings.separator.substring(13));
 		for (DialogueItem di : items) {
 			if (di.doesPlayerHaveRequiredRepLevel(p.getName())) {
 				QuestX.logChat(p, "[#" + count + "] " + di.getSay());
 			} else {
-				QuestX.logChat(p, "[#" + count + "] Unavailable");
+				QuestX.logChat(p, "[#" + count + "] " + LocaleBundle.getString("option_unavailable"));
 			}
 			count += 1;
 		}
@@ -150,7 +151,7 @@ public class Conversation {
 		DialogueSet d = this.getDialogeSetFromNode(currentNode);
 		DialogueItem[] items = d.getItems();
 		if (index > items.length || index < 1) {
-			QuestX.logChat(this.getConvoData().getPlayer(), "Invalid chat option!");
+			QuestX.logChat(this.getConvoData().getPlayer(), LocaleBundle.getString("invalid_chat_option"));
 			this.displaySpeechOptions();
 			return;
 		}
@@ -159,7 +160,7 @@ public class Conversation {
 		String npcName = this.convoData.getSimpleNpc().getName();
 		if (selected.doesPlayerHaveRequiredRepLevel(p.getName())) {
 			Trigger selTrigger = selected.getTrigger();
-			QuestX.logChat(p, ChatColor.ITALIC + "" + ChatColor.YELLOW + "Response " + ChatColor.RESET + StaticStrings.separator.substring(8));
+			QuestX.logChat(p, ChatColor.ITALIC + "" + ChatColor.YELLOW + LocaleBundle.getString("response") + ChatColor.RESET + StaticStrings.separator.substring(8));
 			if (selTrigger.getTriggerType() != TriggerType.QUEST) {
 				DialogueResponse dr = d.getResponse();
 				String response = dr.getResponses()[index - 1];
@@ -175,40 +176,36 @@ public class Conversation {
 
 					boolean alreadyDone = TaskRegister.hasPlayerCompletedTask(npcName, p.getName());
 					if (alreadyDone) {
-						QuestX.logChat(p, "You have already completed this task!");
+						QuestX.logChat(p, LocaleBundle.getString("task_already_completed"));
 						this.endConversation();
 						return;
 					}
 					if (TaskRegister.doesPlayerHaveTask(p.getName())) {
-						QuestX.logChat(p, ChatColor.RED + "You already have a task assigned!");
-						QuestX.logChat(p, ChatColor.WHITE + "/questx task cancel" + ChatColor.RED + " to cancel current task.");
+						QuestX.logChat(p, ChatColor.RED + LocaleBundle.getString("task_already_assigned"));
+						QuestX.logChat(p, ChatColor.WHITE + "/questx task cancel" + ChatColor.RED + LocaleBundle.getString("cancel_current_task"));
 						this.endConversation();
 						return;
 					} else {
 						TaskLoader tl = new TaskLoader(FileLocator.getNPCTaskFile(npcName), npcName);
-						QuestX.logDebug("Loading task...");
 
 						tl.load();
-						QuestX.logDebug("Task Loaded!");
 						TaskManager manage = new TaskManager(p.getName(), tl);
 						TaskRegister.registerTask(manage);
 						QuestX.logChat(p, ChatColor.ITALIC + tl.getTaskName() + ChatColor.RESET + ChatColor.GREEN + " task started!");
-						QuestX.logChat(p, "Task description : " + tl.getTaskDescription());
+						QuestX.logChat(p, LocaleBundle.getString("task_description_header") + tl.getTaskDescription());
 
 						this.endConversation();
 						return;
 					}
 
 				} else {
-					QuestX.logChat(p, ChatColor.RED + "This task is not enabled.");
+					QuestX.logChat(p, ChatColor.RED + LocaleBundle.getString("task_not_enabled"));
 					this.endConversation();
 					return;
 				}
 			} else if (selTrigger.getTriggerType() == TriggerType.QUEST) {
-				QuestX.logDebug("Inside quest code");
 				SimpleNPC npc = this.getConvoData().getSimpleNpc();
 				if (npc.doesLinkToQuest()) {
-					QuestX.logDebug("NPC links to quest = " + npc.getQuestName());
 					String qName = npc.getQuestName();
 
 					if (QuestManager.hasQuestBeenSetup(qName)) {
@@ -222,7 +219,7 @@ public class Conversation {
 							if (ql.canPlayerUndertakeQuest(p)) {
 								ql.loadAndCheckPlayerProgress(p.getName());
 								if (ql.isQuestComplete(p.getName())) {
-									QuestX.logChat(p, "You have already completed this quest!");
+									QuestX.logChat(p, LocaleBundle.getString("quest_already_completed"));
 								} else {
 									QuestManager.setCurrentPlayerQuest(p.getName(), qName);
 									if (ql.getCurrentQuestNode(p.getName()) == 1) {
@@ -236,7 +233,6 @@ public class Conversation {
 								this.endConversation();
 							}
 						} else {
-							QuestX.logDebug("Player has quest!");
 							if (npc.doesLinkToQuest()) {
 
 								QuestTask qt = QuestManager.getCurrentQuestTask(p.getName());
@@ -257,12 +253,12 @@ public class Conversation {
 												QuestManager.removeCurrentPlayerQuest(ql.getName(), p.getName());
 											}
 										} else {
-											QuestX.logChat(p, "You need to speak to '" + track.getNPCName() + "' to complete this part of your quest.");
+											QuestX.logChat(p, LocaleBundle.getString("need_to_speak_to") + track.getNPCName() + LocaleBundle.getString("to_complete_part_of_quest"));
 											// wrong npc
 										}
 
 									} else {
-										QuestX.logChat(p, "You need to speak to '" + track.getNPCName() + "' to complete this part of your quest.");
+										QuestX.logChat(p, LocaleBundle.getString("need_to_speak_to") + track.getNPCName() + LocaleBundle.getString("to_complete_part_of_quest"));
 									}
 								}
 
@@ -273,11 +269,10 @@ public class Conversation {
 						this.endConversation();
 					} else {
 						// quest has not been setup
-						QuestX.logChat(p, "This quest has not yet been setup. /q setup " + qName);
+						QuestX.logChat(p, LocaleBundle.getString("quest_not_setup")+" /q setup " + qName);
 						this.endConversation();
 					}
 				} else {
-					QuestX.logDebug("NPC has no link to a quest");
 					this.endConversation();
 				}
 				this.endConversation();
@@ -292,7 +287,7 @@ public class Conversation {
 				this.displaySpeechOptions();
 			}
 		} else {
-			QuestX.logChat(p, "You must have at least " + items[index - 1].getRequriedRep().getMinRep() + " reputation.");
+			QuestX.logChat(p, LocaleBundle.getString("reputation_req") + items[index - 1].getRequriedRep().getMinRep() + LocaleBundle.getString("reputation"));
 		}
 	}
 

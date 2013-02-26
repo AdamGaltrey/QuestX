@@ -9,6 +9,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.plugin.Plugin;
 
+import com.adamki11s.bundle.LocaleBundle;
 import com.adamki11s.npcs.NPCHandler;
 import com.adamki11s.npcs.SimpleNPC;
 import com.adamki11s.questx.QuestX;
@@ -31,7 +32,7 @@ public class NPCInteractEvent implements Listener {
 			if (npc != null) {
 				npc.interact(p);
 			} else {
-				QuestX.logChat(p, "Could not match entity to NPC");
+				QuestX.logChat(p, LocaleBundle.getString("no_entityid_match"));
 			}
 		}
 	}

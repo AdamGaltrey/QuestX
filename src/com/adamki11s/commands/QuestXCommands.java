@@ -415,6 +415,7 @@ public class QuestXCommands implements CommandExecutor {
 						FixedLoadingTable.editFixedNPCSpawn(p, npcName, handle);
 						return true;
 					}
+					return true;
 				}
 
 				if (args.length >= 2 && args[0].equalsIgnoreCase("fixedspawns") && QPerms.hasPermission(p, "questx.fixedspawns.list")) {
@@ -432,6 +433,7 @@ public class QuestXCommands implements CommandExecutor {
 						}
 						return true;
 					}
+					return true;
 				}
 
 				if (args.length == 3 && args[0].equalsIgnoreCase("fixedspawns") && args[1].equalsIgnoreCase("add") && QPerms.hasPermission(p, "questx.fixedspawns.add")) {

@@ -2,6 +2,7 @@ package com.adamki11s.questx;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Locale;
 import java.util.logging.Logger;
 
 import net.milkbowl.vault.economy.Economy;
@@ -59,7 +60,6 @@ public class QuestX extends JavaPlugin {
 	TagColourEvent tagColourEvent;
 	PlayerTeleportListener teleEvent;
 	PlayerInteract pInteractEvent;
-	LocaleBundle locale; 
 
 	public static Plugin p;
 	public static String version;
@@ -161,7 +161,7 @@ public class QuestX extends JavaPlugin {
 
 		InitialSetup.run();
 		
-		this.locale = new LocaleBundle("en");
+		LocaleBundle.setLocale(Locale.ENGLISH);
 
 		try {
 			metrics = new Metrics(this);

@@ -12,6 +12,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.plugin.Plugin;
 
+import com.adamki11s.bundle.LocaleBundle;
 import com.adamki11s.npcs.NPCHandler;
 import com.adamki11s.npcs.SimpleNPC;
 import com.adamki11s.npcs.loading.FixedLoadingTable;
@@ -44,24 +45,24 @@ public class PlayerInteract implements Listener {
 
 	public static void startCreatingPresetPath(Player p, String n) {
 		if (isCreatingPresetPath(p.getName())) {
-			QuestX.logChatError(p, ChatColor.RED + "You are already creating a path.");
+			QuestX.logChatError(p, ChatColor.RED + LocaleBundle.getString("already_creating_path"));
 			return;
 		} else {
 			SimpleNPC npc = handle.getSimpleNPCByName(n);
 			if (npc == null) {
-				QuestX.logChatError(p, ChatColor.RED + "This NPC does not exist or has not been loaded.");
+				QuestX.logChatError(p, ChatColor.RED + LocaleBundle.getString("npc_not_loaded_or_exist"));
 				return;
 			} else {
 				if (!npc.isSpawnFixed()) {
-					QuestX.logChatError(p, ChatColor.RED + "This NPC does not have a fixed spawn.");
+					QuestX.logChatError(p, ChatColor.RED + LocaleBundle.getString("no_fixed_spawn"));
 					return;
 				} else {
 					if(FixedLoadingTable.presetNPCs.contains(n)){
-						QuestX.logChatError(p, ChatColor.RED + "This NPC already has a preset path.");
+						QuestX.logChatError(p, ChatColor.RED + LocaleBundle.getString("already_has_path"));
 						return;
 					}
 					creating.put(p.getName(), new PresetPathCreation(npc.getFixedLocation(), n, p.getWorld().getName()));
-					QuestX.logChat(p, ChatColor.GREEN + "Set your points by right clicking.");
+					QuestX.logChat(p, ChatColor.GREEN + LocaleBundle.getString("set_points"));
 				}
 			}
 		}
@@ -72,9 +73,9 @@ public class PlayerInteract implements Listener {
 			PresetPathCreation path = creating.get(p.getName());
 			path.resetBlockStates(p);
 			creating.remove(p.getName());
-			QuestX.logChat(p, ChatColor.RED + "Path creation cancelled.");
+			QuestX.logChat(p, ChatColor.RED + LocaleBundle.getString("path_creation_cancel"));
 		} else {
-			QuestX.logChatError(p, ChatColor.RED + "You are not creating a path.");
+			QuestX.logChatError(p, ChatColor.RED + LocaleBundle.getString("not_creating_path"));
 		}
 	}
 
@@ -88,7 +89,7 @@ public class PlayerInteract implements Listener {
 			path.createPath(p, handle);
 
 			creating.remove(p.getName());
-			QuestX.logChat(p, ChatColor.GREEN + "Path creation completed.");
+			QuestX.logChat(p, ChatColor.GREEN + LocaleBundle.getString("path_creation_complete"));
 			
 			SimpleNPC npc = handle.getSimpleNPCByName(path.getNPC());
 			if(npc != null){
@@ -97,7 +98,7 @@ public class PlayerInteract implements Listener {
 			
 			FixedLoadingTable.spawnFixedNPC(handle, path.getNPC());
 		} else {
-			QuestX.logChatError(p, ChatColor.RED + "You are not creating a path.");
+			QuestX.logChatError(p, ChatColor.RED + LocaleBundle.getString("not_creating_path"));
 		}
 	}
 

@@ -3,8 +3,6 @@ package com.adamki11s.io;
 import java.io.File;
 import java.io.IOException;
 
-import com.adamki11s.questx.QuestX;
-
 public class FileLocator {
 
 	public static final String root = "plugins" + File.separator + "QuestX", config_root = root + File.separator + "Configuration", data_root = root + File.separator + "Data",
@@ -112,8 +110,6 @@ public class FileLocator {
 
 	public static boolean doesQuestNameExist(String name) {
 		for (File f : new File(quest_data_root).listFiles()) {
-			QuestX.logDebug("Checking f name = " + f.getName());
-			QuestX.logDebug(f.getName() + " = provided name -> " + name);
 			if (f.getName().equalsIgnoreCase(name)) {
 				return true;
 			}
