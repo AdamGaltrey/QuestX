@@ -9,6 +9,7 @@ import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import com.adamki11s.bundle.LocaleBundle;
 import com.adamki11s.commands.QuestXCMDExecutor;
 import com.adamki11s.exceptions.InvalidISAException;
 import com.adamki11s.exceptions.InvalidKillTrackerException;
@@ -439,7 +440,6 @@ public class QuestLoader {
 		this.currentTask.put(p, this.tasks[this.playerProgress.get(p) - 1].getClonedInstance());
 		QuestTask qtLocal = this.currentTask.get(p);
 		if (qtLocal.isGoto()) {
-			QuestX.logMSG("GOTO TASK LOADED!");
 			GotoLocationController.addLocationTask(p, (GotoLocationTask) qtLocal.getData());
 		}
 	}
@@ -447,7 +447,7 @@ public class QuestLoader {
 	public synchronized void setTaskComplete(Player player) {
 		this.incrementTaskProgress(player);
 		if (player != null) {
-			QuestX.logChat(player, "Quest task completed!");
+			QuestX.logChat(player, LocaleBundle.getString("quest_task_complete"));
 		}
 	}
 

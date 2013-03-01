@@ -179,12 +179,10 @@ public class DLGParser {
 		ArrayList<String> lines = io.getReadableContents();
 		// ArrayList<DialogueSet> ds = new ArrayList<DialogueSet>();
 		// Load all single dialogue items first then we can add replys
-		int nodes = 0;
 		for (String line : lines) {
 			if (line.length() < 4) {
 				continue;
 			}
-			nodes++;
 			// line);
 			int firstHashIndex = line.indexOf("#") + 1;
 			int secondHashIndex = line.indexOf("#", firstHashIndex + 1);

@@ -7,6 +7,7 @@ import java.util.Map;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.EntityType;
 
+import com.adamki11s.bundle.LocaleBundle;
 import com.adamki11s.exceptions.InvalidKillTrackerException;
 import com.adamki11s.questx.QuestX;
 
@@ -62,7 +63,7 @@ public class EntityKillTracker {
 
 	public String sendEntitiesToKill() {
 		StringBuilder buff = new StringBuilder();
-		buff.append(ChatColor.RED).append("Kill : ");
+		buff.append(ChatColor.RED).append(LocaleBundle.getString("kill"));
 		for (Map.Entry<EntityType, Integer> entry : this.required.entrySet()) {
 			EntityType e = entry.getKey();
 			int reqKills = entry.getValue();

@@ -48,30 +48,20 @@ public class GotoLocationController {
 					markRemove.add(e.getKey());
 					continue;
 				} else {
-					p.sendMessage("Checking location state");
 					GotoLocationTask t = e.getValue();
 					Location l = p.getLocation();
 					if (!t.isMarked()) {
 						if (t.isInCheckRange(l)) {
-							p.sendMessage("In check range, marking...");
 							t.setMarked(true);
 							if (t.isAtLocation(l)) {
-								p.sendMessage("At location, marking completed...");
 								completed.put(p.getName(), t);
 								// set to be added to completed list
-							} else {
-								p.sendMessage("In check range but not yet at location");
 							}
-						} else {
-							p.sendMessage("Not in check range, ignoring");
-						}
+						} 
 					} else {
 						if (t.isAtLocation(l)) {
-							p.sendMessage("Already marked as in range, location check = true");
 							completed.put(p.getName(), t);
 							// set to be added to completed list
-						} else {
-							p.sendMessage("Already marked as in range, location check = false");
 						}
 					}
 				}
@@ -100,7 +90,6 @@ public class GotoLocationController {
 
 	private static void completeTask(String p) {
 		
-		QuestX.logMSG("Completing quest for player : " + p);
 		
 		QuestLoader ql = QuestManager.getQuestLoader(QuestManager.getCurrentQuestName(p));
 		QuestTask qt = QuestManager.getCurrentQuestTask(p);

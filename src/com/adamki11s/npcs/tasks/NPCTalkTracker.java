@@ -2,6 +2,8 @@ package com.adamki11s.npcs.tasks;
 
 import org.bukkit.ChatColor;
 
+import com.adamki11s.bundle.LocaleBundle;
+
 public class NPCTalkTracker {
 	
 	final String npcName;
@@ -24,7 +26,7 @@ public class NPCTalkTracker {
 	}
 	
 	public String sendWhoToTalkTo(){
-		return ChatColor.RED + "Talk to " + npcName;
+		return ChatColor.RED + LocaleBundle.getString("talk_to_npc") + npcName;
 	}
 
 }

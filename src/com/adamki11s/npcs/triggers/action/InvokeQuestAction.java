@@ -2,6 +2,7 @@ package com.adamki11s.npcs.triggers.action;
 
 import org.bukkit.entity.Player;
 
+import com.adamki11s.bundle.LocaleBundle;
 import com.adamki11s.npcs.NPCHandler;
 import com.adamki11s.npcs.SimpleNPC;
 import com.adamki11s.npcs.tasks.NPCTalkTracker;
@@ -22,8 +23,8 @@ public class InvokeQuestAction implements Action {
 		this.handle = handle;
 		this.npc = npc;
 	}
-	
-	public boolean canPlayerTriggerQuest(Player p){
+
+	public boolean canPlayerTriggerQuest(Player p) {
 		SimpleNPC npc = this.handle.getSimpleNPCByName(this.npc);
 		if (npc == null) {
 			this.isActive = false;
@@ -46,13 +47,13 @@ public class InvokeQuestAction implements Action {
 						QuestLoader ql = QuestManager.getQuestLoader(qName);
 						ql.loadAndCheckPlayerProgress(p.getName());
 						if (ql.isQuestComplete(p.getName())) {
-							QuestX.logChat(p, "You have already completed this quest!");
+							QuestX.logChat(p, LocaleBundle.getString("quest_already_completed"));
 							return false;
 						} else {
 							return true;
 						}
 					} else {
-						
+
 						if (npc.doesLinkToQuest()) {
 
 							QuestTask qt = QuestManager.getCurrentQuestTask(p.getName());
@@ -68,13 +69,13 @@ public class InvokeQuestAction implements Action {
 										// correct npc
 										return true;
 									} else {
-										QuestX.logChat(p, "You need to speak to '" + track.getNPCName() + "' to complete this part of your quest.");
+										QuestX.logChat(p, LocaleBundle.getString("need_to_speak_to") + track.getNPCName() + LocaleBundle.getString("to_complete_part_of_quest"));
 										return false;
 										// wrong npc
 									}
 
 								} else {
-									QuestX.logChat(p, "You need to speak to '" + track.getNPCName() + "' to complete this part of your quest.");
+									QuestX.logChat(p, LocaleBundle.getString("need_to_speak_to") + track.getNPCName() + LocaleBundle.getString("to_complete_part_of_quest"));
 									return false;
 								}
 							}
@@ -87,7 +88,7 @@ public class InvokeQuestAction implements Action {
 					}
 				} else {
 					// quest has not been setup
-					QuestX.logChat(p, "This quest has not yet been setup. /q setup " + qName);
+					QuestX.logChat(p, LocaleBundle.getString("quest_not_setup") + " /q setup " + qName);
 					return false;
 				}
 			} else {
@@ -122,7 +123,7 @@ public class InvokeQuestAction implements Action {
 						QuestLoader ql = QuestManager.getQuestLoader(qName);
 						ql.loadAndCheckPlayerProgress(p.getName());
 						if (ql.isQuestComplete(p.getName())) {
-							QuestX.logChat(p, "You have already completed this quest!");
+							QuestX.logChat(p, LocaleBundle.getString("quest_already_completed"));
 						} else {
 							QuestManager.setCurrentPlayerQuest(p.getName(), qName);
 							QuestX.logDebug(ql.getStartText() + "<<<<<< START TEXT");
@@ -157,12 +158,12 @@ public class InvokeQuestAction implements Action {
 											QuestManager.removeCurrentPlayerQuest(ql.getName(), p.getName());
 										}
 									} else {
-										QuestX.logChat(p, "You need to speak to '" + track.getNPCName() + "' to complete this part of your quest.");
+										QuestX.logChat(p, LocaleBundle.getString("need_to_speak_to") + track.getNPCName() + LocaleBundle.getString("to_complete_part_of_quest"));
 										// wrong npc
 									}
 
 								} else {
-									QuestX.logChat(p, "You need to speak to '" + track.getNPCName() + "' to complete this part of your quest.");
+									QuestX.logChat(p, LocaleBundle.getString("need_to_speak_to") + track.getNPCName() + LocaleBundle.getString("to_complete_part_of_quest"));
 								}
 							}
 
@@ -172,7 +173,7 @@ public class InvokeQuestAction implements Action {
 					}
 				} else {
 					// quest has not been setup
-					QuestX.logChat(p, "This quest has not yet been setup. /q setup " + qName);
+					QuestX.logChat(p, LocaleBundle.getString("quest_not_setup") + " /q setup " + qName);
 				}
 			} else {
 				QuestX.logDebug("NPC has no link to a quest");

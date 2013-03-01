@@ -63,7 +63,6 @@ public class GotoLocationTask {
 		// smaller check
 
 		if (!l.getWorld().getName().equalsIgnoreCase(this.world)) {
-			QuestX.logMSG("Not even in same world, do not check");
 			return false;
 		}
 

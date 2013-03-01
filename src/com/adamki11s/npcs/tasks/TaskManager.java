@@ -8,6 +8,7 @@ import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import com.adamki11s.bundle.LocaleBundle;
 import com.adamki11s.commands.QuestXCMDExecutor;
 import com.adamki11s.extras.inventory.ExtrasInventory;
 import com.adamki11s.io.FileLocator;
@@ -132,7 +133,7 @@ public class TaskManager {
 		ItemStack[] req = this.getTaskLoader().getRequiredItems();
 		Player p = Bukkit.getServer().getPlayer(pName);
 		StringBuilder buff = new StringBuilder();
-		buff.append(ChatColor.RED).append("Collect : ").append(ChatColor.RESET);
+		buff.append(ChatColor.RED).append(LocaleBundle.getString("collect_items")).append(ChatColor.RESET);
 		if (p != null) {
 			ItemStack[] pContents = p.getInventory().getContents();
 			for (ItemStack is : req) {
@@ -172,8 +173,7 @@ public class TaskManager {
 			ItemStack[] rewardItems = this.getTaskLoader().getRewardItems();
 			for (ItemStack i : rewardItems) {
 				if (i != null) {
-					int empty = -1;
-					if ((empty = p.getInventory().firstEmpty()) != -1) {
+					if ((p.getInventory().firstEmpty()) != -1) {
 						p.getInventory().addItem(i);
 					} else {
 						p.getWorld().dropItemNaturally(p.getLocation(), i);

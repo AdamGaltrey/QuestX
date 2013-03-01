@@ -3,6 +3,7 @@ package com.adamki11s.quests.requirements;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
+import com.adamki11s.bundle.LocaleBundle;
 import com.adamki11s.quests.QuestManager;
 import com.adamki11s.questx.QuestX;
 import com.adamki11s.reputation.Reputation;
@@ -24,7 +25,7 @@ public class QuestRequirements {
 		if (QuestX.isEconomySupported()) {
 			double balance = QuestX.economy.getBalance(p.getName());
 			if (balance < this.requiredGold) {
-				QuestX.logChat(p, ChatColor.RED + "You need " + ChatColor.YELLOW + this.requiredGold + ChatColor.RED + " gold to undertake this quest, you only have " + ChatColor.YELLOW + balance);
+				QuestX.logChat(p, ChatColor.RED + LocaleBundle.getString("you_need") + ChatColor.YELLOW + this.requiredGold + ChatColor.RED + LocaleBundle.getString("gold_req") + ChatColor.YELLOW + balance);
 				return false;
 			}
 		}
@@ -33,13 +34,13 @@ public class QuestRequirements {
 		int rep = r.getRep();
 		if (minRep != 0 && maxRep != 0) {
 			if (!(rep >= this.minRep && rep <= this.maxRep)) {
-				QuestX.logChat(p, ChatColor.RED + "You need between " + ChatColor.YELLOW + minRep + " - " + maxRep + ChatColor.RED + " reputation to undertake this quest.");
+				QuestX.logChat(p, ChatColor.RED + LocaleBundle.getString("you_need_between") + ChatColor.YELLOW + minRep + " - " + maxRep + ChatColor.RED + LocaleBundle.getString("rep_req"));
 				return false;
 			}
 		}
 
 		boolean can = true;
-		StringBuilder error = new StringBuilder().append(ChatColor.RED).append("You need to complete the following quests before attempting this one : ").append(ChatColor.RESET);
+		StringBuilder error = new StringBuilder().append(ChatColor.RED).append(LocaleBundle.getString("need_to_complete_quests")).append(ChatColor.RESET);
 
 		if (!completedQuests[0].equalsIgnoreCase("0")) {
 

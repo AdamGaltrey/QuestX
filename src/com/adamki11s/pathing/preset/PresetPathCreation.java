@@ -9,6 +9,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
+import com.adamki11s.bundle.LocaleBundle;
 import com.adamki11s.npcs.NPCHandler;
 import com.adamki11s.npcs.loading.FixedLoadingTable;
 import com.adamki11s.pathing.AStar;
@@ -72,19 +73,19 @@ public class PresetPathCreation {
 				// p.sendBlockChange(l, Material.DIAMOND_BLOCK, (byte) 0);
 				// p.sendBlockChange(previousPoint, Material.DIAMOND_BLOCK,
 				// (byte) 0);
-				QuestX.logChat(p, ChatColor.GREEN + "Path point set successfully.");
+				QuestX.logChat(p, ChatColor.GREEN + LocaleBundle.getString("set_path_point"));
 				break;
 			default:
-				QuestX.logChat(p, ChatColor.RED + "No path could be found to that point, please select another.");
+				QuestX.logChat(p, ChatColor.RED + LocaleBundle.getString("no_path_to_point"));
 				return;
 			}
 		} catch (InvalidPathException e) {
-			StringBuilder error = new StringBuilder().append(ChatColor.RED).append("Invalid block selected");
+			StringBuilder error = new StringBuilder().append(ChatColor.RED).append(LocaleBundle.getString("invalid_selection"));
 			if (e.isEndNotSolid()) {
-				error.append(" end block is not solid,");
+				error.append(LocaleBundle.getString("end_invalid"));
 			}
 			if (e.isStartNotSolid()) {
-				error.append(" start block is not solid,");
+				error.append(LocaleBundle.getString("start_invalid"));
 			}
 			QuestX.logChatError(p, error.toString());
 		}
@@ -100,7 +101,7 @@ public class PresetPathCreation {
 		Tile[] nodes = this.getFinalTileNodes();
 		PresetPath presetPath = new PresetPath(new SyncLocation(this.start), nodes);
 		FixedLoadingTable.addPresetPath(npc, presetPath, handle);
-		QuestX.logChat(p, ChatColor.GREEN + "Preset path set successfully.");
+		QuestX.logChat(p, ChatColor.GREEN + LocaleBundle.getString("creation_success"));
 	}
 
 	private Tile[] getFinalTileNodes() {

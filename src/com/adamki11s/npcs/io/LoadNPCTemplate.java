@@ -4,6 +4,7 @@ import java.io.File;
 
 import org.bukkit.inventory.ItemStack;
 
+import com.adamki11s.bundle.LocaleBundle;
 import com.adamki11s.data.ItemStackDrop;
 import com.adamki11s.data.ItemStackProbability;
 import com.adamki11s.io.FileLocator;
@@ -102,7 +103,7 @@ public class LoadNPCTemplate {
 			}
 
 		} else {
-			QuestX.logMSG("Could not locate properties file for NPC '" + name + "'.");
+			QuestX.logMSG(LocaleBundle.getString("props_file_missing") + name + "'.");
 		}
 	}
 
@@ -116,7 +117,7 @@ public class LoadNPCTemplate {
 				g[i] = new ItemStack(Integer.parseInt(parts[i]));
 			}
 		} catch (NumberFormatException nfe) {
-			QuestX.logMSG("NPC " + this.name + " has invalid data in field 'GEAR'.");
+			QuestX.logMSG("NPC " + this.name + LocaleBundle.getString("invalid_gear_data"));
 			QuestX.logMSG("NPC " + this.name + " unloaded.");
 			unload = true;
 		}
@@ -132,17 +133,17 @@ public class LoadNPCTemplate {
 			quantity = Integer.parseInt(parts[2]);
 			probability = Integer.parseInt(parts[3]);
 		} catch (NumberFormatException nfe) {
-			QuestX.logMSG("NPC " + this.name + " has invalid data in field 'INVENTORY_DROPS'.");
+			QuestX.logMSG("NPC " + this.name + LocaleBundle.getString("invalid_invent_data"));
 			QuestX.logMSG("NPC " + this.name + " unloaded.");
 			unload = true;
 		} catch (ArrayIndexOutOfBoundsException e) {
-			QuestX.logMSG("NPC " + this.name + " has invalid data in field 'INVENTORY_DROPS'.");
+			QuestX.logMSG("NPC " + this.name + LocaleBundle.getString("invalid_invent_data"));
 			QuestX.logMSG("NPC " + this.name + " unloaded.");
 			unload = true;
 		}
 
 		if (probability < 0 || probability > 10000) {
-			QuestX.logMSG("NPC " + this.name + " has invalid data in field 'INVENTORY_DROPS'. Probability must be between 0-10000");
+			QuestX.logMSG("NPC " + this.name + LocaleBundle.getString("invalid_invent_data") + " Probability must be between 0-10000");
 			QuestX.logMSG("NPC " + this.name + " unloaded.");
 			unload = true;
 		}

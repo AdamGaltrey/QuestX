@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
+import com.adamki11s.bundle.LocaleBundle;
 import com.adamki11s.io.GeneralConfigData;
 import com.adamki11s.questx.QuestX;
 
@@ -44,9 +45,9 @@ public class ReputationManager {
 		Player p = Bukkit.getServer().getPlayer(name);
 		if (p != null) {
 			if (amount < 0) {
-				QuestX.logChat(p, "You lost " + ChatColor.RED + Math.abs(amount) + ChatColor.RESET + " reputation.");
+				QuestX.logChat(p, LocaleBundle.getString("rep_loss") + ChatColor.RED + Math.abs(amount) + ChatColor.RESET + LocaleBundle.getString("reputation"));
 			} else if (amount > 0) {
-				QuestX.logChat(p, "You gained " + ChatColor.GREEN + Math.abs(amount) + ChatColor.RESET + " reputation.");
+				QuestX.logChat(p, LocaleBundle.getString("rep_gain") + ChatColor.GREEN + Math.abs(amount) + ChatColor.RESET + LocaleBundle.getString("reputation"));
 			}
 		}
 		updateColourCache(name);

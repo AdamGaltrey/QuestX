@@ -80,7 +80,7 @@ public class QuestX extends JavaPlugin {
 	}
 
 	public static synchronized void logError(String msg) {
-		log.info("[QuestX][ERROR] " + msg);
+		log.info("[QuestX]" + LocaleBundle.getString("error") + " " + msg);
 	}
 
 	public static final void logChat(Player p, String message) {
@@ -88,7 +88,7 @@ public class QuestX extends JavaPlugin {
 	}
 
 	public static final void logChatError(Player p, String message) {
-		p.sendMessage(ChatColor.AQUA + "[QuestX]" + ChatColor.RED + "[ERROR] " + ChatColor.RESET + DynamicStrings.getDynamicReplacement(message, p.getName()));
+		p.sendMessage(ChatColor.AQUA + "[QuestX]" + ChatColor.RED + LocaleBundle.getString("error") + " " + ChatColor.RESET + DynamicStrings.getDynamicReplacement(message, p.getName()));
 	}
 
 	public NPCHandler getNPCHandler() {

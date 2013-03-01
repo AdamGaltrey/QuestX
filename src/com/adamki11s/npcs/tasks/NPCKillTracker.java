@@ -4,6 +4,7 @@ import java.util.HashSet;
 
 import org.bukkit.ChatColor;
 
+import com.adamki11s.bundle.LocaleBundle;
 import com.adamki11s.questx.QuestX;
 
 public class NPCKillTracker {
@@ -43,7 +44,7 @@ public class NPCKillTracker {
 
 	public String sendNPCSToKill() {
 		StringBuilder buff = new StringBuilder();
-		buff.append(ChatColor.RED).append("Kill : ");
+		buff.append(ChatColor.RED).append(LocaleBundle.getString("kill"));
 		for (String req : this.required) {
 			if(!this.current.contains(req)){
 				buff.append(req).append(", ");

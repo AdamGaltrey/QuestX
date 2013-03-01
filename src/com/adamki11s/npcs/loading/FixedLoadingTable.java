@@ -11,6 +11,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import com.adamki11s.bundle.LocaleBundle;
 import com.adamki11s.display.FixedSpawnsDisplay;
 import com.adamki11s.display.PresetPathsDisplay;
 import com.adamki11s.io.FileLocator;
@@ -72,18 +73,18 @@ public class FixedLoadingTable {
 	public static boolean removePresetPath(Player p, String npcName, NPCHandler handle) {
 		if (!FileLocator.doesNPCNameExist(npcName)) {
 			if (p != null) {
-				QuestX.logChat(p, ChatColor.RED + "There is no NPC created with this name!");
+				QuestX.logChat(p, ChatColor.RED + LocaleBundle.getString("no_npc_name"));
 			}
 			return false;
 		} else {
 			if (!fixedSpawns.containsKey(npcName)) {
 				if (p != null) {
-					QuestX.logChat(p, "A fixed spawn location for this NPC does not exist");
+					QuestX.logChat(p, LocaleBundle.getString("no_fixed_spawn"));
 				}
 				return false;
 			} else {
 				if (!presetNPCs.contains(npcName)) {
-					QuestX.logChat(p, "A preset path for this NPC does not exist");
+					QuestX.logChat(p, LocaleBundle.getString("no_preset_path"));
 					return false;
 				} else {
 					io.read();
@@ -216,16 +217,16 @@ public class FixedLoadingTable {
 					spawn.createNewFile();
 					loader.add("NPC_COUNT", 0);
 					loader.write();
-					QuestX.logChat(p, "All fixed spawns for NPCs were deleted");
+					QuestX.logChat(p, LocaleBundle.getString("all_fxied_spawns_del"));
 				} catch (IOException e) {
-					QuestX.logChat(p, "There was an error deleting the fixed spawns file");
+					QuestX.logChat(p, LocaleBundle.getString("error_del_fs_file"));
 					e.printStackTrace();
 				}
 			} else {
-				QuestX.logChat(p, "The fixed spawns file does not exist!");
+				QuestX.logChat(p, LocaleBundle.getString("no_fs_file"));
 			}
 		} else {
-			QuestX.logChat(p, "The fixed spawns file cannot be accessed, it is either missing or being used. Please try again later.");
+			QuestX.logChat(p, LocaleBundle.getString("fs_file_locked"));
 		}
 
 		presetNPCs.clear();
@@ -238,16 +239,16 @@ public class FixedLoadingTable {
 					io.clearWriteArray();
 					io.add("NULL", 0);
 					io.write();
-					QuestX.logChat(p, "All preset paths for NPCs were deleted");
+					QuestX.logChat(p, LocaleBundle.getString("all_preset_del"));
 				} catch (IOException e) {
-					QuestX.logChat(p, "There was an error deleting the preset pathing  file");
+					QuestX.logChat(p, LocaleBundle.getString("error_del_pp_file"));
 					e.printStackTrace();
 				}
 			} else {
-				QuestX.logChat(p, "The preset pathing file does not exist!");
+				QuestX.logChat(p, LocaleBundle.getString("no_pp_file"));
 			}
 		} else {
-			QuestX.logChat(p, "The preset pathing file cannot be accessed, it is either missing or being used. Please try again later.");
+			QuestX.logChat(p, LocaleBundle.getString("pp_file_locked"));
 		}
 
 		FixedSpawnsDisplay.updateSoftReference();
@@ -263,7 +264,7 @@ public class FixedLoadingTable {
 		} else {
 			if (!fixedSpawns.containsKey(npcName)) {
 				if (p != null) {
-					QuestX.logChat(p, "A fixed spawn location for this NPC does not exist");
+					QuestX.logChat(p, LocaleBundle.getString("no_fixed_spawn"));
 				}
 				return false;
 			} else {
@@ -330,13 +331,13 @@ public class FixedLoadingTable {
 	public static boolean removeFixedNPCSpawn(Player p, String npcName, NPCHandler handle) {
 		if (!FileLocator.doesNPCNameExist(npcName)) {
 			if (p != null) {
-				QuestX.logChat(p, ChatColor.RED + "There is no NPC created with this name!");
+				QuestX.logChat(p, ChatColor.RED + LocaleBundle.getString("no_npc_name"));
 			}
 			return false;
 		} else {
 			if (!fixedSpawns.containsKey(npcName)) {
 				if (p != null) {
-					QuestX.logChat(p, "A fixed spawn location for this NPC does not exist");
+					QuestX.logChat(p, LocaleBundle.getString("no_fixed_spawn"));
 				}
 				return false;
 			} else {
@@ -371,9 +372,9 @@ public class FixedLoadingTable {
 				io.write();
 
 				if (p != null) {
-					QuestX.logChat(p, "The fixed spawn for NPC '" + npcName + "' was removed.");
+					QuestX.logChat(p, LocaleBundle.getString("t_fs") + npcName + LocaleBundle.getString("was_rem"));
 					if (presetNPCs.contains(npcName)) {
-						QuestX.logChat(p, "The preset path for NPC '" + npcName + "' was removed.");
+						QuestX.logChat(p, LocaleBundle.getString("t_pp") + npcName + LocaleBundle.getString("was_rem"));
 						presetNPCs.remove(npcName);
 					}
 				}
@@ -389,13 +390,13 @@ public class FixedLoadingTable {
 	public static boolean addFixedNPCSpawn(Player p, String npcName, Location l, NPCHandler handle) {
 		if (!FileLocator.doesNPCNameExist(npcName)) {
 			if (p != null) {
-				QuestX.logChat(p, ChatColor.RED + "There is no NPC created with this name!");
+				QuestX.logChat(p, ChatColor.RED + LocaleBundle.getString("no_npc_name"));
 			}
 			return false;
 		} else {
 			if (fixedSpawns.containsKey(npcName)) {
 				if (p != null) {
-					QuestX.logChat(p, "A fixed spawn location for this NPC already exists");
+					QuestX.logChat(p, LocaleBundle.getString("yes_fixed_spawn"));
 				}
 				return false;
 			}
@@ -424,7 +425,7 @@ public class FixedLoadingTable {
 			FixedSpawnsDisplay.updateSoftReference();
 
 			if (p != null) {
-				QuestX.logChat(p, "Fixed spawn created successfully for NPC '" + npcName + "'.");
+				QuestX.logChat(p, LocaleBundle.getString("fixed_spawn_success") + npcName + "'.");
 			}
 			return true;
 		}

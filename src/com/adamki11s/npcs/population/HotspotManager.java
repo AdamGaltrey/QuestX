@@ -1,6 +1,5 @@
 package com.adamki11s.npcs.population;
 
-import java.io.File;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map.Entry;

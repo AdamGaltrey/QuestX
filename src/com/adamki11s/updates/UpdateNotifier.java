@@ -3,6 +3,7 @@ package com.adamki11s.updates;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
+import com.adamki11s.bundle.LocaleBundle;
 import com.adamki11s.commands.QPerms;
 import com.adamki11s.io.GeneralConfigData;
 import com.adamki11s.questx.QuestX;
@@ -19,8 +20,8 @@ public class UpdateNotifier {
 	public static void onPlayerLogin(Player p) {
 		// if player is admin
 		if (GeneralConfigData.isNotifyAdmin() && u.getResult() == UpdateResult.UPDATE_AVAILABLE && QPerms.hasPermission(p, "questx.update.notify")) {
-			QuestX.logChat(p, ChatColor.GREEN + "Version " + u.getLatestVersionString() + " of QuestX has been released, you are running version " + QuestX.version);
-			QuestX.logChat(p, ChatColor.GREEN + "Run command " + ChatColor.RED + "/questx force-update" + ChatColor.GREEN + " to automatically update the plugin if you wish to do so.");
+			QuestX.logChat(p, ChatColor.GREEN + LocaleBundle.getString("version") + u.getLatestVersionString() + LocaleBundle.getString("new_ver_released") + QuestX.version);
+			QuestX.logChat(p, ChatColor.GREEN + LocaleBundle.getString("run_cmd") + ChatColor.RED + "/questx force-update" + ChatColor.GREEN + LocaleBundle.getString("to_auto_update"));
 		}
 	}
 

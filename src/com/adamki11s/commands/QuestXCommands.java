@@ -12,6 +12,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.adamki11s.ai.RandomMovement;
+import com.adamki11s.bundle.LocaleBundle;
 import com.adamki11s.commands.help.HelpBook;
 import com.adamki11s.commands.help.HelpDispatcher;
 import com.adamki11s.display.FixedSpawnsDisplay;
@@ -127,7 +128,7 @@ public class QuestXCommands implements CommandExecutor {
 							try {
 								pg = Integer.parseInt(args[2]);
 							} catch (NumberFormatException nfe) {
-								QuestX.logChat(p, ChatColor.RED + "Page number must be an integer! /q fixedspawns list <page>");
+								QuestX.logChat(p, ChatColor.RED + LocaleBundle.getString("invalid_pg_number") +" /q fixedspawns list <page>");
 							}
 							PresetPathsDisplay.display(p, pg);
 						}
@@ -145,7 +146,7 @@ public class QuestXCommands implements CommandExecutor {
 				
 				if(args.length == 2 && (args[0].equalsIgnoreCase("rep") || args[0].equalsIgnoreCase("reputation") && args[1].equalsIgnoreCase("view")) ){
 					Reputation rep = ReputationManager.getPlayerReputation(p.getName());
-					QuestX.logChat(p, "Your have " + rep.getChatColour() + rep.getRep() + ChatColor.RESET + " reputation.");
+					QuestX.logChat(p, LocaleBundle.getString("you_have") + rep.getChatColour() + rep.getRep() + ChatColor.RESET + LocaleBundle.getString("reputation"));
 					return true;
 				}
 				
@@ -180,32 +181,31 @@ public class QuestXCommands implements CommandExecutor {
 				
 				if(args.length == 2 && args[0].equalsIgnoreCase("quest") && args[1].equalsIgnoreCase("cancel")){
 					if (!QuestManager.doesPlayerHaveQuest(p.getName())) {
-						QuestX.logChat(p, ChatColor.RED + "You do not currently have a quest.");
+						QuestX.logChat(p, ChatColor.RED + LocaleBundle.getString("no_quest"));
 					} else {
 						QuestManager.cancelCurrentQuest(p.getName());
-						QuestX.logChat(p, "Quest cancelled, your progress has been saved.");
+						QuestX.logChat(p, LocaleBundle.getString("quest_cancelled"));
 					}
 					return true;
 				}
 				
 				
 				if (args.length == 2 && args[0].equalsIgnoreCase("quest") && args[1].equalsIgnoreCase("next") && QPerms.hasPermission(p, "questx.quests.setup")) {
-					QuestX.logChat(p, "registered next command");
 					if (setups.containsKey(p.getName())) {
-						QuestX.logChat(p, "Setting up quest");
+						QuestX.logChat(p, LocaleBundle.getString("q_setting_up"));
 						QuestSetup qs = this.setups.get(p.getName());
 						if (!qs.isSetupComplete()) {
 							qs.setupSpawn(p);
 							if (qs.isSetupComplete()) {
 								qs.removeFromList();
 								this.setups.remove(p.getName());
-								QuestX.logChat(p, "Quest setup successfully!");
+								QuestX.logChat(p, LocaleBundle.getString("q_setup_complete"));
 							}
 						} else {
-							QuestX.logChat(p, "Setup is completed already.");
+							QuestX.logChat(p, LocaleBundle.getString("q_already_setup"));
 						}
 					} else {
-						QuestX.logChat(p, "You aren't setting up a quest!");
+						QuestX.logChat(p, LocaleBundle.getString("q_not_setting_up"));
 					}
 					return true;
 				}
@@ -225,10 +225,10 @@ public class QuestXCommands implements CommandExecutor {
 					QuestUnpacker upack = new QuestUnpacker(qName);
 					boolean suc = upack.unpackQuest();
 					if (suc) {
-						QuestX.logChat(p, "Unpack successfull");
-						QuestX.logChat(p, "/QuestX quest setup <questname> " + ChatColor.GREEN + " to setup this quest");
+						QuestX.logChat(p, LocaleBundle.getString("q_unpack_success"));
+						QuestX.logChat(p, "/QuestX quest setup <questname> " + ChatColor.GREEN + LocaleBundle.getString("q_to_setup"));
 					} else {
-						QuestX.logChat(p, "Error while unpacking");
+						QuestX.logChat(p, LocaleBundle.getString("q_unpack_error"));
 					}
 					return true;
 				}
@@ -246,7 +246,7 @@ public class QuestXCommands implements CommandExecutor {
 					String qName = build.toString();
 					
 					if (setups.containsKey(p.getName())) {
-						QuestX.logChat(p, "You are already setting this quest up!");
+						QuestX.logChat(p, LocaleBundle.getString("q_already_being_setup"));
 						return true;
 					}
 					if (!setups.containsKey(p.getName())) {
@@ -256,15 +256,15 @@ public class QuestXCommands implements CommandExecutor {
 								if (!qs.canSetup()) {
 									QuestX.logChat(p, "Failed to start setup, reason : " + qs.getFailSetupReason());
 								} else {
-									QuestX.logChat(p, "Setup successful! /questx quest next " + ChatColor.GREEN + "To select the next spawn location");
+									QuestX.logChat(p, LocaleBundle.getString("setup_successful") + " /questx quest next " + ChatColor.GREEN + LocaleBundle.getString("select_next_spawn"));
 									qs.sendInitialMessage(p);
 									this.setups.put(p.getName(), qs);
 								}
 							} else {
-								QuestX.logChat(p, "This quest has already been setup");
+								QuestX.logChat(p, LocaleBundle.getString("q_already_setup"));
 							}
 						} else {
-							QuestX.logChat(p, "A quest by that name does not exist");
+							QuestX.logChat(p, LocaleBundle.getString("q_no_name"));
 						}
 					}
 					return true;
@@ -333,7 +333,7 @@ public class QuestXCommands implements CommandExecutor {
 						if (FixedLoadingTable.doesNPCHaveFixedSpawn(toDel)) {
 							FixedLoadingTable.removeFixedNPCSpawn(p, toDel, handle);
 						}
-						QuestX.logChat(p, ChatColor.GREEN + "NPC deleted successfully.");
+						QuestX.logChat(p, ChatColor.GREEN + LocaleBundle.getString("npc_deleted"));
 
 					} catch (IOException e) {
 						QuestX.logChatError(p, ChatColor.RED + "Error while deleting NPC '" + toDel + "'");
@@ -345,7 +345,7 @@ public class QuestXCommands implements CommandExecutor {
 					String npcName = args[2];
 					SimpleNPC npc = this.handle.getSimpleNPCByName(npcName);
 					if (npc == null) {
-						QuestX.logChat(p, "NPC with this name is not spawned");
+						QuestX.logChat(p, LocaleBundle.getString("npc_not_spawned"));
 						return true;
 					} else {
 						if (npc.isNPCSpawned()) {
@@ -353,7 +353,7 @@ public class QuestXCommands implements CommandExecutor {
 							LocationGuider guide = new LocationGuider(p.getName(), npcLoc.getWorld().getName(), npcLoc.getBlockX(), npcLoc.getBlockY(), npcLoc.getBlockZ());
 							guide.drawPath();
 						} else {
-							QuestX.logChatError(p, "This NPC has not spawned.");
+							QuestX.logChatError(p, LocaleBundle.getString("npc_not_spawned"));
 						}
 						return true;
 					}
@@ -363,7 +363,7 @@ public class QuestXCommands implements CommandExecutor {
 					String npcName = args[2];
 					SimpleNPC npc = this.handle.getSimpleNPCByName(npcName);
 					if (npc == null) {
-						QuestX.logChat(p, "An NPC with this name has not spawned");
+						QuestX.logChat(p, LocaleBundle.getString("npc_not_spawned"));
 						return true;
 					} else {
 						p.teleport(npc.getHumanNPC().getBukkitEntity().getLocation());
@@ -493,7 +493,7 @@ public class QuestXCommands implements CommandExecutor {
 					String name = args[2];
 
 					if (HotspotManager.doesHotspotExist(name)) {
-						QuestX.logChatError(p, ChatColor.RED + "A hotspot with this name already exists");
+						QuestX.logChatError(p, ChatColor.RED + LocaleBundle.getString("hotspot_name_exists"));
 						return true;
 					} else {
 						int range, maxSpawns;
@@ -503,7 +503,7 @@ public class QuestXCommands implements CommandExecutor {
 							Location l = p.getLocation();
 							Hotspot h = new Hotspot(l.getBlockX(), l.getBlockY(), l.getBlockZ(), range, maxSpawns, name, l.getWorld().getName());
 							HotspotManager.createHotspot(h);
-							QuestX.logChat(p, ChatColor.GREEN + "Hotspot '" + name + "' was created successfully.");
+							QuestX.logChat(p, ChatColor.GREEN + LocaleBundle.getString("htspt") + name + LocaleBundle.getString("htspt_created_success"));
 						} catch (NumberFormatException nfe) {
 							QuestX.logChatError(p, ChatColor.RED + "Range and Maximum spawns must be integer values!");
 							QuestX.logChatError(p, ChatColor.RED + "Format : /questx hotspots add <range> <maxspawns>");
@@ -517,9 +517,9 @@ public class QuestXCommands implements CommandExecutor {
 					String name = args[2];
 					if (HotspotManager.doesHotspotExist(name)) {
 						HotspotManager.deleteHotspot(name);
-						QuestX.logChat(p, ChatColor.GREEN + "Hotspot deleted successfully.");
+						QuestX.logChat(p, ChatColor.GREEN + LocaleBundle.getString("htspt_deleted"));
 					} else {
-						QuestX.logChatError(p, ChatColor.RED + "A hotspot with this name does not exist");
+						QuestX.logChatError(p, ChatColor.RED + LocaleBundle.getString("htspt_no_name"));
 					}
 					return true;
 				}
@@ -528,7 +528,7 @@ public class QuestXCommands implements CommandExecutor {
 					String name = args[2];
 
 					if (!HotspotManager.doesHotspotExist(name)) {
-						QuestX.logChatError(p, ChatColor.RED + "A hotspot with this name does not exist");
+						QuestX.logChatError(p, ChatColor.RED + LocaleBundle.getString("htspt_no_name"));
 						return true;
 					} else {
 						int range, maxSpawns;
@@ -536,7 +536,7 @@ public class QuestXCommands implements CommandExecutor {
 							range = Integer.parseInt(args[3]);
 							maxSpawns = Integer.parseInt(args[4]);
 							HotspotManager.editHotspot(name, range, maxSpawns);
-							QuestX.logChat(p, ChatColor.GREEN + "Hotspot '" + name + "' was editied successfully.");
+							QuestX.logChat(p, ChatColor.GREEN + LocaleBundle.getString("htspt") + name + "' was editied successfully.");
 						} catch (NumberFormatException nfe) {
 							QuestX.logChatError(p, ChatColor.RED + "Range and Maximum spawns must be integer values!");
 							QuestX.logChatError(p, ChatColor.RED + "Format : /questx hotspots add <range> <maxspawns>");

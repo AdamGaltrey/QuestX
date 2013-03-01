@@ -3,6 +3,7 @@ package com.adamki11s.npcs.triggers.action;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
+import com.adamki11s.bundle.LocaleBundle;
 import com.adamki11s.io.FileLocator;
 import com.adamki11s.npcs.tasks.TaskLoader;
 import com.adamki11s.npcs.tasks.TaskManager;
@@ -22,11 +23,11 @@ public class InvokeTaskAction implements Action {
 	public boolean canPlayerTriggerTask(Player p) {
 		boolean alreadyDone = TaskRegister.hasPlayerCompletedTask(this.npc, p.getName());
 		if (alreadyDone) {
-			QuestX.logChat(p, "You have already completed this task!");
+			QuestX.logChat(p, LocaleBundle.getString("task_already_completed"));
 			return false;
 		}
 		if (TaskRegister.doesPlayerHaveTask(p.getName())) {
-			QuestX.logChat(p, ChatColor.RED + "You already have a task assigned!");
+			QuestX.logChat(p, ChatColor.RED + LocaleBundle.getString("task_already_assigned"));
 			QuestX.logChat(p, ChatColor.WHITE + "/questx task cancel" + ChatColor.RED + " to cancel current task.");
 			return false;
 		} else {
@@ -38,11 +39,11 @@ public class InvokeTaskAction implements Action {
 	public void implement(Player p) {
 		boolean alreadyDone = TaskRegister.hasPlayerCompletedTask(this.npc, p.getName());
 		if (alreadyDone) {
-			QuestX.logChat(p, "You have already completed this task!");
+			QuestX.logChat(p, LocaleBundle.getString("task_already_completed"));
 			return;
 		}
 		if (TaskRegister.doesPlayerHaveTask(p.getName())) {
-			QuestX.logChat(p, ChatColor.RED + "You already have a task assigned!");
+			QuestX.logChat(p, ChatColor.RED + LocaleBundle.getString("task_already_assigned"));
 			QuestX.logChat(p, ChatColor.WHITE + "/questx task cancel" + ChatColor.RED + " to cancel current task.");
 			return;
 		} else {
@@ -53,7 +54,7 @@ public class InvokeTaskAction implements Action {
 			TaskManager manage = new TaskManager(p.getName(), tl);
 			TaskRegister.registerTask(manage);
 			QuestX.logChat(p, ChatColor.ITALIC + tl.getTaskName() + ChatColor.RESET + ChatColor.GREEN + " task started!");
-			QuestX.logChat(p, "Task description : " + tl.getTaskDescription());
+			QuestX.logChat(p, LocaleBundle.getString("task_desc") + tl.getTaskDescription());
 
 			return;
 		}

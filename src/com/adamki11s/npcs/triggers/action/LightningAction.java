@@ -44,7 +44,6 @@ public class LightningAction implements Action {
 		taskID = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(QuestX.p, new Runnable() {
 
 			short sCount;
-			Random r = new Random();
 
 			public void run() {
 				sCount++;

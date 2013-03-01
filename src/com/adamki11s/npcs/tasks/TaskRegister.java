@@ -8,6 +8,7 @@ import java.util.HashSet;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
+import com.adamki11s.bundle.LocaleBundle;
 import com.adamki11s.io.FileLocator;
 import com.adamki11s.questx.QuestX;
 import com.adamki11s.sync.io.configuration.SyncConfiguration;
@@ -31,9 +32,9 @@ public class TaskRegister {
 		if (doesPlayerHaveTask(p.getName())) {
 			TaskManager tm = getTaskManager(p.getName());
 			unRegisterTask(tm);
-			QuestX.logChat(p, ChatColor.GREEN + "Task cancelled!");
+			QuestX.logChat(p, ChatColor.GREEN + LocaleBundle.getString("task_cancel"));
 		} else {
-			QuestX.logChat(p, ChatColor.RED + "You do not have a task to cancel.");
+			QuestX.logChat(p, ChatColor.RED + LocaleBundle.getString("no_task_to_cancel"));
 		}
 	}
 

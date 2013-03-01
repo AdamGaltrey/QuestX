@@ -509,13 +509,13 @@ public class SimpleNPC {
 						return;
 					}
 				} else {
-					QuestX.logChat(p, "You already have a task, finish or cancel your current task before starting a new one.");
+					QuestX.logChat(p, LocaleBundle.getString("already_has_task"));
 					return;
 				}
 			}
 
 			if (!FileLocator.doesNPCDlgFileExist(this.getName())) {
-				QuestX.logChat(p, ChatColor.AQUA + "[QuestX] " + ChatColor.RED + "No dialogue.dlg file found or it is empty!");
+				QuestX.logChat(p, ChatColor.AQUA + "[QuestX] " + ChatColor.RED + LocaleBundle.getString("no_dlg_file"));
 			} else {
 				c = new Conversation(p.getName(), this);
 				c.loadConversation();
@@ -524,7 +524,7 @@ public class SimpleNPC {
 					Location pl = p.getLocation();
 					this.getHumanNPC().lookAtPoint(new Location(pl.getWorld(), pl.getX(), pl.getY() + 1, pl.getZ()));
 				} else {
-					QuestX.logChatError(p, "There was an error parsing the dialogue file for this NPC. Please check the server log for more information.");
+					QuestX.logChatError(p, LocaleBundle.getString("error_dlg_parse"));
 				}
 			}
 		} else {
@@ -534,9 +534,9 @@ public class SimpleNPC {
 			Player convoPlayer = c.getConvoData().getPlayer();
 			if (convoPlayer != null) {
 				if (convoPlayer.getName().equalsIgnoreCase(p.getName())) {
-					QuestX.logChat(p, ChatColor.RED + "You are already talking to this NPC.");
+					QuestX.logChat(p, ChatColor.RED + LocaleBundle.getString("already_talking"));
 				} else {
-					QuestX.logChat(p, ChatColor.RED + "This NPC is already talking to another player.");
+					QuestX.logChat(p, ChatColor.RED + LocaleBundle.getString("talking_to_other"));
 				}
 			} else {
 				c.endConversation();
@@ -547,7 +547,7 @@ public class SimpleNPC {
 					Location pl = p.getLocation();
 					this.getHumanNPC().lookAtPoint(new Location(pl.getWorld(), pl.getX(), pl.getY() + 1, pl.getZ()));
 				} else {
-					QuestX.logChatError(p, "There was an error parsing the dialogue file for this NPC. Please check the server log for more information.");
+					QuestX.logChatError(p, LocaleBundle.getString("error_dlg_parse"));
 				}
 			}
 		}

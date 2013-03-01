@@ -6,6 +6,7 @@ import java.util.HashSet;
 
 import org.bukkit.entity.Player;
 
+import com.adamki11s.bundle.LocaleBundle;
 import com.adamki11s.io.FileLocator;
 import com.adamki11s.npcs.NPCHandler;
 import com.adamki11s.npcs.loading.FixedLoadingTable;
@@ -34,11 +35,11 @@ public class QuestSetup {
 				settingUp.add(name);
 				this.load();
 			} else {
-				failSetupReason = "Someone else is setting up this Quest.";
+				failSetupReason = LocaleBundle.getString("q_currently_being_setup");
 				this.setup = false;
 			}
 		} else {
-			failSetupReason = "Quest has already been setup, no setup file exists.";
+			failSetupReason = LocaleBundle.getString("q_already_setup");
 			this.setup = false;
 		}
 	}
@@ -49,8 +50,8 @@ public class QuestSetup {
 	
 	public void sendInitialMessage(Player p){
 		String npcName = setupGuide.get(currentNode + 1).getNpcName();
-		QuestX.logChat(p, "Setup progress (" + currentNode + "/" + nodes + ")");
-		QuestX.logChat(p, "Choose spawn location for npc '" + npcName + "'.");
+		QuestX.logChat(p, LocaleBundle.getString("setup_progress") + currentNode + "/" + nodes + ")");
+		QuestX.logChat(p, LocaleBundle.getString("q_choose_spawn") + npcName + "'.");
 	}
 
 	public void setupSpawn(Player p) {
@@ -58,10 +59,10 @@ public class QuestSetup {
 		QuestX.logDebug("Current NPC setup name = " + npcName);
 
 		if (this.currentNode == this.nodes - 1) {
-			QuestX.logChat(p, "Setup complete!");
+			QuestX.logChat(p, LocaleBundle.getString("q_setup_complete"));
 		} else {
-			QuestX.logChat(p, "Setup progress (" + currentNode + "/" + nodes + ")");
-			QuestX.logChat(p, "Choose spawn location for npc '" + npcName + "'.");
+			QuestX.logChat(p, LocaleBundle.getString("setup_progress") + currentNode + "/" + nodes + ")");
+			QuestX.logChat(p, LocaleBundle.getString("q_choose_spawn") + npcName + "'.");
 		}
 
 		
